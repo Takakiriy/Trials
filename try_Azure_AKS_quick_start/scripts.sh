@@ -152,6 +152,9 @@ function  Install_AzureAKS_func()
 
 		echo  ""
 		ColorEcho_func  "リソース グループが衝突していないかチェックします...\n"  "Green"
+		#// 削除中に az aks create すると、次のエラーになるようです。
+		#// Changing property servicePrincipalProfile.clientId is not allowed.
+		#// Azure Portal でクラスターが削除されたことを確認してから、クラスターを作り直してください。
 		EchoNextCommand_func
 
 		local  group_exists=$(az group exists --name "${g_ResourceGroupName}")

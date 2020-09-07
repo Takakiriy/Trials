@@ -1,0 +1,43 @@
+﻿クイック スタート:Azure Cosmos DB SQL API リソースを管理する .NET コンソール アプリを構築する
+https://docs.microsoft.com/ja-jp/azure/cosmos-db/create-sql-api-dotnet
+
+下記の置き換える部分のサンプル:
+    __ResourceGroupName__ = MyCosmos1
+    __CosmosAccountName__ = sagepcosmosdb1  #// Azure Cosmos アカウント名、ユーザーが決めます
+    __MainRegionID__ = japaneast
+    __MainRegionName__ = Japan East
+    __SubRegionName__  = Japan West
+    __CosmosAccountURI__ = https://__CosmosAccountName__.documents.azure.com:443/ （下記手順の中で設定します）
+    __PrimaryKeyID__ = 0cm94XQqSIbosXjEB2oC6uTKDI8FAeCjXJCcL935soRFv5boP1LgiLI3l7cphESWusDB3mn9gLE00lFXBvcNTw== （下記手順の中で設定します）
+    __AppName__= todo
+
+az group create  --name "__ResourceGroupName__"  --location "japaneast"
+
+az cosmosdb create  --resource-group "__ResourceGroupName__" \
+    --name "__CosmosAccountName__"  --kind GlobalDocumentDB \
+    --locations regionName="__MainRegionName__" failoverPriority=0 \
+    --locations regionName="__SubRegionName__" failoverPriority=1 \
+    --default-consistency-level "Session" \
+    --enable-multiple-write-locations true
+
+cd  "try_CosmosDB"
+
+
+#// Create new C# project
+dotnet new console  --name "__AppName__"
+cd  "__AppName__"
+dotnet build
+dotnet add package Microsoft.Azure.Cosmos  #// CosmosDB にアクセスするライブラリを追加
+
+
+#// Build and Run
+cd  "../__AppName__"
+export EndpointUrl="__CosmosAccountURI__"
+export PrimaryKey="__PrimaryKeyID__"
+	#// https://portal.azure.com/ >> Azure Cosmos DB >> （Azure Cosmos アカウント名）>> キー（左）
+
+dotnet build
+dotnet run
+
+
+#// 終わったら、リソース グループを削除

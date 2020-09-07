@@ -1,0 +1,11 @@
+version: "2"
+services:
+  node:
+    image: react-sample
+    build:
+      context: ./app-react
+    command: bash -c "cd /app-react;  yarn start"
+    environment:
+      - NODE_ENV=production
+    ports:
+      - "3000:3000"

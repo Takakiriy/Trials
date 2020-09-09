@@ -1,0 +1,18 @@
+﻿# React in Docker container
+
+React のサンプル アプリケーションの Docker イメージをビルドして、ローカル Web サーバーのコンテナーを起動します:
+    - docker-compose up
+
+アプリケーションを置き換えるとき:
+	- Dockerfile の最後に、アプリケーションのプロジェクト フォルダーをイメージに追加するコマンドを追加します
+
+ローカル Web サーバーを終了して、コンテナーを削除します:
+    通常の手順:
+        - docker-compose down
+
+    関連コマンド:
+        - docker ps -a
+        - docker rm __ContainerID__
+
+        - docker images
+        - docker rmi __ImageID__

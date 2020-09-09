@@ -1,0 +1,54 @@
+# Azure Functions
+
+参考: https://docs.microsoft.com/ja-jp/azure/azure-functions/functions-create-first-function-vs-code
+
+設定:
+    - __ProjectFolder__: try_Azure_functions_cs
+    - __FunctionAppName__: sagep-function-cs
+    - __FunctionName__: HttpTriggerCShap1
+
+準備:
+    Azure のアカウントを作成します:
+    Azure CLI をインストールします:
+        - AzureCLI/README(-jp).md を参考に、`AzureCLI/run_install.bat` を実行します
+    VSCode の拡張機能をインストールします:
+    VSCode でこのファイルがあるフォルダーを開く:
+    拡張機能: #// 拡張機能ボタン（左）
+        - Azure Tools
+        - Azure Account
+        - C#
+
+ローカル プロジェクトと最初の関数を作成します（作成済み）:
+    参考: https://docs.microsoft.com/ja-jp/azure/azure-functions/functions-create-first-function-vs-code?pivots=programming-language-csharp#create-your-local-project
+    Create New Project:
+        操作: Azure アイコン ⇒ Functions ⇒ Create New Project（フォルダーのアイコン）
+        ProjectFolder: __ProjectFolder__  #// try_Azure_functions_cs
+        Language: C#
+        Template: HttpTrigger
+        FunctionName: __FunctionName__  #// HttpTriggerCShap1
+        NameSpace: Company.Function
+        AccessRights: Anonymous
+
+関数をローカルで実行します:
+    - F5 キーを押します
+    - 成功したら TERMINAL ビューにデバッグ実行中の Web サーバーの URL が表示されます
+    - 実行を終了するには、TERMINAL ビューで [Ctrl]+[C] を押します
+
+デプロイします:
+    参考: https://docs.microsoft.com/ja-jp/azure/azure-functions/functions-create-first-function-vs-code?pivots=programming-language-csharp#publish-the-project-to-azure
+    Azure アイコン ⇒ Functions ⇒ Deploy to Function App（↑ アイコン）:
+        TargetFunctionApp: Create new Function App in Azure
+        FunctionAppName: __FunctionAppName__  #// sagep-function-cs
+        Location: Japan East
+
+関数をクラウドで実行します:
+    参考:  https://docs.microsoft.com/ja-jp/azure/azure-functions/functions-create-first-function-vs-code?pivots=programming-language-csharp#run-the-function-in-azure
+    URL をコピー:
+        Azure アイコン >> Functions ⇒ Azure Account（鍵アイコン）
+            ⇒ Functions ⇒ （__FunctionName__ を右クリック） ⇒ Copy Function URL
+    ブラウザーでコピーした URL を開く:
+        - 例： https://sagep-function-cs.azurewebsites.net/api/HttpTriggerCSharp1
+
+デプロイした関数アプリのクリーンアップ（削除）:
+    - 関数アプリが所属するリソース グループを削除する
+

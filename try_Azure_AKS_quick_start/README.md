@@ -1,6 +1,8 @@
 ﻿クイック スタート-Azure CLI を使用して AKS クラスターをデプロイする - Azure Kubernetes Service - Microsoft Docs (Web)
 https://docs.microsoft.com/ja-jp/azure/aks/kubernetes-walkthrough
 
+azure-vote.yaml/image に書いてある redis と microsoft/azure-vote-front:v1 が使っている Docker イメージです。
+
 
 ## インストール方法 (Windows)
 

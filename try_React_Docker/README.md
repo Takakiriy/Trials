@@ -1,3 +1,3 @@
-# React in Docker container
+ï»¿# React in Docker container
 
-è‡‚Í [step.yaml] ‚ğQÆB
+æ‰‹é †ã¯ã€[steps.yaml] ã‚’å‚ç…§ã€‚

@@ -1,0 +1,11 @@
+﻿# React アプリケーション
+
+React アプリケーションをローカルで編集するには:
+    - run_install.bat をダブルクリックすると、環境が構築され、ローカル（Dockerのホスト）で Web サーバーが起動します
+    - run_start.bat をダブルクリックすると、ローカル（Dockerのホスト）で Web サーバーが起動します
+
+REST API の URL を設定するには:
+    - ./src/App.js の __BaseURL__ と __RelativeURL__ を編集します
+
+リポジトリに入れないファイルを削除するには:
+    - run_clean.bat をダブルクリックします

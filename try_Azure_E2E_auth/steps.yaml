@@ -1,0 +1,85 @@
+# チュートリアル:Azure App Service でユーザーをエンド ツー エンドで認証および承認する
+参考: https://docs.microsoft.com/ja-jp/azure/app-service/tutorial-auth-aad?pivots=platform-linux
+ホスティング プラットフォームを選択する: Linux
+
+設定:
+    __DeployUserName__: sagep-deploy  #// Azure 内で一意。文字@は使えない
+    __DeployUserPassword__: f9Fjo138uw52
+    __AuthResourceGroup__: sagep-auth1
+    __Location__: japaneast
+    __AuthAppServicePlan__: sagep-plan1
+    __FrontEndAppName__: sagep-front1
+    __BackEndAppName__: sagep-back1
+    __FrontEndGitURL__: https://sagep-deploy@sagep-front1.scm.azurewebsites.net/sagep-front1.git  #// 下記手順で決まります
+    __BackEndGitURL__: https://sagep-deploy@sagep-back1.scm.azurewebsites.net/sagep-back1.git  #// 下記手順で決まります
+
+構成:
+- Angular.js フロントエンド
+- ローカル ASP.NET Core アプリ
+
+.NET Core Web アプリのサーバーをローカルで起動します:
+    参考: https://docs.microsoft.com/ja-jp/azure/app-service/tutorial-auth-aad?pivots=platform-linux#create-local-net-core-app
+    Git bash:
+        - git clone https://github.com/Azure-Samples/dotnet-core-api
+        - cd dotnet-core-api
+        - dotnet run
+        - #// Now listening on: http://localhost:5000 と表示されるまで待つ
+        - http://localhost:5000 を開く
+        - bash で [Ctrl]+[C] を押して、サーバーを終了する
+
+デプロイ ユーザーを作成します:
+    Git bash:
+        - az webapp deployment user set --user-name "__DeployUserName__" --password "__DeployUserPassword__"
+            #// az webapp deployment user set --user-name "sagep-deploy" --password "f9Fjo138uw52"
+
+Azure リソースを作成します:
+    Git bash:
+        - az group create --name "__AuthResourceGroup__" --location "__Location__"
+        - az appservice plan create --name __AuthAppServicePlan__ --resource-group __AuthResourceGroup__ --sku FREE --is-linux
+        - az webapp create --resource-group __AuthResourceGroup__ --plan __AuthAppServicePlan__ --name __FrontEndAppName__ --runtime "DOTNETCORE|3.1" --deployment-local-git --query deploymentLocalGitUrl
+        - Git の URL (__FrontEndGitURL__) をメモします
+        - az webapp create --resource-group __AuthResourceGroup__ --plan __AuthAppServicePlan__ --name __BackEndAppName__  --runtime "DOTNETCORE|3.1" --deployment-local-git --query deploymentLocalGitUrl
+        - Git の URL (__BackEndGitURL__) をメモします
+            #// az group create --name "sagep-auth1" --location "japaneast"
+            #// az appservice plan create --name sagep-plan1 --resource-group sagep-auth1 --sku FREE --is-linux
+            #// az webapp create --resource-group sagep-auth1 --plan sagep-plan1 --name sagep-front1 --runtime "DOTNETCORE|3.1" --deployment-local-git --query deploymentLocalGitUrl
+            #// az webapp create --resource-group sagep-auth1 --plan sagep-plan1 --name sagep-back1  --runtime "DOTNETCORE|3.1" --deployment-local-git --query deploymentLocalGitUrl
+    アプリケーションの Git の URL は、以下のコマンドで確認できます:
+        - az webapp deployment source config-local-git --name "__BackEndAppName__" --resource-group "__AuthResourceGroup__"
+        #// az webapp deployment source config-local-git --name "sagep-back1" --resource-group "sagep-auth1"
+
+.NET Core Web アプリのプロジェクト（ソース）を git push コマンドで Azure へプッシュします:
+    .NET Core Web アプリを Azure App Service の Git リポジトリにプッシュします:
+        - git remote add frontend "__FrontEndGitURL__"
+        - git push frontend master  #// 接続できないときは、もう一度実行するか、.netrc ファイルを作成してください
+    プッシュしたら、そのまま Web アプリになります:
+        - http://__FrontEndAppName__.azurewebsites.net
+    参考:
+        Azure App Service へのローカル Git デプロイ:
+            https://docs.microsoft.com/ja-jp/azure/app-service/deploy-local-git
+
+    バックエンドとして、まず同じプロジェクトをバックエンドの Git リポジトリにプッシュします:
+        - git remote add backend "__BackEndGitURL__"
+        - git push backend master
+        - http://__BackEndAppName__.azurewebsites.net
+
+フロントエンドの一部をバックエンド呼び出しに置き換えます:
+    dotnet-core-api\Controllers\TodoController.cs を編集:
+        - _remoteUrl 変数の値の一部を置き換える必要があることに注意
+    ローカルで動作確認します:
+        - dotnet run
+        - #// Now listening on: http://localhost:5000 と表示されるまで待つ
+        - http://localhost:5000 を開く
+        - bash で [Ctrl]+[C] を押して、サーバーを終了する
+    Git bash:
+        - git add .
+        - git commit -m "call back-end API"
+        - git push frontend master
+    Azure で動作確認します:
+        - http://__FrontEndAppName__.azurewebsites.net  #// リロード（F5）が必要かもしれません 
+        - http://__BackEndAppName__.azurewebsites.net
+
+
+replaced:
+    - http://sagep-front1.azurewebsites.net
+    - http://sagep-back1.azurewebsites.net

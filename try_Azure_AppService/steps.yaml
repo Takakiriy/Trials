@@ -1,0 +1,15 @@
+# Azure Static Web Apps で Angular、React、Svelte、または Vue の JavaScript アプリと API を発行する
+参考: https://docs.microsoft.com/ja-jp/learn/modules/publish-app-service-static-web-app-api/
+JavaScript フレームワークまたはライブラリを選択する: React
+
+設定:
+    __GitHubUserName__: takakiriy
+
+ローカル Web サーバーで動くサンプル プロジェクトをダウンロードして実行します:
+    - git clone https://github.com/__GitHubUserName__/my-static-web-app
+    - cd "my-static-web-app/react-app"
+    - npm install
+    - npm start  #// 自動的にブラウザーが開きます
+もう一度開くとき:
+    - start "http://localhost:3000"
+

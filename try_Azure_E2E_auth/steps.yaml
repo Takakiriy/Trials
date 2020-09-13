@@ -4,7 +4,7 @@
 
 設定:
     __DeployUserName__: sagep-deploy  #// Azure 内で一意。文字@は使えない
-    __DeployUserPassword__: f9Fjo138uw52
+    __DeployUserPassword__: in GitHub/Trials_private/secret.yaml
     __AuthResourceGroup__: sagep-auth1
     __Location__: japaneast
     __AuthAppServicePlan__: sagep-plan1
@@ -12,7 +12,7 @@
     __BackEndAppName__: sagep-back1
     __FrontEndGitURL__: https://sagep-deploy@sagep-front1.scm.azurewebsites.net/sagep-front1.git  #// 下記手順で決まります
     __BackEndGitURL__: https://sagep-deploy@sagep-back1.scm.azurewebsites.net/sagep-back1.git  #// 下記手順で決まります
-    __BackEndClientID__: 8fb5a125-4291-47ca-9be8-4e05adbd6df9
+    __BackEndClientID__: in GitHub/Trials_private/secret.yaml
 
 構成:
     - Angular.js フロントエンド
@@ -33,7 +33,7 @@
     Git bash:
         - az webapp deployment user set --user-name "__DeployUserName__" --password "__DeployUserPassword__"
 
-Azure リソースを作成します:
+Azure App Service リソースを作成します（関数アプリも App Service です）:
     Git bash:
         - az group create --name "__AuthResourceGroup__" --location "__Location__"
         - az appservice plan create --name __AuthAppServicePlan__ --resource-group __AuthResourceGroup__ --sku FREE --is-linux
@@ -73,16 +73,19 @@ Azure リソースを作成します:
         - git push frontend master
     Azure で動作確認します:
         - http://__FrontEndAppName__.azurewebsites.net  #// ブラウザーの再起動が必要かもしれません
-        - http://__BackEndAppName__.azurewebsites.net
+        - http://__BackEndAppName__.azurewebsites.net  #// フロントエンドと同じデータが表示されること
 
-バックエンドを実行するのに認証が必要になるように設定します:
+バックエンドを実行するのに認証が必要になるように設定し、クライアント ID を調べます:
     https://portal.azure.com/ >> App Service >> __BackEndAppName__ >> 認証/承認:
         App Service 認証: オン
         要求が認証されない場合に実行するアクション: Azure Active Directory でのログイン
         認証プロバイダー: Azure Active Directory
         管理モード: 簡易
-    OK、保存、約1分待って:
-    Azure Active Directory >> Azure AD アプリ >> クライアント ID (__BackEndClientID__) をメモする:
+    OK、保存:
+    以下のどちらかの方法で、クライアント ID (__BackEndClientID__) をメモする:
+        - Azure Active Directory >> Azure AD アプリ >> クライアント ID
+        - Azure Active Directory >> 管理モード=既存のADアプリを選択する >> Azure AD アプリ >>
+            App Service名 >> クライアント ID
 
 フロントエンドを実行するのに認証が必要になるように設定します:
     https://portal.azure.com/ >> App Service >> __FrontEndAppName__ >> 認証/承認:
@@ -92,20 +95,20 @@ Azure リソースを作成します:
         管理モード: 簡易
     OK、保存:
 
-バックエンドにアクセスする許可をフロントエンドに付与します:
+フロントエンドが API を呼び出すときにトークンを含めるようにします:
     https://portal.azure.com/ >> Azure Active Directory :
         アプリの登録（左） >> すべてのアプリケーション（タブ） >> __FrontEndAppName__ （を検索）:
         API のアクセス許可（左）:
             アクセス許可の追加 >> 所属する組織で使用している API（タブ） >> __BackEndAppName__:
                 user_impersonation: チェック
                 「アクセス許可の追加」を押す:
-
-フロントエンドが API を呼び出すときにトークンを含めるようにします:
-    https://resources.azure.com/ >> __FrontEndAppName__ （を検索）:
-        Read/Write（右上） >> （左のツリー）__FrontEndAppName__ >> config >> authsettings >> [Edit]:
+    https://resources.azure.com/ >> __FrontEndAppName__ （を検索してリストから選択）:
+        - （左のツリー） __FrontEndAppName__ >> config >> authsettings
+        - Read/Write（右上） >> [Edit]:
             "additionalLoginParams": ["response_type=code id_token","resource=__BackEndClientID__"]
-        [PUT]:
-    もし、他のプロバイダー用にアクセス トークンを構成する場合、「ID プロバイダー トークンの更新」を参照:
+        - [PUT]
+        - ReadOnly（右上）
+    もし、他のプロバイダー用にアクセス トークンを構成する場合、「ID プロバイダー トークンの更新」を参照（未確認）:
         https://docs.microsoft.com/ja-jp/azure/app-service/app-service-authentication-how-to#refresh-identity-provider-tokens
     dotnet-core-api\Controllers\TodoController.cs を編集（編集済み）:
         - OnActionExecuting メソッドを追加

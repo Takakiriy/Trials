@@ -1,0 +1,67 @@
+# Azure App Service
+
+設定:
+    __GroupName__: sagep-auth1
+    __Region__: japaneast
+    __AppName__: sagep-app-service2
+    __ServicePlan__: sagep-plan1
+
+Azure でカスタム コンテナーを実行する:
+    参考: https://docs.microsoft.com/ja-jp/azure/app-service/quickstart-custom-container?pivots=container-linux
+    Azure コンテナー レジストリを作成する:
+        参考: https://docs.microsoft.com/ja-jp/azure/container-registry/container-registry-get-started-portal
+        https://portal.azure.com/ : コンテナー レジストリ
+    Visual Studio Code:
+        - Docker アイコン（左） >> REGISTRIES >> Connect Registry >> Azure（上） >> Azure（左） >> Sign in to Azure
+        - (サブスクリプション名) >> (レジストリ名) >> (イメージ名) >> (タグ名を右クリック) >> Deploy Image to Azure App Service
+        - もし、administrator 権限が要求されら:
+            - az acr update -n __RegistryName__ --admin-enabled true
+            - Visual Studio Code を再起動して Deploy Image to Azure App Service
+        - Create new web app（上）:
+            new web app: __AppName__
+            resource group: __GroupName__
+            service plan: __ServicePlan__
+
+
+
+
+
+
+App Service（上記の場合、不要）:
+    - https://portal.azure.com/ >> App Service
+    - 追加（左上）:
+        リソース グループ: （新規作成） app-service-container1
+        Web アプリ名: sagep-app-service1
+        公開: Docker コンテナー
+        オペレーティングシステム: Linux
+        地域: Japan East
+        Linux プラン: ... (F1)
+    - 次 Docker:
+        オプション: 単一コンテナー
+        イメージ ソース: クイック スタート
+        サンプル: NGINX
+    - 次 監視:
+        Application Insights を有効にする: いいえ
+    - 次 タグ:
+    - 次 確認および作成:
+        - 作成
+
+ZIP パッケージから Azure App Service のアプリを直接実行する:
+    メモ: Node.js + zip。 zip の構成は不明。 下記の方法では Node.js の初期画面のみ
+    参考: https://docs.microsoft.com/ja-jp/azure/app-service/deploy-run-package
+    Windows:
+        - Reactなどのプロジェクト/build フォルダーの中のファイルやフォルダーをすべて選択
+        - 右クリック >> 送る >> 圧縮フォルダー
+    bash:
+        - az group create  --name "__GroupName__"  --location "__Region__"
+        - az appservice plan create --name "__ServicePlan__" --resource-group "__GroupName__" --sku FREE --is-linux
+        - az webapp create  --name "__AppName__"  --resource-group "__GroupName__"  --plan "__ServicePlan__" --runtime "node|10.15"
+        - az webapp config appsettings set --name "__AppName__" --resource-group "__GroupName__" --settings WEBSITE_RUN_FROM_PACKAGE="1"
+        - az webapp deployment source config-zip --name "__AppName__" --resource-group "__GroupName__" --src "__FileName__.zip"
+        - replaced:
+            - az group create  --name "sagep-auth1"  --location "japaneast"
+            - az appservice plan create --name "sagep-plan1" --resource-group "sagep-auth1" --sku FREE --is-linux
+            - az webapp create  --name "sagep-app-zip1"  --resource-group "sagep-auth1"  --plan "sagep-plan1" --runtime "NODE|12.9"
+            - az webapp config appsettings set --name "sagep-app-zip1" --resource-group "sagep-auth1" --settings WEBSITE_RUN_FROM_PACKAGE="1"
+            - az webapp deployment source config-zip --name "sagep-app-zip1" --resource-group "sagep-auth1" --src "react-build.zip"
+

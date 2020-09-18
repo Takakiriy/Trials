@@ -1,0 +1,40 @@
+# .NET Coreで単体テストを行う
+参考: https://www.buildinsider.net/language/dotnetcore/07
+
+設定:
+    __ProjectName__: MyService
+
+テスト対象のプロジェクトを用意します:
+    - mkdir UnitTesting
+    - cd UnitTesting
+    - dotnet new sln
+    - mkdir MyService
+    - cd MyService
+    - dotnet new classlib
+    - cd ..
+    - dotnet sln add MyService/MyService.csproj
+テスト対象のプロジェクトを用意します。ステップ２: |
+    - code .  #// Visual Studio Code を開く
+    #// MyService/Class1.csファイルをMyService/Calculator.csにリネームして編集
+
+xUnit を使うプロジェクトを新規作成します:
+    - mkdir  "MyService.xTests"
+    - cd  "MyService.xTests"
+    - dotnet new xunit
+    - dotnet add reference  "../MyService/MyService.csproj"
+    - cd ..
+    - dotnet sln add  "MyService.xTests/MyService.xTests.csproj"
+    #- template:
+        #- mkdir  "__ProjectName__.xTests"
+        #- cd  "__ProjectName__.xTests"
+        #- dotnet new xunit
+        #- dotnet add reference  "../__ProjectName__/__ProjectName__.csproj"
+        #- cd ..
+        #- dotnet sln add  "__ProjectName__.xTests/__ProjectName__.xTests.csproj"
+
+xUnit によるテストを実行します:
+    - dotnet test
+    #// Visual Studio Code を再起動して、勧められたエクステンションをインストールすると
+    #// テストのソースファイルに [ Run Test | Debug Test ] ボタンが付きます。
+    #// bin, obj フォルダーを削除したら、もう一度 dotnet test を実行してください
+

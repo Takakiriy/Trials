@@ -1,4 +1,4 @@
-# Azure Functions
+# Azure Functions とそのデプロイ
 
 参考: https://docs.microsoft.com/ja-jp/azure/azure-functions/functions-create-first-function-vs-code
 
@@ -33,6 +33,13 @@
     - F5 キーを押します
     - 成功したら TERMINAL ビューにデバッグ実行中の Web サーバーの URL が表示されます
     - 実行を終了するには、TERMINAL ビューで [Ctrl]+[C] を押します
+    - トラブル シューティング:
+        -
+            現象: Confitured debug type 'coreclr' is not supported
+            対策: VSCode の C# エクステンションをインストールしてください。
+        -
+            現象: 'The terminal process failed to launch: Path to shell executable "C:\Users\ts-ne\Desktop\FileStamp\back-azure\dotnet" does not exist.'
+            対策: VSCode のデフォルト シェルを PowerShell に設定し、CSCode を再起動します
 
 デプロイします:
     参考: https://docs.microsoft.com/ja-jp/azure/azure-functions/functions-create-first-function-vs-code?pivots=programming-language-csharp#publish-the-project-to-azure

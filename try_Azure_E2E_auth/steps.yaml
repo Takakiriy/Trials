@@ -59,6 +59,15 @@ Azure App Service リソースを作成します（関数アプリも App Servic
         - git push backend master
         - http://__BackEndAppName__.azurewebsites.net
 
+後で frontend（や backend）の .git フォルダーを復活させたくなったときは:
+    - git clone "https://sagep-deploy@sagep-front1.scm.azurewebsites.net/sagep-front1.git"
+    - cd  "sagep-front1"
+    - git remote add frontend "https://sagep-deploy@sagep-front1.scm.azurewebsites.net/sagep-front1.git"
+    #- template:
+        #- git clone "__FrontEndGitURL__"
+        #- cd  "__FrontEndAppName__"
+        #- git remote add frontend "__FrontEndGitURL__"
+
 フロントエンドの一部をバックエンド呼び出しに置き換えます（置き換え済み）:
     dotnet-core-api\Controllers\TodoController.cs を編集:
         - _remoteUrl 変数の値の一部を置き換える必要があることに注意
@@ -81,48 +90,105 @@ Azure App Service リソースを作成します（関数アプリも App Servic
         要求が認証されない場合に実行するアクション: Azure Active Directory でのログイン
         認証プロバイダー: Azure Active Directory
         管理モード: 簡易
-    OK、保存:
+    OK >> 保存:
     以下のどちらかの方法で、クライアント ID (__BackEndClientID__) をメモする:
-        - Azure Active Directory >> Azure AD アプリ >> クライアント ID
-        - Azure Active Directory >> 管理モード=既存のADアプリを選択する >> Azure AD アプリ >>
+        - App Service >> 認証/承認 >> Azure Active Directory >> Azure AD アプリ >> クライアント ID
+        - App Service >> 認証/承認 >> Azure Active Directory >> 管理モード=既存のADアプリを選択する >> Azure AD アプリ >>
             App Service名 >> クライアント ID
 
 フロントエンドを実行するのに認証が必要になるように設定します:
-    https://portal.azure.com/ >> App Service >> __FrontEndAppName__ >> 認証/承認:
+    - https://portal.azure.com/ >> App Service >> __FrontEndAppName__
+    - 認証/承認:
         App Service 認証: オン
         要求が認証されない場合に実行するアクション: Azure Active Directory でのログイン
         認証プロバイダー: Azure Active Directory
         管理モード: 簡易
-    OK、保存:
+    - OK >> 保存
 
-フロントエンドが API を呼び出すときにトークンを含めるようにします:
-    https://portal.azure.com/ >> Azure Active Directory :
-        アプリの登録（左） >> すべてのアプリケーション（タブ） >> __FrontEndAppName__ （を検索）:
-        API のアクセス許可（左）:
-            アクセス許可の追加 >> 所属する組織で使用している API（タブ） >> __BackEndAppName__:
-                user_impersonation: チェック
-                「アクセス許可の追加」を押す:
-    https://resources.azure.com/ >> __FrontEndAppName__ （を検索してリストから選択）:
-        - （左のツリー） __FrontEndAppName__ >> config >> authsettings
-        - Read/Write（右上） >> [Edit]:
-            "additionalLoginParams": ["response_type=code id_token","resource=__BackEndClientID__"]
-        - [PUT]
-        - ReadOnly（右上）
-    もし、他のプロバイダー用にアクセス トークンを構成する場合、「ID プロバイダー トークンの更新」を参照（未確認）:
+フロントエンドから Web API を呼び出すときにトークンを含めるようにします:
+    - Active Directory に、認証を許可するアプリケーションを登録します:
+        - https://portal.azure.com/
+        - Azure Active Directory:
+            - アプリの登録（左） >> すべてのアプリケーション（タブ）
+            - __FrontEndAppName__ （を検索）:
+                - API のアクセス許可（左）>> アクセス許可の追加 >> 所属する組織で使用している API（タブ）
+                - __BackEndAppName__:
+                    user_impersonation: チェック
+                    OK: 「アクセス許可の追加」を押す
+        - https://resources.azure.com/
+        - __FrontEndAppName__ （を検索してリストから選択）:
+            - （左のツリー） __FrontEndAppName__ >> config
+            - authsettings:
+                - Read/Write（右上）
+                - [Edit]: |
+                    "additionalLoginParams": ["response_type=code id_token","resource=__BackEndClientID__"]
+                - [PUT]
+                - ReadOnly（右上）
+    - もし、他のプロバイダー用にアクセス トークンを構成する場合、「ID プロバイダー トークンの更新」を参照（未確認）:
         https://docs.microsoft.com/ja-jp/azure/app-service/app-service-authentication-how-to#refresh-identity-provider-tokens
-    dotnet-core-api\Controllers\TodoController.cs を編集（編集済み）:
-        - OnActionExecuting メソッドを追加
-            #// フロントエンドの HTTP リクエストに X-MS-TOKEN-AAD-ACCESS-TOKEN が含まれるようになります
-    ローカルで動作確認します:
-        - dotnet run
-        - #// コンパイルエラーが出ないことを確認する
-            Now listening on: http://localhost:5000 と表示されるまで待つ
-        - bash で [Ctrl]+[C] を押して、サーバーを終了する
-    プッシュします:
-        - git add .
-        - git commit -m "add authorization header for server code"
-        - git push frontend master
-    Azure で動作確認します:
-        - http://__FrontEndAppName__.azurewebsites.net  #// ブラウザーの再起動が必要かもしれません
-        - replaced:
-            - http://sagep-front1.azurewebsites.net
+
+    - （しなくてもよい？）フロントエンドから呼び出す C# の Web API がバックエンドの API を呼び出すときにトークンを含めるようにします:
+        - dotnet-core-api\Controllers\TodoController.cs を編集（編集済み）:
+            - OnActionExecuting メソッドを追加
+                #// フロントエンドの HTTP リクエストに X-MS-TOKEN-AAD-ACCESS-TOKEN が含まれるようになります
+        - ローカルで動作確認します:
+            - dotnet run
+            - | #// コンパイルエラーが出ないことを確認する
+                Now listening on: http://localhost:5000 と表示されるまで待つ
+            - bash で [Ctrl]+[C] を押して、サーバーを終了する
+        - プッシュします:
+            - git add .
+            - git commit -m "add authorization header for server code"
+            - git push frontend master
+        - Azure で動作確認します:
+            - http://sagep-front1.azurewebsites.net  #// ブラウザーの再起動が必要かもしれません
+                #- http://__FrontEndAppName__.azurewebsites.net
+
+    - ブラウザー コードから API を安全に呼び出す:
+        - 概要:
+            - アクセス トークンを取得する:
+                サーバー: 要求ヘッダーにあるアクセス トークンを取得する
+                クライアント: HTTP GET /.auth/me にアクセスする
+                #// JavaScript 用 Microsoft Authentication Library は Angular.js 用。 Node.js用はアルファ版
+            
+        - バックエンドに CORS の設定を追加します（認証とは別にフロントエンドからバックエンドを呼び出すときに必要なことです）:
+            - az webapp cors add --resource-group "sagep-auth1" --name "sagep-back1" --allowed-origins 'https://sagep-front1.azurewebsites.net'
+                #- az webapp cors add --resource-group "__AuthResourceGroup__" --name "__BackEndAppName__" --allowed-origins 'https://__FrontEndAppName__.azurewebsites.net'
+        - HTTP GET /.auth/me にアクセスして、アクセス トークンを取得します:
+            - in wwwroot/app/scripts/app.js: |
+                $routeProvider.when("/Home", {
+                    controller: "todoListCtrl",
+                    templateUrl: "/App/Views/TodoList.html",
+                    resolve: {
+                        token: ['$http', 'todoListSvc', function ($http, todoListSvc) {
+                            return $http.get('/.auth/me').then(function (response) {
+                                todoListSvc.setAuth(response.data[0].access_token);
+                                return response.data[0].access_token;
+                            });
+                        }]
+                    },
+                }).otherwise({ redirectTo: "/Home" });
+            #// angular.module の routeProvider の resolve は、Angular でビューのレンダリングを始める前に行う処理です
+            #// token は、 setAuth （後述）の引数に渡ります
+        - バックエンドの Web API を呼び出すように URL を設定します: |
+            // in wwwroot/index.html
+            var apiEndpoint = "https://sagep-back1.azurewebsites.net";
+                #// apiEndpoint は右のようなコードで使われています return $http.get(apiEndpoint + '/api/Todo');
+        - アクセス トークンをすべての HTML リクエスト ヘッダーに追加するようにします: |
+            // in wwwroot/app/scripts/todoListSvc.js
+            setAuth: function (token) {
+                $http.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+            },
+        - ローカルで動作確認します:
+            - dotnet run
+            - | #// コンパイルエラーが出ないことを確認する
+                Now listening on: http://localhost:5000 と表示されるまで待つ
+            - bash で [Ctrl]+[C] を押して、サーバーを終了する
+        - プッシュします:
+            - git add .
+            - git commit -m "add authorization header for Angular"
+            - git push frontend master
+        - Azure で動作確認します:
+            - http://sagep-front1.azurewebsites.net  #// ブラウザーの再起動が必要かもしれません
+                #- http://__FrontEndAppName__.azurewebsites.net
+            - 'HTTP 要求ヘッダー authorization: Bearer にトークン（複雑な長い文字列）があることを確認します'

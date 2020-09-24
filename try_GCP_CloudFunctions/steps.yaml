@@ -1,6 +1,6 @@
 ﻿# GCP - Cloud Functions
 
-ブラウザー内で Python の Cloud Function を作る:
+ブラウザー内で Python の Cloud Function を作ります:
     # GCP - Cloud Functions - Python クイックスタート
     参照: https://cloud.google.com/functions/docs/quickstart-python?hl=ja
     プロジェクトを新規作成します:
@@ -36,4 +36,90 @@
         - トリガーとなるイベント: {"message":"Hello, YOUR_NAME!"}
         - 「関数をテストする」
         - 出力内容が「Hello, YOUR_NAME!」に変わっていることを確認します
+        #// 実行した関数は、ペイロードに message 属性があるときは、その値を表示します
+    プロジェクトを削除します:
+        - 参考: https://cloud.google.com/resource-manager/docs/creating-managing-projects?hl=ja#shutting_down_projects
+        - https://console.cloud.google.com/iam-admin/settings  #// IAM と管理 >> 設定
+        - 削除するプロジェクトを選択します（左上のプルダウン）
+        - 「シャットダウン」
+        #// 30 日以内なら復元可能。 ただし、Cloud Storage リソースなどの一部のリソースは、より早い時点で削除されます。
 
+Cloud SDK を使って Python の Cloud Function を作ります:
+    # GCP - Cloud Functions - 最初の関数: Python
+    参照: https://cloud.google.com/functions/docs/first-python
+    設定:
+        プロジェクト名: &__ProjectID__  cloudfunction2
+        リージョン名: &__Region__  asia-northeast1  #// 東京
+        RESTリソース名: &__REST_ResourceName__  hello_http
+    プロジェクトを新規作成します:
+        - https://console.cloud.google.com/
+        - プロジェクトを新規作成します（または選択します）
+        - （プロジェクトのページで）[ 三 >> お支払い >> 請求先アカウント]
+            #// プロジェクトの課金が有効になっていること（＝請求先アカウントとリンクしていること）を確認します
+    Cloud Functions and Cloud Build API を有効にします:
+        - https://cloud.google.com/functions/docs/first-python#creating_a_gcp_project_using_cloud_sdk
+        - 3. Cloud Functions and Cloud Build API を有効にします。[APIを有効にする]ボタンを押します
+        - 上記で新規作成したプロジェクトを選択し、[続行]
+    Cloud SDK をインストールします:
+        - 参考: https://cloud.google.com/sdk/docs/quickstart
+        - Cloud SDK のインストーラーをダウンロードします:
+            - PowerShell: |
+                (New-Object Net.WebClient).DownloadFile("https://dl.google.com/dl/cloudsdk/channels/rapid/GoogleCloudSDKInstaller.exe", `
+                    "$env:Temp\GoogleCloudSDKInstaller.exe")
+                start $env:Temp\GoogleCloudSDKInstaller.exe
+                #// インストーラーのオプションはすべてデフォルト
+            - Run 'gcloud init' オプションによりインストーラーが閉じた後に、ターミナル ウィンドウが開き、以下のように表示されます: |
+                Welcome to the Google Cloud SDK! Run "gcloud -h" to get the list of available commands.
+                ---
+                Welcome! This command will take you through the configuration of gcloud.
+
+                Your current configuration has been set to: [default]
+
+                You can skip diagnostics next time by using the following flag:
+                gcloud init --skip-diagnostics
+
+                Network diagnostic detects and fixes local network connection issues.
+                Checking network connection...done.
+                Reachability Check passed.
+                Network diagnostic passed (1/1 checks passed).
+
+                You must log in to continue. Would you like to log in (Y/n)?
+            - 参考: https://cloud.google.com/sdk/docs/quickstart#initializing_the_sdk
+            - y と入力すると、ログインするアカウントを選ぶページがブラウザーで開かれるので、アカウントを選びます
+            - プロジェクトを選択するよう聞かれるので、プロジェクトを選びます
+    Cloud SDK や gcloud コマンドが使えるコマンド プロンプトを開きます:
+        - Windows [ スタート >> Google Cloud SDK >> Google Cloud SDK Shell ]
+        - gcloud auth list  #// 動作確認コマンドの例
+    gcloud コンポーネントを更新してインストールします:
+        - gcloud components update
+        - opt-in（クラッシュレポートをグーグルへ送信することの許可）は、しなくても構いません
+    開発環境を準備します:
+        - py -m pip --version  #// Python がインストールされていることを確認します
+    コードを作成します（作成済み）:
+        - 参考: https://cloud.google.com/functions/docs/first-python#creating_a_function
+        - 関数名が hello_http の関数定義がある helloworld/main.py を作成します
+            #- 関数名が __REST_ResourceName__ の関数定義がある helloworld/main.py を作成します
+        - helloworld/requirements.txt を作成します（main.py ファイルがあるフォルダーに作成します）
+    つづき:
+        - 「Cloud SDK を使って Python の Cloud Function をデプロイします」を参照
+
+Cloud SDK を使って Python の Cloud Function をデプロイします:
+    デプロイします:
+        - cd  __MainPyFolder__   #// main.py ファイルがあるフォルダーに移動します。RAM drive (?) は不可
+        - gcloud functions deploy "hello_http" --region "asia-northeast1"  --runtime python37 --trigger-http --allow-unauthenticated
+            #- gcloud functions deploy "__REST_ResourceName__" --region "__Region__"  --runtime python37 --trigger-http --allow-unauthenticated
+    関数を呼び出します:
+        - gcloud functions describe hello_http  #// httpsTrigger の url (URL)を確認します
+        - start "" https://asia-northeast1-CloudFunction2.cloudfunctions.net/hello_http
+            #- start "" https://__Region__-__ProjectID__.cloudfunctions.net/__REST_ResourceName__
+    つづき:
+        - 「Cloud Functions の関数を一覧表示し、実行ログを表示します」を参照
+
+Cloud Functions の関数を一覧表示し、実行ログを表示します:
+    ブラウザーで表示する場合:
+        - https://console.cloud.google.com/functions/list
+        - （関数名） >> ログを表示（タブ）
+    コマンド プロンプトで表示する場合（未確認）:
+        - gcloud functions logs read hello_http
+            #- gcloud functions logs read __REST_ResourceName__
+            #- 実行しても反応がない

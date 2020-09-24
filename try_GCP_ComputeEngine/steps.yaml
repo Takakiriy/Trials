@@ -1,0 +1,26 @@
+﻿# GCP - Compute Engine
+
+仮想マシン インスタンスを作成し、SSH 接続し、サンプルとして Web ブラウザーを起動します:
+    - https://console.cloud.google.com/compute
+    - [ VM インスタンス >> クイックスタートを使用 ]:
+        インスタンスの名前: &__InstanceName__ instance-1
+        リージョン: asia-northeast1（東京）
+        ゾーン: &__Zone__ asia-northeast1-b  #// これは入力するのではなくメモする
+        マシンの構成:
+            シリーズ: N1
+            マシンタイプ: f1-micro
+            ファイアウォール: HTTP トラフィックを許可する  #// ポート 80（HTTP）が開きます
+            OK: 作成ボタン
+    - Cloud Shell:
+        - SSH を使って VM インスタンスに接続します:
+            - gcloud compute --project "buoyant-world-290502" ssh  --zone "asia-northeast1-b"  "instance-1"
+            #- template:
+                #- gcloud compute --project "__ProjectID__" ssh  --zone "__Zone__"  "__InstanceName__"
+            - 初めて Cloud Shell から SSH を使用する場合は、指示に沿って秘密鍵を作成します。
+        - Web サーバー（動作確認用）を作ります:
+            - echo "Hello, world." > index.html
+            - sudo python3 -m http.server 80
+            - 以下のように表示されたら動作が開始されています
+                Serving HTTP on 0.0.0.0 port 80 (http://0.0.0.0:80/) ...
+            - 外部IP（例：35.200.72.49）をブラウザーで開き、上記 index.html の内容が表示されていることを確認します
+

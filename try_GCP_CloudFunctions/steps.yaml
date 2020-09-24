@@ -1,0 +1,39 @@
+﻿# GCP - Cloud Functions
+
+ブラウザー内で Python の Cloud Function を作る:
+    # GCP - Cloud Functions - Python クイックスタート
+    参照: https://cloud.google.com/functions/docs/quickstart-python?hl=ja
+    プロジェクトを新規作成します:
+        - https://console.cloud.google.com/
+        - プロジェクトを新規作成します（または選択します）
+        - （プロジェクトのページで）[ 三 >> お支払い >> 請求先アカウント]
+            #// プロジェクトの課金が有効になっていること（＝請求先アカウントとリンクしていること）を確認します
+    Cloud Functions and Cloud Build API を有効にします:
+        - https://cloud.google.com/functions/docs/quickstart-python?hl=ja#before-you-begin
+        - 3. Cloud Functions and Cloud Build API を有効にします。[APIを有効にする]ボタンを押します
+        - 上記で新規作成したプロジェクトを選択し、[続行]
+    関数を作成します:
+        - https://console.cloud.google.com/functions/
+        - 選択されているプロジェクトが正しいことを確認します
+        - 「関数を作成」:
+            関数名: function-1
+            リージョン: asia-northeast1 （東京）
+            トリガーのタイプ: HTTP
+            認証: 未認証の呼び出しを許可
+            OK: 「保存 >> 次へ」
+        - （つづき）:
+            ランタイム: Python 3.7
+            ソースコード: インライン エディタ
+            （エディター）: （編集しなくてよい）
+            OK: 「デプロイ」
+    関数をテストします:
+        - https://console.cloud.google.com/functions/
+        - 「… >> 関数をテスト」
+        - 「関数をテストする」
+    関数をテストします２:
+        - https://console.cloud.google.com/functions/
+        - 「… >> 関数をテスト」
+        - トリガーとなるイベント: {"message":"Hello, YOUR_NAME!"}
+        - 「関数をテストする」
+        - 出力内容が「Hello, YOUR_NAME!」に変わっていることを確認します
+

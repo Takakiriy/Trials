@@ -28,6 +28,7 @@ xUnit を使うプロジェクトを新規作成します:
         #- mkdir  "__ProjectName__.xTests"
         #- cd  "__ProjectName__.xTests"
         #- dotnet new xunit
+        #- 以下は .sln ファイルを使っていなければ不要
         #- dotnet add reference  "../__ProjectName__/__ProjectName__.csproj"
         #- cd ..
         #- dotnet sln add  "__ProjectName__.xTests/__ProjectName__.xTests.csproj"
@@ -38,3 +39,13 @@ xUnit によるテストを実行します:
     #// テストのソースファイルに [ Run Test | Debug Test ] ボタンが付きます。
     #// bin, obj フォルダーを削除したら、もう一度 dotnet test を実行してください
 
+既存のプロジェクトに xUnit を追加する場合:
+    失敗します:
+        Run Test を実行すると
+        A fatal error was encountered. The library 'hostpolicy.dll' required to execute the application was not found
+    ___.csproj ファイルの ItemGroup に以下を追加します。: |
+        <ItemGroup>
+            <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
+            <PackageReference Include="xunit" Version="2.4.1" />
+            <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3" />
+        </ItemGroup>

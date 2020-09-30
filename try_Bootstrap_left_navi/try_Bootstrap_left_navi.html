@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Bootstrap Navbar Sidebar - Fixed to Left or Right</title>
+    <link rel="stylesheet" id="theme_link" href="css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/navbar-fixed-left.min.css"/>
+<!--
+    <link rel="stylesheet" href="css/navbar-fixed-right.min.css"/>
+-->
+    <script src="js/jquery-3.3.1.slim.min.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+<!--
+    <link rel="stylesheet" href="css/docs.css"/>
+    <script src="js/docs.js"></script>
+-->
+</head>
+
+<body data-spy="scroll" data-target=".navbar-nav" style="position: relative;">
+    <nav class="navbar navbar-expand-md navbar-dark bg-primary fixed-left">
+        <a class="navbar-brand" href>Navbar</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navivar-menu"
+                aria-controls="navivar-menu" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navivar-menu">
+            <div class="navbar-nav">
+              <a class="nav-item nav-link btn-in-toggler" href="#contents01">コンテンツ01</a>
+              <a class="nav-item nav-link btn-in-toggler" href="#contents02">コンテンツ02</a>
+              <a class="nav-item nav-link btn-in-toggler" href="#contents03">コンテンツ03</a>
+            </div>
+        </div>
+    </nav>
+    <script>
+        $('.btn-in-toggler').click(function(){
+          $('#navivar-menu').collapse('hide');
+        });
+    </script>
+
+<div class="container">
+<!--
+    <div class="jumbotron">
+        <p>Same as when using <code>.fixed-top</code> for navbar - add class <code>.fixed-left</code> or <code>.fixed-right</code>
+            where needed.</p>
+        <p>Click buttons below, and appropriate class will be added to example navbar.</p>
+        <div class="btn-group" role="group">
+            <button type="button" data-class="fixed-right" class="btn btn-primary">
+                <i class="fa fa-arrow-right"></i>
+                Fixed Right
+            </button>
+            <button type="button" data-class="fixed-left" class="btn btn-primary">
+                <i class="fa fa-arrow-left"></i>
+                Fixed Left
+            </button>
+            <button type="button" data-class="fixed-top" class="btn btn-primary">
+                <i class="fa fa-arrow-up"></i>
+                Fixed Top
+                <small>(original)</small>
+            </button>
+        </div>
+    </div>
+-->
+
+    <!-- コンテンツ -->
+    <div class="mb-5">
+      <h4 id="contents01" style="padding-top: 60px; margin-top: -60px">コンテンツ01</h4>
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    </div>
+
+    <div class="mb-5">
+      <h4 id="contents02" style="padding-top: 60px; margin-top: -60px">コンテンツ02</h4>
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    </div>
+
+    <div class="mb-5">
+      <h4 id="contents03" style="padding-top: 60px; margin-top: -60px">コンテンツ03</h4>
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    </div>
+</div>
+</body>
+</html>

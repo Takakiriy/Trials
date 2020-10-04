@@ -34,7 +34,7 @@ Azure Functions Core Tools のバージョンは、最新バージョンです�
 
 script.sh ファイルは使いません。
 
-1. Docker for Windows をインストール https://docs.docker.com/
+1. 必要なら Docker for Windows をインストール https://docs.docker.com/
   Kubernetes もインストールされます
 2. Git をインストール (例: Git-2.27.0-64-bit.exe) https://git-scm.com/downloads
 3. Azure CLI をインストール (例: azure-cli-2.10.1.msi) https://docs.microsoft.com/ja-jp/cli/azure/install-azure-cli-windows?view=azure-cli-latest&tabs=azure-cli

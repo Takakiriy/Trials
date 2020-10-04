@@ -1,61 +1,173 @@
 # Azure Functions とそのデプロイ
-
-参考: https://docs.microsoft.com/ja-jp/azure/azure-functions/functions-create-first-function-vs-code
+参考:
+    https://docs.microsoft.com/ja-jp/azure/azure-functions/functions-create-first-function-vs-code
+    https://docs.microsoft.com/ja-jp/azure/azure-functions/functions-add-output-binding-storage-queue-vs-code
 
 設定:
     - __ProjectFolder__: try_Azure_functions_cs
     - __FunctionAppName__: sagep-function-cs
     - __FunctionName__: HttpTriggerCShap1
+    - __AzureWebJobsStorage__: local.settings.json にダウンロードされます
 
 準備:
-    Azure のアカウントを作成します:
+    Visual Studio Code をインストールします:
+        https://code.visualstudio.com/
+        オプションはすべてデフォルト
+        必要なら、Visual Studio Code をタスクバーにピン止めします
+    Azure のアカウントを作成して、開発に使う PC で、 https://portal.azure.com/ にサインインします:
+        サインインしたら、ブラウザーを閉じます
     Azure CLI をインストールします:
-        - AzureCLI/README(-jp).md を参考に、`AzureCLI/run_install.bat` を実行します
+        https://docs.microsoft.com/ja-jp/cli/azure/install-azure-cli-windows?view=azure-cli-latest&tabs=azure-cli
+            Microsoft Installer (MSI) >> Azure CLI current version
+            azure-cli-2.12.1.msi
+    .NET Core SDK をインストールします:
+        https://dotnet.microsoft.com/download/dotnet-core/2.1
+            Build apps - SDK >> Windows >> Installers >> x64
+            #// .NET Core 3.1 では Azure Functions のビルドに失敗します
+    Azure Functions Core Tools をインストールします:
+        https://github.com/Azure/azure-functions-core-tools#installing
+            v3 >> Windows 64-bit
+    もし Visual Studio Code が開いていたら終了します:
+    もし __Project__/bin フォルダーと __Project__/obj フォルダーがあれば削除します:
     VSCode の拡張機能をインストールします:
-    VSCode でこのファイルがあるフォルダーを開く:
-    拡張機能: #// 拡張機能ボタン（左）
-        - Azure Tools
-        - Azure Account
-        - C#
+        VSCode でこのファイルがあるフォルダーを開きます:
+        recommended extensions のインストールを勧められてもインストールしない:
+        [Restore] ボタンが右下に表示されたら押す
+        拡張機能: #// 拡張機能ボタン（左）
+            - Azure Tools
+            - C#
+    VSCode で Azure へ再度サインインする:
+        Visual Studio Code の Azure ボタン（左）で、Sign in to Azure
+    
+クイックスタート >> 関数の作成:
+    ローカル プロジェクトと最初の関数を作成します（作成済み）:
+        参考: https://docs.microsoft.com/ja-jp/azure/azure-functions/functions-create-first-function-vs-code?pivots=programming-language-csharp#create-your-local-project
+        Create New Project:
+            操作: Azure アイコン ⇒ Functions ⇒ Create New Project（フォルダーのアイコン）
+            ProjectFolder: try_Azure_functions_cs
+                #template: ProjectFolder: __ProjectFolder__
+            Language: C#
+            Template: HttpTrigger
+            FunctionName: HttpTriggerCShap1
+                #template: FunctionName: __FunctionName__
+            NameSpace: Company.Function
+            AccessRights: Anonymous
 
-ローカル プロジェクトと最初の関数を作成します（作成済み）:
-    参考: https://docs.microsoft.com/ja-jp/azure/azure-functions/functions-create-first-function-vs-code?pivots=programming-language-csharp#create-your-local-project
-    Create New Project:
-        操作: Azure アイコン ⇒ Functions ⇒ Create New Project（フォルダーのアイコン）
-        ProjectFolder: __ProjectFolder__  #// try_Azure_functions_cs
-        Language: C#
-        Template: HttpTrigger
-        FunctionName: __FunctionName__  #// HttpTriggerCShap1
-        NameSpace: Company.Function
-        AccessRights: Anonymous
+    関数をローカルで実行します:
+        - F5 キーを押します
+        - 成功したら TERMINAL ビューにデバッグ実行中の Web サーバーの URL が表示されます
+        - HttpTriggerCSharp1.cs ファイルの Run 関数の中に、ブレークポイントを設定して、Web サーバーの URL を開くと、ブレークします（実行がそこで一時停止します）
+        - 実行を終了するには、TERMINAL ビューで [Ctrl]+[C] を押します
+        - トラブル シューティング:
+            -
+                現象: Confitured debug type 'coreclr' is not supported
+                対策: VSCode の C# エクステンションをインストールしてください。
+            -
+                現象: 'The terminal process failed to launch: Path to shell executable "C:\Users\ts-ne\Desktop\FileStamp\back-azure\dotnet" does not exist.'
+                対策: VSCode のデフォルト シェルを PowerShell に設定し、CSCode を再起動します
 
-関数をローカルで実行します:
-    - F5 キーを押します
-    - 成功したら TERMINAL ビューにデバッグ実行中の Web サーバーの URL が表示されます
-    - 実行を終了するには、TERMINAL ビューで [Ctrl]+[C] を押します
-    - トラブル シューティング:
-        -
-            現象: Confitured debug type 'coreclr' is not supported
-            対策: VSCode の C# エクステンションをインストールしてください。
-        -
-            現象: 'The terminal process failed to launch: Path to shell executable "C:\Users\ts-ne\Desktop\FileStamp\back-azure\dotnet" does not exist.'
-            対策: VSCode のデフォルト シェルを PowerShell に設定し、CSCode を再起動します
+    デプロイします:
+        参考: https://docs.microsoft.com/ja-jp/azure/azure-functions/functions-create-first-function-vs-code?pivots=programming-language-csharp#publish-the-project-to-azure
+        Azure アイコン ⇒ Functions ⇒ Deploy to Function App（↑ アイコン）:
+            TargetFunctionApp: Create new Function App in Azure
+            FunctionAppName: sagep-function-cs
+                #template: FunctionAppName: __FunctionAppName__
+            Location: Japan East
+        デプロイが完了するまで待ちます:
 
-デプロイします:
-    参考: https://docs.microsoft.com/ja-jp/azure/azure-functions/functions-create-first-function-vs-code?pivots=programming-language-csharp#publish-the-project-to-azure
-    Azure アイコン ⇒ Functions ⇒ Deploy to Function App（↑ アイコン）:
-        TargetFunctionApp: Create new Function App in Azure
-        FunctionAppName: __FunctionAppName__  #// sagep-function-cs
-        Location: Japan East
+    関数をクラウドで実行します:
+        参考:  https://docs.microsoft.com/ja-jp/azure/azure-functions/functions-create-first-function-vs-code?pivots=programming-language-csharp#run-the-function-in-azure
+        URL をコピー:
+            Azure アイコン ⇒ Functions
+                ⇒ Azure Account（鍵アイコン） ⇒ sagep-function-cs ⇒ Functions
+                    #tepmlate: ⇒ Azure Account（鍵アイコン） ⇒ __FunctionAppName__ ⇒ Functions
+                ⇒ HttpTriggerCSharp1（を右クリック） ⇒ Copy Function URL
+                    #tepmlate: ⇒ __FunctionName__（を右クリック） ⇒ Copy Function URL
+        ブラウザーでコピーした URL を開く:
+            - 例： https://sagep-function-cs.azurewebsites.net/api/HttpTriggerCSharp1
 
-関数をクラウドで実行します:
-    参考:  https://docs.microsoft.com/ja-jp/azure/azure-functions/functions-create-first-function-vs-code?pivots=programming-language-csharp#run-the-function-in-azure
-    URL をコピー:
-        Azure アイコン >> Functions ⇒ Azure Account（鍵アイコン）
-            ⇒ Functions ⇒ （__FunctionName__ を右クリック） ⇒ Copy Function URL
-    ブラウザーでコピーした URL を開く:
-        - 例： https://sagep-function-cs.azurewebsites.net/api/HttpTriggerCSharp1
+    デプロイした関数アプリのクリーンアップ（削除）:
+        - 関数アプリが所属するリソース グループを削除する
 
-デプロイした関数アプリのクリーンアップ（削除）:
-    - 関数アプリが所属するリソース グループを削除する
+クイックスタート >> ストレージへの接続:
+    参考: https://docs.microsoft.com/ja-jp/azure/azure-functions/functions-add-output-binding-storage-queue-vs-code?pivots=programming-language-cshar
+    インストールする:
+        Visual Studio Code 用の Azure Storage 拡張機能をインストールする（上記 Azure Tools 拡張機能に含まれているのでスキップ可能）:
+            VSCode を開いて extentions >> Azure Storage
+    バインディング拡張機能のパッケージをインストールする:
+        PowerShell（Terminal >> New Terminal）:
+            dotnet add package Microsoft.Azure.WebJobs.Extensions.Storage
+    出力バインディングを追加する:
+        HttpTriggerCSharp1.cs ファイルを以下のように編集します: #// 編集結果は、HttpTriggerCSharp1_Storage.cs_ ファイルにあります:
+            Run 関数の第2引数に下記を追加:
+                [Queue("outqueue"),StorageAccount("AzureWebJobsStorage")] ICollector<string> msg,
+                #// 関数の完了時に出力バインド outqueue に書き込まれるメッセージのコレクション
+            return 文の直前に下記を追加: |
+                if (!string.IsNullOrEmpty(name))
+                {
+                    // Add a message to the output collection.
+                    msg.Add(string.Format("Name passed to the function: {0}", name));
+                }
+    ローカルで実行する:
+        関数アプリの設定を local.settings.json にダウンロードする:
+            - F1 キー: |
+                Azure Functions: Download Remote Settings
+            - sagep-function-cs  #template: __FunctionAppName__
+            - local.settings.json に Overwrite >> Yes
+            - local.settings.json ファイルをバックアップする
+            - local.settings.json には秘密情報が含まれていますのでリポジトリに入れないでください
+        ブラウザーで開く:
+            - F5 キーを押します
+            - 成功したら TERMINAL ビューにデバッグ実行中の Web サーバーの URL が表示されます
+            - http://localhost:7071/api/HttpTriggerCSharp1?name=Functions を開きます
+                #template: - http://localhost:7071/api/__FunctionName__?name=Functions を開きます
+        実行を終了するには、TERMINAL ビューで [Ctrl]+[C] を押します:
 
+    出力キューの内容を確認します:
+        Azure Storage Explorer をインストールする:
+            https://storageexplorer.com/
+            オプションは、オススメやデフォルトでよい
+        ストレージ エクスプローラーをアカウントに接続します:
+            - 参考: https://docs.microsoft.com/ja-jp/azure/storage/common/storage-explorer-troubleshooting?tabs=Windows%2C2004#sign-in-issues
+            - Window キー >> 「Azure Storage Explorer」（を起動します。起動していなかったら）
+            - 「Azure Storage へ接続」ウィンドウが表示されたら閉じます
+            - 歯車アイコン（左） >> アプリケーション >> （サインイン） >> デバイス コード フロー サインインの使用（にチェック）
+            - コンセント アイコン（左） >> Azure アカウントを追加する >> 次へ >> コードをコピーしてブラウザーで開く >>
+                （貼り付け） >> 次へ >> （アカウント名） >> （ブラウザーを閉じる）
+            - Azure Storage Explorer にサブスクリプションが表示されたら「適用」ボタンを押す
+            - Azure Storage Explorer を閉じます
+        出力キューを確認します:
+            - Azure Storage Explorer を起動します
+                Visual Studio Code:
+                    F1 キー: |
+                        Azure Storage: Open in Storage Explorer
+            - sagepfunctioncs  #// ストレージ アカウント名を選択
+            - Queues >> outqueue
+                #// Queues の場所は（ツリーのサブスクリプション名） >> Storage Accounts >> （ストレージ アカウント名）
+            - メッセージを確認できます。
+    デプロイする:
+        - VSCode ⇒ Azure アイコン（左） ⇒ Functions ⇒ Deploy to Function App（↑ アイコン）:
+        - 関数アプリ名:
+            sagep-function-cs  #template: __FunctionAppName__
+        - デプロイの完了を待つ:
+        - URL をコピー:
+            Azure アイコン ⇒ Functions
+                ⇒ Azure Account（鍵アイコン） ⇒ sagep-function-cs ⇒ Functions
+                    #tepmlate: ⇒ Azure Account（鍵アイコン） ⇒ __FunctionAppName__ ⇒ Functions
+                ⇒ HttpTriggerCSharp1（を右クリック） ⇒ Copy Function URL
+                    #tepmlate: ⇒ __FunctionName__（を右クリック） ⇒ Copy Function URL
+        - コピーした URL の末尾に ?name=Functions を追加した URL をブラウザーで開く:
+            - 例： https://sagep-function-cs.azurewebsites.net/api/HttpTriggerCSharp1?name=Functions
+    出力キューの内容を確認します:
+        （上記）
+
+再度サインインする手順:
+    問題が起きている PC で、 https://portal.azure.com/ に入れることを確認する:
+    問題が起きている PC で、 https://account.windowsazure.com/Subscriptions に入れることを確認する:
+        #// 参考: https://docs.microsoft.com/ja-jp/azure/cost-management-billing/manage/no-subscriptions-found
+    VSCode で Azure からログアウトする: |
+        F1 >> Azure: Sign Out
+    VSCode で Azure へ再度サインインする:
+        Visual Studio Code の Azure ボタン（左）で、Sign in to Azure
+    以上の他に必要かもしれないこと:
+        サインインのページで「アカウントにアクセスできない場合」をクリック

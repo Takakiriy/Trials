@@ -1,0 +1,106 @@
+# Azure Functions からメールを送る
+
+Visual Studio Code の場合:
+    環境: Azure Functions, C#, SendGrid
+    準備:
+        - 構造計画研究所 https://sendgrid.kke.co.jp/ SendGrid を申し込む
+        - 本登録完了のお知らせがメールで来るまで待つ（次の営業日の可能性もある）
+        - ユーザー名は、自分のメールアドレスではなく __Hash__@kke.com
+    手順:
+        Visual Studio Code をインストールします:
+            https://code.visualstudio.com/
+            オプションはすべてデフォルト
+            必要なら、Visual Studio Code をタスクバーにピン止めします
+        Azure のアカウントを作成して、開発に使う PC で、 https://portal.azure.com/ にサインインします:
+            サインインしたら、ブラウザーを閉じます
+        Azure CLI をインストールします:
+            https://docs.microsoft.com/ja-jp/cli/azure/install-azure-cli-windows?view=azure-cli-latest&tabs=azure-cli
+                Microsoft Installer (MSI) >> Azure CLI current version
+                azure-cli-2.12.1.msi
+        Azure Functions Core Tools をインストールします:
+            https://github.com/Azure/azure-functions-core-tools#installing
+                v3 >> Windows 64-bit
+        .NET Core SDK をインストールします:
+            https://dotnet.microsoft.com/download/dotnet-core/3.1
+                Build apps - SDK >> Windows >> Installers >> x64
+        Visual Studio Code を開きます:
+            もし Visual Studio Code が開いていたら終了します:
+            もし __Project__/bin フォルダーと __Project__/obj フォルダーがあれば削除します:
+            VSCode でこのファイルがあるフォルダーを開きます:
+        拡張機能: #// 拡張機能ボタン（左）
+            - Azure Tools
+            - C#
+        VSCode で Azure へ再度サインインする:
+            Visual Studio Code の Azure ボタン（左）で、Sign in to Azure
+        ローカル プロジェクトと最初の関数を作成します（作成済み）:
+            参考: https://docs.microsoft.com/ja-jp/azure/azure-functions/functions-create-first-function-vs-code?pivots=programming-language-csharp#create-your-local-project
+            Create New Project:  #// インストールされている .NET Core SDK のバージョン用になります
+                操作: Azure アイコン ⇒ Functions ⇒ Create New Project（フォルダーのアイコン）
+                ProjectFolder: try_AzureFunctions_SendGrid
+                    #template: ProjectFolder: __ProjectFolder__
+                Language: C#
+                Template: HttpTrigger
+                FunctionName: MailSender1
+                    #template: FunctionName: __FunctionName__
+                NameSpace: Company.Function
+                AccessRights: Anonymous
+        PowerShell:
+            - VSCode [ Terminal >> New Terminal ]
+            - dotnet add package  SendGrid
+            - dotnet add package  SendGrid.Extensions.DependencyInjection
+        C# のサンプル コードをコピペします（編集済み）:
+            - MailSender1.cs
+        （初回のみ）APIキーを生成して設定します:
+            - 参考: https://sendgrid.kke.co.jp/docs/Tutorials/A_Transaction_Mail/manage_api_key.html
+            - https://sendgrid.kke.co.jp/ からダッシュボードへログイン
+            - Settings（左下）>> API Keys >>
+            - Create API Key（右上）:
+                API Key Name: a
+                API Key Permissins: Full Access
+                OK: Create & View
+                #// 表示された SendGrid の API キーの値は、次の手順で記録します
+            - SendGrid の API キーの値と、送信先メールアドレスを __Project__/local.settings.json に書きます: |
+                {
+                    "IsEncrypted": false,
+                    "Values": {
+                        "SendGrid_API_Key": "____",
+                        "SendGrid_SendTo": "____"
+                    }
+                }
+                    #// __Project__/local.settings.json は、コミットしないように .gitignore に登録されています
+        （2回目以降なら）アプリケーション設定を local.settings.json にダウンロードします:
+            - F1 キー: |
+                Azure Functions: Download Remote Settings
+            - sagep-function-cs  #template: __FunctionAppName__
+            - local.settings.json に Overwrite >> Yes
+                #// local.settings.json には API キーが含まれているので、.gitignore に local.settings.json を追加しています
+        関数をローカルで実行します:
+            - F5 キーを押します
+            - 成功したら TERMINAL ビューにデバッグ実行中の Web サーバーの URL が表示されます
+            - Web サーバーの URL を開ます
+            - 実行を終了するには、TERMINAL ビューで [Ctrl]+[C] を押します
+        メールが届いていることを確認します:
+        デプロイします:
+            参考: https://docs.microsoft.com/ja-jp/azure/azure-functions/functions-create-first-function-vs-code?pivots=programming-language-csharp#publish-the-project-to-azure
+            Azure アイコン ⇒ Functions ⇒ Deploy to Function App（↑ アイコン）:
+                Select Function App in Azure: (+ Create new Function App in Azure) sagep-function-cs-v3
+                    #template: Select Function App in Azure: __FunctionAppName__
+                Location: Japan East
+            デプロイが完了するまで待ちます:
+        アプリケーション設定 SendGrid_API_Key, SendGrid_SendTo をクラウドに設定します:
+            https://portal.azure.com/ >> 関数アプリ >> （関数アプリ名） >> （設定） >> 構成 >> アプリケーション設定
+            新しいアプリケーション設定 >> （名前と値を入力してOK） >> 保存 >> 続行
+            "local.settings.json をバックアップしてから、アプリケーション設定を
+            ダウンロード（上記 Azure Functions: Download Remote Settings）して、
+            自分が追加した分について同じ値であることを確認します"
+        関数をクラウドで実行します:
+            参考:  https://docs.microsoft.com/ja-jp/azure/azure-functions/functions-create-first-function-vs-code?pivots=programming-language-csharp#run-the-function-in-azure
+            URL をコピー:
+                Azure アイコン ⇒ Functions
+                    ⇒ Azure Account（鍵アイコン） ⇒ sagep-function-cs-v3 ⇒ Functions
+                    ⇒ MailSender1 （を右クリック） ⇒ Copy Function URL
+                        #tepmlate: ⇒ Azure Account（鍵アイコン） ⇒ __FunctionAppName__ ⇒ Functions
+                        #tepmlate: ⇒ __FunctionName__（を右クリック） ⇒ Execute Function Now
+            ブラウザーでコピーした URL を開きます:
+                例：https://sagep-function-cs-v3.azurewebsites.net/api/MailSender1
+        メールが届いていることを確認します:

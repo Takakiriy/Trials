@@ -32,7 +32,7 @@
     VSCode の拡張機能をインストールします:
         VSCode でこのファイルがあるフォルダーを開きます:
         recommended extensions のインストールを勧められてもインストールしない:
-        [Restore] ボタンが右下に表示されたら押す
+        「Restore」ボタンが右下に表示されたら押す:
         拡張機能: #// 拡張機能ボタン（左）
             - Azure Tools
             - C#
@@ -80,8 +80,8 @@
         URL をコピー:
             Azure アイコン ⇒ Functions
                 ⇒ Azure Account（鍵アイコン） ⇒ sagep-function-cs ⇒ Functions
-                    #tepmlate: ⇒ Azure Account（鍵アイコン） ⇒ __FunctionAppName__ ⇒ Functions
                 ⇒ HttpTriggerCSharp1（を右クリック） ⇒ Copy Function URL
+                    #tepmlate: ⇒ Azure Account（鍵アイコン） ⇒ __FunctionAppName__ ⇒ Functions
                     #tepmlate: ⇒ __FunctionName__（を右クリック） ⇒ Copy Function URL
         ブラウザーでコピーした URL を開く:
             - 例： https://sagep-function-cs.azurewebsites.net/api/HttpTriggerCSharp1
@@ -99,7 +99,7 @@
             dotnet add package Microsoft.Azure.WebJobs.Extensions.Storage
     出力バインディングを追加する:
         HttpTriggerCSharp1.cs ファイルを以下のように編集します: #// 編集結果は、HttpTriggerCSharp1_Storage.cs_ ファイルにあります:
-            Run 関数の第2引数に下記を追加:
+            Run 関数の第2引数に下記を追加: |
                 [Queue("outqueue"),StorageAccount("AzureWebJobsStorage")] ICollector<string> msg,
                 #// 関数の完了時に出力バインド outqueue に書き込まれるメッセージのコレクション
             return 文の直前に下記を追加: |
@@ -114,8 +114,7 @@
                 Azure Functions: Download Remote Settings
             - sagep-function-cs  #template: __FunctionAppName__
             - local.settings.json に Overwrite >> Yes
-            - local.settings.json ファイルをバックアップする
-            - local.settings.json には秘密情報が含まれていますのでリポジトリに入れないでください
+                #// local.settings.json には API キーが含まれているので、.gitignore に local.settings.json を追加しています
         ブラウザーで開く:
             - F5 キーを押します
             - 成功したら TERMINAL ビューにデバッグ実行中の Web サーバーの URL が表示されます
@@ -137,7 +136,7 @@
             - Azure Storage Explorer にサブスクリプションが表示されたら「適用」ボタンを押す
             - Azure Storage Explorer を閉じます
         出力キューを確認します:
-            - Azure Storage Explorer を起動します
+            - Azure Storage Explorer を起動します:
                 Visual Studio Code:
                     F1 キー: |
                         Azure Storage: Open in Storage Explorer
@@ -153,12 +152,12 @@
         - URL をコピー:
             Azure アイコン ⇒ Functions
                 ⇒ Azure Account（鍵アイコン） ⇒ sagep-function-cs ⇒ Functions
-                    #tepmlate: ⇒ Azure Account（鍵アイコン） ⇒ __FunctionAppName__ ⇒ Functions
                 ⇒ HttpTriggerCSharp1（を右クリック） ⇒ Copy Function URL
+                    #tepmlate: ⇒ Azure Account（鍵アイコン） ⇒ __FunctionAppName__ ⇒ Functions
                     #tepmlate: ⇒ __FunctionName__（を右クリック） ⇒ Copy Function URL
         - コピーした URL の末尾に ?name=Functions を追加した URL をブラウザーで開く:
             - 例： https://sagep-function-cs.azurewebsites.net/api/HttpTriggerCSharp1?name=Functions
-    出力キューの内容を確認します:
+    出力キューの内容をもう一度確認します:
         （上記）
 
 再度サインインする手順:

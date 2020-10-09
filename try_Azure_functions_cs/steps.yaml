@@ -21,9 +21,8 @@
             Microsoft Installer (MSI) >> Azure CLI current version
             azure-cli-2.12.1.msi
     .NET Core SDK をインストールします:
-        https://dotnet.microsoft.com/download/dotnet-core/2.1
+        https://dotnet.microsoft.com/download/dotnet-core/3.1
             Build apps - SDK >> Windows >> Installers >> x64
-            #// .NET Core 3.1 では Azure Functions のビルドに失敗します
     Azure Functions Core Tools をインストールします:
         https://github.com/Azure/azure-functions-core-tools#installing
             v3 >> Windows 64-bit

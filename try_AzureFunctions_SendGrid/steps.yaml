@@ -1,4 +1,4 @@
-# Azure Functions からメールを送る
+# Azure Functions から SendGrid を使ってメールを送る
 
 Visual Studio Code の場合:
     環境: Azure Functions, C#, SendGrid

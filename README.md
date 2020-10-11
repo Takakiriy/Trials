@@ -126,14 +126,6 @@ https://console.cloud.google.com/compute
 - [steps.yaml](try_GCP_ComputeEngine/steps.yaml)
 
 
-## try_React_Docker
-
-React のサンプル アプリケーションの Docker イメージをビルドして、ローカル Web サーバーのコンテナーを起動します
-
-- [README](try_React_Docker)
-- [steps.yaml](try_React_Docker/steps.yaml)
-
-
 ## try_React_REST_API
 
 React アプリケーション REST-API 呼び出し

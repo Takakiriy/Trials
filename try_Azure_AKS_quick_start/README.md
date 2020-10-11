@@ -3,6 +3,8 @@ https://docs.microsoft.com/ja-jp/azure/aks/kubernetes-walkthrough
 
 azure-vote.yaml/image に書いてある redis と microsoft/azure-vote-front:v1 が使っている Docker イメージです。
 
+[steps.yaml](steps.yaml)
+
 
 ## インストール方法 (Windows)
 

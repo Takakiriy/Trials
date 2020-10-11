@@ -1,6 +1,7 @@
 # Update information
 
-Supported new Java and Jenkins repository
+Supported new Java and Jenkins repository.
+See [steps.yaml](./steps.yaml).
 
 
 # Original

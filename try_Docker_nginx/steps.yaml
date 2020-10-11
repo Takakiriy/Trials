@@ -4,22 +4,22 @@
     - Docker for Windows をインストールします
 
 HTML を編集します:
-    - home_page/html/index.html を編集します
+    - web_server/html/index.html を編集します
 
 Docker イメージをビルドして、ローカル Web サーバーのコンテナーを起動します:
     - Docker が起動するまで待ちます
         - Docker Desktop is running と表示されるまで待ちます
     - PowerShell:
-        - cd "__ParentFolderOf_home_page__"
-        - docker build  -t home_page  home_page
-        - docker run -p 80:80 --name home_page  home_page  #// Web サーバーを終了するまでプロンプトは表示されません
+        - cd "__ParentFolderOf_web_server__"
+        - docker build  -t web_server  web_server
+        - docker run -p 80:80 --name web_server  web_server  #// Web サーバーを終了するまでプロンプトは表示されません
 
 ブラウザーから localhost にアクセスします。URL = localhost
-    - home_page/html/index.html の内容が表示されます
+    - web_server/html/index.html の内容が表示されます
 
 ローカル Web サーバーを終了して、コンテナーを削除します:
     - PowerShell:
         - #// Ctrl + C キーを押す
-        - docker stop  home_page
-        - docker rm    home_page
+        - docker stop  web_server
+        - docker rm    web_server
         - docker ps -a  #// コンテナーを一覧します。コンテナーがないことを確認します。

@@ -1,0 +1,24 @@
+[
+  {
+    "model":     "hello.friend",
+    "pk":        1,
+    "fields": {
+      "name":      "Mario",
+      "mail":      "mario@example.com",
+      "gender":    false,
+      "age":       26,
+      "birthday":  "2001-09-13"
+    }
+  },
+  {
+    "model":     "hello.friend",
+    "pk":        2,
+    "fields": {
+      "name":      "Peach",
+      "mail":      "peach@example.com",
+      "gender":    true,
+      "age":       22,
+      "birthday":  "2001-03-03"
+    }
+  }
+]

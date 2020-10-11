@@ -1,0 +1,77 @@
+# Jenkins + Azure AKS
+
+参考: https://docs.microsoft.com/ja-jp/azure/developer/jenkins/deploy-from-github-to-aks
+
+設定:
+    #// 以下（のコピー）に、クラウド上に存在するサーバー等の情報をメモします
+    __GitHubAccount__: ____
+    CI/CD Deploy source:
+        Machine name: ____
+    CI/CD Deploy target:
+        User: ____
+        Jenkins: &__Jenkins__
+            Open a browser to: http://__.__.__.__:8080
+            Enter the following to Unlock Jenkins: ________________
+            First Admin User: ____ (pass= ____)
+            Environment variable:
+                ACR_LOGINSERVER: &__RepositoryHost__  ____
+    ACR - Docker image repository:
+        - __RepositoryHost__: *__RepositoryHost__  #//<acrLoginServer>
+        - __PrincipalAppID__: ____
+        - __PrincipalPassword__: ____
+    Source Repository URL: ____
+
+Docker イメージをローカルでテスト:
+    - git clone  "https://github.com/__GitHubAccount__/azure-voting-app-redis.git"
+    - cd  "azure-voting-app-redis"
+    - docker-compose up -d
+
+Docker イメージをリポジトリー(ACR)へプッシュ:
+    Docker イメージをプッシュ:
+        - docker tag  "azure-vote-front"  "__RepositoryHost__/azure-vote-front:v1"
+        - docker push  "__RepositoryHost__/azure-vote-front:v1"
+    ACR のサービス プリンシパルを作成します:
+        - az ad sp create-for-rbac --skip-assignment
+            #// 表示された appId と password を __PrincipalAppID__ と __PrincipalPassword__ にメモします。
+        - az acr show  --resource-group "__ResourceGroup__"  --name "__RepositoryName__"  --query "id" --output tsv
+            #// __RepositoryID__ を表示させてメモします
+        - az role assignment create  --assignee "__PrincipalAppID__"  --role "Contributor"  --scope "__RepositoryID__"
+
+Azure AKS にデプロイ:
+    azure-vote-all-in-one-redis.yaml ファイルを編集:
+        - |
+            containers
+            - name: azure-vote-front
+                image: microsoft/azure-vote-front:v1
+    デプロイ:
+        - kubectl apply -f  "azure-vote-all-in-one-redis.yaml"
+
+Jenkins サーバーを作ります:
+    azure-config-jenkins.sh は以下から作られました:
+        - curl https://raw.githubusercontent.com/Azure-Samples/azure-voting-app-redis/master/jenkins-tutorial/deploy-jenkins-vm.sh > azure-jenkins.sh
+        - sh azure-jenkins.sh
+    Jenkins サーバーの情報が表示されるので、*__Jenkins__ にメモします:
+    Jenkins の設定のうち手動で設定する設定を行います:
+        設定項目:
+            Credentials (資格情報):
+            環境変数:
+            GitHub プロジェクト:
+                Build-1: |
+                    # Build new image and push to ACR.
+                    pwd
+                    WEB_IMAGE_NAME="${ACR_LOGINSERVER}/azure-vote-front:kube${BUILD_NUMBER}"
+                    docker build -t $WEB_IMAGE_NAME ./azure-vote
+                    docker login ${ACR_LOGINSERVER} --username ${ACR_ID} --password ${ACR_PASSWORD}
+                    docker push $WEB_IMAGE_NAME
+                Build-2: |
+                    # Update kubernetes deployment with new image.
+                    pwd
+                    WEB_IMAGE_NAME="${ACR_LOGINSERVER}/azure-vote-front:kube${BUILD_NUMBER}"
+                    kubectl set image deployment azure-vote-front azure-vote-front=$WEB_IMAGE_NAME --kubeconfig /var/lib/jenkins/config
+        設定値の例:
+            *__Jenkins__
+
+Jenkins の動作確認:
+    Jenkins トップ メニュー >> アイテム名（プロジェクト名） [ Build Now ]
+
+Git Hub の Webhook を設定:

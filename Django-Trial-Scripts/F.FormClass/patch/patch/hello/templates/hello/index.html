@@ -1,0 +1,22 @@
+﻿{% load static %}
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>{{title}}</title>
+    <link rel="stylesheet" type="text/css"
+        href="{% static 'hello/css/style.css' %}"/>
+</head>
+<body>
+    <h1>{{title}}</h1>
+    <table>
+    <form action="{% url 'index' %}" method="post">
+        {% csrf_token %}
+        {{ form.as_table }}
+            <!-- form.as_table を form に変えると table タグ関連のタグを生成しません -->
+        <tr><td></td><td><input type="submit" value="click"/></td></tr>
+    </form>
+    </table>
+    <p>{{message|safe}}</p>
+</body>
+<html>

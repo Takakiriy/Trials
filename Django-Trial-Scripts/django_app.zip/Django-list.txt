@@ -1,0 +1,3095 @@
+Python Django超入門
+
+掲載リスト
+
+
+リスト2-1
+from django.shortcuts import render
+
+# Create your views here.
+
+
+リスト2-2
+from django.shortcuts import render
+from django.http import HttpResponse
+
+def index(request):
+    return HttpResponse("Hello Django!!")
+
+
+リスト2-3
+from django.contrib import admin
+from django.urls import path
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+]
+
+
+リスト2-4
+from django.contrib import admin
+from django.urls import path
+import hello.views as hello
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('hello/', hello.index),
+]
+
+
+リスト2-4
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.index, name='index'),
+]
+
+
+リスト2-5
+from django.contrib import admin
+from django.urls import path,include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('hello/', include('hello.urls')),
+]
+
+
+リスト2-6
+def index(request):
+    msg = request.GET['msg']
+    return HttpResponse('you typed: "' + msg + '".')
+
+
+リスト2-7
+def index(request):
+    if 'msg' in request.GET:
+        msg = request.GET['msg']
+        result = 'you typed: "' + msg + '".'
+    else:
+        result = 'please send msg parameter!'
+    return HttpResponse(result)
+
+
+リスト2-8
+urlpatterns = [
+    path('<int:id>/<nickname>/', views.index, name='index'),
+]
+
+
+リスト2-9
+def index(request, id, nickname):
+    result = 'your id: ' + str(id) + ', name: "' \
+        + nickname + '".'
+    return HttpResponse(result)
+
+
+リスト2-10
+urlpatterns = [
+    path('my_name_is_<nickname>.I_am_<int:age>_years_old.', views.index, name='index'),
+]
+
+
+リスト2-11
+def index(request, nickname, age):
+    result = 'your account: ' + nickname + '" (' + str(age) + ').'
+    return HttpResponse(result)
+
+リスト2-12
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'hello',    #☆
+]
+
+
+リスト2-13
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>hello</title>
+</head>
+<body>
+    <h1>hello/index</h1>
+    <p>This is sample page.</p>
+</body>
+</html>
+
+
+リスト2-14
+urlpatterns = [
+    path('', views.index, name='index'),
+]
+
+
+リスト2-15
+from django.shortcuts import render
+from django.http import HttpResponse
+
+def index(request):
+    return render(request, 'hello/index.html')
+
+
+リスト2-16
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>{{title}}</title>
+</head>
+<body>
+    <h1>{{title}}</h1>
+    <p>{{msg}}</p>
+</body>
+</html>
+
+
+リスト2-17
+def index(request):
+    params = {
+            'title':'Hello/Index',
+            'msg':'これは、サンプルで作ったページです。',
+        }
+    return render(request, 'hello/index.html', params)
+
+
+リスト2-18
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>{{title}}</title>
+</head>
+<body>
+    <h1>{{title}}</h1>
+    <p>{{msg}}</p>
+    <p><a href="{% url goto %}">{{goto}}</a></p>
+</body>
+</html>
+
+
+リスト2-19
+from django.shortcuts import render
+from django.http import HttpResponse
+
+def index(request):
+    params = {
+            'title':'Hello/Index',
+            'msg':'これは、サンプルで作ったページです。',
+            'goto':'next',
+        }
+    return render(request, 'hello/index.html', params)
+
+def next(request):
+    params = {
+            'title':'Hello/Next',
+            'msg':'これは、もう１つのページです。',
+            'goto':'index',
+        }
+    return render(request, 'hello/index.html', params)
+
+
+リスト2-20
+urlpatterns = [
+    path('', views.index, name='index'),
+    path('next', views.next, name='next'),
+]
+
+
+リスト2-21
+body {
+    color:gray;
+    font-size:16pt;
+}
+h1 {
+    color:red;
+    opacity:0.2;
+    font-size:60pt;
+    margin-top:-20px;
+    margin-bottom:0px;
+    text-align:right;
+}
+p {
+    margin:10px;
+}
+a {
+    color:blue;
+    text-decoration: none;
+}
+
+
+リスト2-22
+{% load static %}
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>{{title}}</title>
+    <link rel="stylesheet" type="text/css" 
+        href="{% static 'hello/css/style.css' %}" />
+</head>
+<body>
+    <h1>{{title}}</h1>
+    <p>{{msg}}</p>
+    <p><a href="{% url goto %}">{{goto}}</a></p>
+</body>
+</html>
+
+
+リスト2-23
+{% load static %}
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>{{title}}</title>
+    <link rel="stylesheet" type="text/css" 
+        href="{% static 'hello/css/style.css' %}" />
+</head>
+<body>
+    <h1>{{title}}</h1>
+    <p>{{msg}}</p>
+    <form action="{% url 'form' %}" method="post">
+        {% csrf_token %}
+        <label for="msg">message: </label>
+        <input id="msg" type="text" name="msg">
+        <input type="submit" value="click">
+    </form>
+</body>
+</html>
+
+
+リスト2-24
+from django.shortcuts import render
+from django.http import HttpResponse
+
+def index(request):
+    params = {
+            'title':'Hello/Index',
+            'msg':'お名前は？',
+        }
+    return render(request, 'hello/index.html', params)
+
+def form(request):
+    msg = request.POST['msg']
+    params = {
+            'title':'Hello/Form',
+            'msg':'こんにちは、' + msg + 'さん。',
+        }
+    return render(request, 'hello/index.html', params)
+
+
+リスト2-25
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.index, name='index'),
+    path('form', views.form, name='form'),
+]
+
+
+リスト2-26
+from django import forms
+
+class HelloForm(forms.Form):
+    name = forms.CharField(label='name')
+    mail = forms.CharField(label='mail')
+    age = forms.IntegerField(label='age')
+
+
+リスト2-27
+リスト2-27
+from django.shortcuts import render
+from django.http import HttpResponse
+from .forms import HelloForm
+
+def index(request):
+    params = {
+            'title': 'Hello',
+            'message': 'your data:',
+            'form': HelloForm()
+        }
+    if (request.method == 'POST'):
+        params['message'] = '名前：' + request.POST['name'] + \
+            '<br>メール：' + request.POST['mail'] + \
+            '<br>年齢：' +リスト2-27
+from django.shortcuts import render
+from django.http import HttpResponse
+from .forms import HelloForm
+
+def index(request):
+    params = {
+            'title': 'Hello',
+            'message': 'your data:',
+            'form': HelloForm()
+        }
+    if (request.method == 'POST'):
+        params['message'] = '名前：' + request.POST['name'] + \
+            '<br>メール：' + request.POST['mail'] + \
+            '<br>年齢：' + request.POST['age']
+        params['form'] = HelloForm(request.POST)
+    return render(request, 'hello/index.html', params)
+
+ request.POST['age']
+        params['form'] = HelloForm(request.POST)
+    return render(request, 'hello/index.html', params)
+
+
+リスト2-28
+{% load static %}
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>{{title}}</title>
+    <link rel="stylesheet" type="text/css" 
+        href="{% static 'hello/css/style.css' %}" />
+</head>
+<body>
+    <h1>{{title}}</h1>
+    <p>{{message|safe}}</p>
+    <form action="{% url 'index' %}" method="post">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="click">
+    </form>
+</body>
+</html>
+
+
+リスト2-29
+urlpatterns = [
+    path('', views.index, name='index'),
+]
+
+
+リスト2-30
+{% load static %}
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>{{title}}</title>
+    <link rel="stylesheet" type="text/css" 
+        href="{% static 'hello/css/style.css' %}" />
+</head>
+<body>
+    <h1>{{title}}</h1>
+    <p>{{message|safe}}</p>
+    <table>
+    <form action="{% url 'index' %}" method="post">
+        {% csrf_token %}
+        {{ form.as_table }}
+        <tr><td></td><td><input type="submit" value="click"></td></tr>
+    </form>
+    </table>
+</body>
+</html>
+
+
+リスト2-31
+from django.shortcuts import render
+from django.http import HttpResponse
+from django.views.generic import TemplateView
+from .forms import HelloForm
+
+class HelloView(TemplateView):
+    
+    def __init__(self):
+        self.params = {
+                'title': 'Hello',
+                'message': 'your data:',
+                'form': HelloForm()
+            }
+    
+    def get(self, request):
+        return render(request, 'hello/index.html', self.params)
+
+    def post(self, request):
+        msg = 'あなたは、<b>' + request.POST['name'] + \
+            '（' + request.POST['age'] + \
+            '）</b>さんです。<br>メールアドレスは <b>' + request.POST['mail'] + \
+            '</b> ですね。'
+        self.params['message'] = msg
+        self.params['form'] = HelloForm(request.POST)
+        return render(request, 'hello/index.html', self.params)
+
+
+リスト2-32
+from django.conf.urls import url
+from .views import HelloView
+
+urlpatterns = [
+    url(r'', HelloView.as_view(), name='index'),
+]
+
+
+リスト2-33
+class HelloForm(forms.Form):
+    check = forms.BooleanField(label='Checkbox', required=False)
+
+
+リスト2-34
+<body>
+    <h1>{{title}}</h1>
+    <p>{{result|safe}}</p>
+    <table>
+    <form action="{% url 'index' %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <tr><td></td><td><input type="submit" value="click"></td></tr>
+    </form>
+    </table>
+</body>
+
+
+リスト2-35
+class HelloView(TemplateView):
+    
+    def __init__(self):
+        self.params = {
+                'title': 'Hello',
+                'form': HelloForm(),
+                'result':None
+            }
+    
+    def get(self, request):
+        return render(request, 'hello/index.html', self.params)
+
+    def post(self, request):
+        if ('check' in request.POST):
+            self.params['result'] = 'Checked!!'
+        else:
+            self.params['result'] = 'not checked...'
+        self.params['form'] = HelloForm(request.POST)
+        return render(request, 'hello/index.html', self.params)
+
+
+リスト2-36
+class HelloForm(forms.Form):
+    check = forms.NullBooleanField(label='Check')
+
+
+リスト2-37
+class HelloView(TemplateView):
+    
+    def __init__(self):
+        self.params = {
+                'title': 'Hello',
+                'form': HelloForm(),
+                'result':None
+            }
+    
+    def get(self, request):
+        return render(request, 'hello/index.html', self.params)
+
+    def post(self, request):
+        chk = request.POST['check']
+        self.params['result'] = 'you selected: "' + chk + '".'
+        self.params['form'] = HelloForm(request.POST)
+        return render(request, 'hello/index.html', self.params)
+
+
+リスト2-38
+class HelloForm(forms.Form):
+    data=[
+            ('one', 'item 1'),
+            ('two', 'item 2'),
+            ('three', 'item 3')
+        ]
+    choice = forms.ChoiceField(label='Choice', \
+            choices=data)
+
+リスト2-39
+class HelloView(TemplateView):
+    
+    def __init__(self):
+        self.params = {
+                'title': 'Hello',
+                'form': HelloForm(),
+                'result':None
+            }
+    
+    def get(self, request):
+        return render(request, 'hello/index.html', self.params)
+
+    def post(self, request):
+        ch = request.POST['choice']
+        self.params['result'] = 'selected: "' + ch + '".'
+        self.params['form'] = HelloForm(request.POST)
+        return render(request, 'hello/index.html', self.params)
+
+
+リスト2-40
+class HelloForm(forms.Form):
+    data=[
+            ('one', 'radio 1'),
+            ('two', 'radio 2'),
+            ('three', 'radio 3')
+        ]
+    choice = forms.ChoiceField(label='radio', \
+            choices=data, widget=forms.RadioSelect())
+
+
+リスト2-41
+class HelloForm(forms.Form):
+    data=[
+            ('one', 'item 1'),
+            ('two', 'item 2'),
+            ('three', 'item 3'),
+            ('four', 'item 4'),
+            ('five', 'item 5'),
+        ]
+    choice = forms.ChoiceField(label='radio', \
+            choices=data, widget=forms.Select(attrs={'size': 5}))
+
+
+リスト2-42
+class HelloForm(forms.Form):
+    data=[
+            ('one', 'item 1'),
+            ('two', 'item 2'),
+            ('three', 'item 3'),
+            ('four', 'item 4'),
+            ('five', 'item 5'),
+        ]
+    choice = forms.MultipleChoiceField(label='radio', \
+            choices=data, widget=forms.SelectMultiple(attrs={'size': 6}))
+
+
+リスト2-43
+class HelloView(TemplateView):
+    
+    def __init__(self):
+        self.params = {
+                'title': 'Hello',
+                'form': HelloForm(),
+                'result':None
+            }
+    
+    def get(self, request):
+        return render(request, 'hello/index.html', self.params)
+
+    def post(self, request):
+        ch = request.POST.getlist('choice')
+        self.params['result'] = 'selected: ' + str(ch) + '.'
+        self.params['form'] = HelloForm(request.POST)
+        return render(request, 'hello/index.html', self.params)
+
+
+リスト2-44
+    def post(self, request):
+        ch = request.POST.getlist('choice')
+        result = '<ol><b>selected:</b>'
+        for item in ch:
+            result += '<li>' + item + '</li>'
+        result += '</ol>'
+        self.params['result'] = result
+        self.params['form'] = HelloForm(request.POST)
+        return render(request, 'hello/index.html', self.params)
+
+
+リスト3-1
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
+
+
+リスト3-2
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': データベース名,
+        'USER': 利用者名,
+        'PASSWORD': パスワード,
+        'HOST': ホスト名,
+        'PORT': '3306',
+    }
+}
+
+
+リスト3-3
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': データベース名,
+        'USER': 利用者名,
+        'PASSWORD': パスワード,
+        'HOST': ホスト名,
+        'PORT': '5432',
+    }
+}
+
+
+リスト3-4
+from django.db import models
+
+# Create your models here.
+
+
+リスト3-5
+from django.db import models
+
+class Friend(models.Model):
+    name = models.CharField(max_length=100)
+    mail = models.EmailField(max_length=200)
+    gender = models.BooleanField()
+    age = models.IntegerField(default=0)
+    birthday = models.DateField()
+     
+    def __str__(self):
+        return '<Friend:id=' + str(self.id) + ', ' + \
+            self.name + '(' + str(self.age) + ')>'
+
+
+リスト3-6
+from django.db import migrations, models
+
+class Migration(migrations.Migration):
+
+    initial = True
+
+    dependencies = [
+    ]
+
+    operations = [
+        migrations.CreateModel(
+            name='Friend',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, \
+                        serialize=False, verbose_name='ID')),
+                ('name', models.CharField(max_length=100)),
+                ('mail', models.EmailField(max_length=200)),
+                ('gender', models.BooleanField()),
+                ('age', models.IntegerField(default=0)),
+                ('birthday', models.DateField()),
+            ],
+        ),
+    ]
+
+
+リスト3-7
+from django.contrib import admin
+
+# Register your models here.
+
+
+リスト3-8
+from django.contrib import admin
+from .models import Friend
+
+admin.site.register(Friend)
+
+
+リスト3-9
+from django.shortcuts import render
+from django.http import HttpResponse
+from .models import Friend
+
+def index(request):
+    data = Friend.objects.all()
+    params = {
+            'title': 'Hello',
+            'message': 'all friends.',
+            'data': data,
+        }
+    return render(request, 'hello/index.html', params)
+
+
+リスト3-10
+{% load static %}
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>{{title}}</title>
+    <link rel="stylesheet" type="text/css" 
+        href="{% static 'hello/css/style.css' %}" />
+</head>
+<body>
+    <h1>{{title}}</h1>
+    <p>{{message|safe}}</p>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>NAME</th>
+            <th>GENDER</th>
+            <th>MAIL</th>
+            <th>AGE</th>
+            <th>BIRTHDAY</th>
+        </tr>
+    {% for item in data %}
+        <tr>
+            <td>{{item.id}}</td>
+            <td>{{item.name}}</td>
+            <td>{% if item.gender == False %}male{% endif %}
+                {% if item.gender == True %}female{% endif %}</td>
+            <td>{{item.mail}}</td>
+            <td>{{item.age}}</td>
+            <td>{{item.birthday}}</td>
+        <tr>
+    {% endfor %}
+    </table>
+</body>
+</html>
+
+
+リスト3-11
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.index, name='index'),
+]
+
+
+リスト3-12
+table {
+    margin:10px;
+    font-size:14pt;
+}
+table tr th {
+    background-color:#009;
+    color:white;
+    padding:2px 10px;
+    border-width:2px;
+}
+table tr td {
+    background-color:#eee;
+    color:#666;
+    padding:2px 10px;
+    border-width:2px;
+}
+
+リスト3-13
+from django import forms
+
+class HelloForm(forms.Form):
+    id = forms.IntegerField(label='ID')
+
+
+リスト3-14
+<body>
+    <h1>{{title}}</h1>
+    <p>{{message|safe}}</p>
+    <table>
+    <form action="{% url 'index' %}" method="post">
+        {% csrf_token %}
+        {{ form.as_table }}
+        <tr><td></td><td><input type="submit" value="click"></td></tr>
+    </form>
+    </table>
+    <hr>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>NAME</th>
+            <th>GENDER</th>
+            <th>MAIL</th>
+            <th>AGE</th>
+            <th>BIRTHDAY</th>
+        </tr>
+    {% for item in data %}
+        <tr>
+            <td>{{item.id}}</td>
+            <td>{{item.name}}</td>
+            <td>{% if item.gender == False %}male{% endif %}
+                {% if item.gender == True %}female{% endif %}</td>
+            <td>{{item.mail}}</td>
+            <td>{{item.age}}</td>
+            <td>{{item.birthday}}</td>
+        <tr>
+    {% endfor %}
+    </table>
+</body>
+
+
+リスト3-15
+from django.shortcuts import render
+from django.http import HttpResponse
+from .models import Friend
+from .forms import HelloForm
+
+def index(request):
+    params = {
+            'title': 'Hello',
+            'message': 'all friends.',
+            'form':HelloForm(),
+            'data': [],
+        }
+    if (request.method == 'POST'):
+        num=request.POST['id']
+        item = Friend.objects.get(id=num)
+        params['data'] = [item]
+        params['form'] = HelloForm(request.POST)
+    else:
+        params['data'] = Friend.objects.all()
+    return render(request, 'hello/index.html', params)
+
+
+リスト3-16
+from django.shortcuts import render
+from django.http import HttpResponse
+from .models import Friend
+
+def index(request):
+    data = Friend.objects.all()
+    params = {
+            'title': 'Hello',
+            'data': data,
+        }
+    return render(request, 'hello/index.html', params)
+
+
+リスト3-17
+<body>
+    <h1>{{title}}</h1>
+    <p>{{data}}</p>
+    <table>
+        <tr>
+            <th>data</th>
+        </tr>
+    {% for item in data %}
+        <tr>
+            <td>{{item}}</td>
+        <tr>
+    {% endfor %}
+    </table>
+</body>
+
+
+リスト3-18
+def index(request):
+    data = Friend.objects.all().values()
+    params = {
+            'title': 'Hello',
+            'data': data,
+        }
+    return render(request, 'hello/index.html', params)
+
+
+リスト3-19
+def index(request):
+    data = Friend.objects.all().values('id', 'name')
+    params = {
+            'title': 'Hello',
+            'data': data,
+        }
+    return render(request, 'hello/index.html', params)
+
+
+リスト3-20
+def index(request):
+    data = Friend.objects.all().values_list('id','name','age')
+    params = {
+            'title': 'Hello',
+            'data': data,
+        }
+    return render(request, 'hello/index.html', params)
+
+
+リスト3-21
+def index(request):
+    num = Friend.objects.all().count()
+    first = Friend.objects.all().first()
+    last = Friend.objects.all().last()
+    data = [num, first, last]
+    params = {
+            'title': 'Hello',
+            'data': data,
+        }
+    return render(request, 'hello/index.html', params)
+
+
+リスト3-22
+from django.shortcuts import render
+from django.http import HttpResponse
+from .models import Friend
+from django.db.models import QuerySet
+
+def __new_str__(self):
+    result = ''
+    for item in self:
+        result += '<tr>'
+        for k in item:
+            result += '<td>' + str(k) + '=' + str(item[k]) + '</td>'
+        result += '</tr>'
+    return result
+
+QuerySet.__str__ = __new_str__
+
+def index(request):
+    data = Friend.objects.all().values('id', 'name', 'age')
+    params = {
+            'title': 'Hello',
+            'data': data,
+        }
+    return render(request, 'hello/index.html', params)
+
+
+リスト3-23
+<body>
+    <h1>{{title}}</h1>
+    <table>
+        {{data|safe}}
+    </table>
+</body>
+
+
+リスト3-24
+from django import forms
+
+class HelloForm(forms.Form):
+    name = forms.CharField(label='Name')
+    mail = forms.EmailField(label='Email')
+    gender = forms.BooleanField(label='Gender',required=False)
+    age = forms.IntegerField(label='Age')
+    birthday = forms.DateField(label='Birth')
+
+
+リスト3-25
+{% load static %}
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>{{title}}</title>
+    <link rel="stylesheet" type="text/css" 
+        href="{% static 'hello/css/style.css' %}" />
+</head>
+<body>
+    <h1>{{title}}</h1>
+    <table>
+        <form action="{% url 'create' %}" method="post">
+        {% csrf_token %}
+        {{ form.as_table }}
+        <tr><td></td><td><input type="submit" value="click"></td></tr>
+        </form>
+    </table>
+</body>
+</html>
+
+
+リスト3-26
+<body>
+    <h1>{{title}}</h1>
+    <table>
+        <tr>
+            <th>data</th>
+        </tr>
+    {% for item in data %}
+        <tr>
+            <td>{{item}}</td>
+        <tr>
+    {% endfor %}
+    </table>
+</body>
+
+
+リスト3-27
+from django.shortcuts import render
+from django.http import HttpResponse
+from django.shortcuts import redirect
+from .models import Friend
+from .forms import HelloForm
+
+def index(request):
+    data = Friend.objects.all()
+    params = {
+            'title': 'Hello',
+            'data': data,
+        }
+    return render(request, 'hello/index.html', params)
+
+# create model
+def create(request):
+    params = {
+        'title': 'Hello',
+        'form': HelloForm(),
+    }
+    if (request.method == 'POST'):
+        name = request.POST['name']
+        mail = request.POST['mail']
+        gender = 'gender' in request.POST
+        age = int(request.POST['age'])
+        birth = request.POST['birthday']
+        friend = Friend(name=name,mail=mail,gender=gender,\
+                age=age,birthday=birth)
+        friend.save()
+        return redirect(to='/hello')
+    return render(request, 'hello/create.html', params)
+
+
+リスト3-28
+urlpatterns = [
+    path('', views.index, name='index'),
+    path('create', views.create, name='create'),
+]
+
+
+リスト3-29
+from django import forms
+from.models import Friend
+
+class FriendForm(forms.ModelForm):
+    class Meta:
+        model = Friend
+        fields = ['name','mail','gender','age','birthday']
+
+
+リスト3-30
+# from .forms import HelloForm　#この文を削除する
+from .forms import FriendForm　#この文を新たに追記
+
+def create(request):
+    if (request.method == 'POST'):
+        obj = Friend()
+        friend = FriendForm(request.POST, instance=obj)
+        friend.save()
+        return redirect(to='/hello')
+    params = {
+        'title': 'Hello',
+        'form': FriendForm(),
+    }
+    return render(request, 'hello/create.html', params)
+
+
+リスト3-31
+urlpatterns = [
+    path('', views.index, name='index'),
+    path('create', views.create, name='create'),
+    path('edit/<int:num>', views.edit, name='edit'),
+]
+
+
+リスト3-32
+<body>
+    <h1>{{title}}</h1>
+    <table>
+        <tr>
+            <th>data</th>
+            <th></th>
+        </tr>
+    {% for item in data %}
+        <tr>
+            <td>{{item}}</td>
+            <td><a href="{% url 'edit' item.id %}">Edit</a></td>
+        <tr>
+    {% endfor %}
+    </table>
+</body>
+
+
+リスト3-33
+{% load static %}
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>{{title}}</title>
+    <link rel="stylesheet" type="text/css" 
+        href="{% static 'hello/css/style.css' %}" />
+</head>
+<body>
+    <h1>{{title}}</h1>
+    <table>
+        <form action="{% url 'edit' id %}" method="post">
+        {% csrf_token %}
+        {{ form.as_table }}
+        <tr><td></td><td><input type="submit" value="click"></td></tr>
+        </form>
+    </table>
+</body>
+</html>
+
+
+リスト3-34
+def edit(request, num):
+    obj = Friend.objects.get(id=num)
+    if (request.method == 'POST'):
+        friend = FriendForm(request.POST, instance=obj)
+        friend.save()
+        return redirect(to='/hello')
+    params = {
+        'title': 'Hello',
+        'id':num,
+        'form': FriendForm(instance=obj),
+    }
+    return render(request, 'hello/edit.html', params)
+
+
+リスト3-35
+urlpatterns = [
+    path('', views.index, name='index'),
+    path('create', views.create, name='create'),
+    path('edit/<int:num>', views.edit, name='edit'),
+    path('delete/<int:num>', views.delete, name='delete'),
+]
+
+
+リスト3-36
+<body>
+    <h1>{{title}}</h1>
+    <table>
+        <tr>
+            <th>data</th>
+            <th></th>
+            <th></th>
+        </tr>
+    {% for item in data %}
+        <tr>
+            <td>{{item}}</td>
+            <td><a href="{% url 'edit' item.id %}">Edit</a></td>
+            <td><a href="{% url 'delete' item.id %}">Delete</a></td>
+        <tr>
+    {% endfor %}
+    </table>
+</body>
+
+
+リスト3-37
+{% load static %}
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>{{title}}</title>
+    <link rel="stylesheet" type="text/css" 
+        href="{% static 'hello/css/style.css' %}" />
+</head>
+<body>
+    <h1>{{title}}</h1>
+    <p>※以下のレコードを削除します。</p>
+    <table>
+        <tr><th>ID</th><td>{{obj.id}}</td></tr>
+        <tr><th>Name</th><td>{{obj.name}}</td></tr>
+        <tr><th>Gender</th><td>
+        {% if obj.gender == False %}male{% endif %}
+        {% if obj.gender == True %}female{% endif %}</td></tr>
+        <tr><th>Email</th><td>{{obj.mail}}</td></tr>
+        <tr><th>Age</th><td>{{obj.age}}</td></tr>
+        <tr><th>Birth</th><td>{{obj.birthday}}</td></tr>
+        <form action="{% url 'delete' id %}" method="post">
+        {% csrf_token %}
+        <tr><th></th><td><input type="submit" value="click"></td></tr>
+        </form>
+    </table>
+</body>
+</html>
+
+
+リスト3-38
+def delete(request, num):
+    friend = Friend.objects.get(id=num)
+    if (request.method == 'POST'):
+        friend.delete()
+        return redirect(to='/hello')
+    params = {
+        'title': 'Hello',
+        'id':num,
+        'obj': friend,
+    }
+    return render(request, 'hello/delete.html', params)
+
+
+リスト3-39
+urlpatterns = [
+    path('', views.index, name='index'),
+    path('create', views.create, name='create'),
+    path('edit/<int:num>', views.edit, name='edit'),
+    path('delete/<int:num>', views.delete, name='delete'),
+    path('find', views.find, name='find'),
+]
+
+
+リスト3-40
+class FindForm(forms.Form):
+    find = forms.CharField(label='Find', required=False)
+
+
+リスト3-41
+{% load static %}
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>{{title}}</title>
+    <link rel="stylesheet" type="text/css" 
+        href="{% static 'hello/css/style.css' %}" />
+</head>
+<body>
+    <h1>{{title}}</h1>
+    <p>{{message|safe}}</p>
+    <table>
+        <form action="{% url 'find' %}" method="post">
+        {% csrf_token %}
+        {{form}}
+        <tr><th></th><td><input type="submit" value="click"></td></tr>
+        </form>
+    </table>
+    <hr>
+    <table>
+        <tr>
+            <th>data</th>
+            <th></th>
+            <th></th>
+        </tr>
+    {% for item in data %}
+        <tr>
+            <td>{{item}}</td>
+            <td><a href="{% url 'edit' item.id %}">Edit</a></td>
+            <td><a href="{% url 'delete' item.id %}">Delete</a></td>
+        <tr>
+    {% endfor %}
+    </table>
+</body>
+</html>
+
+
+リスト3-42
+from .forms import FindForm　#この文を追記しておく
+
+def find(request):
+    if (request.method == 'POST'):
+        msg = 'search result:'
+        form = FindForm(request.POST)
+        str = request.POST['find']
+        data = Friend.objects.filter(name=str)
+    else:
+        msg = 'search words...'
+        form = FindForm()
+        data =Friend.objects.all()
+    params = {
+        'title': 'Hello',
+        'message': msg,
+        'form':form,
+        'data':data,
+    }
+    return render(request, 'hello/find.html', params)
+
+
+リスト3-43
+def find(request):
+    if (request.method == 'POST'):
+        msg = 'search result:'
+        form = FindForm(request.POST)
+        str = request.POST['find']
+        data = Friend.objects.filter(name__contains=str)    #☆
+    else:
+        msg = 'search words...'
+        form = FindForm()
+        data =Friend.objects.all()
+    params = {
+        'title': 'Hello',
+        'message': msg,
+        'form':form,
+        'data':data,
+    }
+    return render(request, 'hello/find.html', params)
+
+
+リスト3-44
+data = Friend.objects.filter(name__iexact=str)
+
+
+リスト3-45
+data = Friend.objects.filter(age__lte=int(str))
+
+
+リスト3-46
+def find(request):
+    if (request.method == 'POST'):
+        msg = 'search result:'
+        form = FindForm(request.POST)
+        str = request.POST['find']
+        val = str.split()
+        data = Friend.objects.filter(age__gte=val[0], age__lte=val[1])  #☆
+    else:
+        msg = 'search words...'
+        form = FindForm()
+        data =Friend.objects.all()
+    params = {
+        'title': 'Hello',
+        'message': msg,
+        'form':form,
+        'data':data,
+    }
+    return render(request, 'hello/find.html', params)
+
+
+リスト3-47
+data = Friend.objects \
+        .filter(age__gte=val[0]) \
+        .filter(age__lte=val[1])
+
+
+リスト3-48
+from django.db.models import Q    # 追記
+
+def find(request):
+    if (request.method == 'POST'):
+        msg = 'search result:'
+        form = FindForm(request.POST)
+        str = request.POST['find']
+        data = Friend.objects.filter(Q(name__contains=str)|Q(mail__contains=str))    #☆
+    else:
+        msg = 'search words...'
+        form = FindForm()
+        data =Friend.objects.all()
+    params = {
+        'title': 'Hello',
+        'message': msg,
+        'form':form,
+        'data':data,
+    }
+    return render(request, 'hello/find.html', params)
+
+
+リスト3-49
+def find(request):
+    if (request.method == 'POST'):
+        msg = 'search result:'
+        form = FindForm(request.POST)
+        str = request.POST['find']
+        list = str.split()
+        data = Friend.objects.filter(name__in=list)    #☆
+    else:
+        msg = 'search words...'
+        form = FindForm()
+        data =Friend.objects.all()
+    params = {
+        'title': 'Hello',
+        'message': msg,
+        'form':form,
+        'data':data,
+    }
+    return render(request, 'hello/find.html', params)
+
+
+リスト4-1
+def index(request):
+    data = Friend.objects.all().order_by('age')    #☆
+    params = {
+            'title': 'Hello',
+            'message':'',
+            'data': data,
+        }
+    return render(request, 'hello/index.html', params)
+
+
+リスト4-2
+<body>
+    <h1>{{title}}</h1>
+    <p>{{message|safe}}</p>
+    <table>
+        <tr>
+            <th>id</th>
+            <th>name</th>
+            <th>age</th>
+            <th>mail</th>
+            <th>birthday</th>
+        </tr>
+    {% for item in data %}
+        <tr>
+            <td>{{item.id}}</td>
+            <td>{{item.name}}</td>
+            <td>{{item.age}}</td>
+            <td>{{item.mail}}</td>
+            <td>{{item.birthday}}</td>
+        <tr>
+    {% endfor %}
+    </table>
+</body>
+
+
+リスト4-3
+def index(request):
+    data = Friend.objects.all().order_by('age').reverse()    #☆
+    params = {
+            'title': 'Hello',
+            'data': data,
+        }
+    return render(request, 'hello/index.html', params)
+
+
+リスト4-4
+def find(request):
+    if (request.method == 'POST'):
+        msg = 'search result:'
+        form = FindForm(request.POST)
+        str = request.POST['find']
+        list = str.split()
+        data = Friend.objects.all()[int(list[0]):int(list[1])]    #☆
+    else:
+        msg = 'search words...'
+        form = FindForm()
+        data =Friend.objects.all()
+    params = {
+        'title': 'Hello',
+        'message': msg,
+        'form':form,
+        'data':data,
+    }
+    return render(request, 'hello/find.html', params)
+
+
+リスト4-5
+<body>
+    <h1>{{title}}</h1>
+    <p>{{message|safe}}</p>
+    <table>
+        <form action="{% url 'find' %}" method="post">
+        {% csrf_token %}
+        {{form}}
+        <tr><th></th><td><input type="submit" value="click"></td></tr>
+        </form>
+    </table>
+    <hr>
+    <table>
+        <tr>
+            <th>id</th>
+            <th>name</th>
+            <th>age</th>
+            <th>mail</th>
+            <th>birthday</th>
+        </tr>
+    {% for item in data %}
+        <tr>
+            <td>{{item.id}}</td>
+            <td>{{item.name}}</td>
+            <td>{{item.age}}</td>
+            <td>{{item.mail}}</td>
+            <td>{{item.birthday}}</td>
+        <tr>
+    {% endfor %}
+    </table>
+</body>
+
+
+リスト4-6
+from django.db.models import Count,Sum,Avg,Min,Max
+
+def index(request):
+    data = Friend.objects.all()
+    re1 = Friend.objects.aggregate(Count('age'))    #☆
+    re2 = Friend.objects.aggregate(Sum('age'))    #☆
+    re3 = Friend.objects.aggregate(Avg('age'))    #☆
+    re4 = Friend.objects.aggregate(Min('age'))    #☆
+    re5 = Friend.objects.aggregate(Max('age'))    #☆
+    msg = 'count:' + str(re1['age__count']) \
+            + '<br>Sum:' + str(re2['age__sum']) \
+            + '<br>Average:' + str(re3['age__avg']) \
+            + '<br>Min:' + str(re4['age__min']) \
+            + '<br>Max:' + str(re5['age__max'])
+    params = {
+            'title': 'Hello',
+            'message':msg,
+            'data': data,
+        }
+    return render(request, 'hello/index.html', params)
+
+
+リスト4-7
+def find(request):
+    if (request.method == 'POST'):
+        msg = request.POST['find']
+        form = FindForm(request.POST)
+        sql = 'select * from hello_friend'
+        if (msg != ''):
+            sql += ' where ' + msg
+        data = Friend.objects.raw(sql)
+        msg = sql
+    else:
+        msg = 'search words...'
+        form = FindForm()
+        data =Friend.objects.all()
+    params = {
+        'title': 'Hello',
+        'message': msg,
+        'form':form,
+        'data':data,
+    }
+    return render(request, 'hello/find.html', params)
+
+
+リスト4-8
+class HelloForm(forms.Form):
+    name = forms.CharField(label='Name')
+    mail = forms.EmailField(label='Email')
+    gender = forms.BooleanField(label='Gender',required=False)
+    age = forms.IntegerField(label='Age')
+    birthday = forms.DateField(label='Birth', required=False)
+
+
+リスト4-9
+{% load static %}
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>{{title}}</title>
+    <link rel="stylesheet" type="text/css" 
+        href="{% static 'hello/css/style.css' %}" />
+</head>
+<body>
+    <h1>{{title}}</h1>
+    <p>{{message}}</p>
+    <table>
+        <form action="{% url 'check' %}" method="post">
+        {% csrf_token %}
+        {{ form.as_table }}
+        <tr><td></td><td><input type="submit" value="click"></td></tr>
+        </form>
+    </table>
+</body>
+</html>
+
+
+リスト4-10
+path('check', views.check, name='check'),
+
+
+リスト4-11
+class CheckForm(forms.Form):
+    str = forms.CharField(label='Name')
+
+
+リスト4-12
+from .forms import CheckForm    #☆
+
+def check(request):
+    params = {
+        'title': 'Hello',
+        'message':'check validation.',
+        'form': CheckForm(),
+    }
+    if (request.method == 'POST'):
+        form = CheckForm(request.POST)
+        params['form'] = form
+        if (form.is_valid()):
+            params['message'] = 'OK!'
+        else:
+            params['message'] = 'no good.'
+    return render(request, 'hello/check.html', params)
+
+
+リスト4-13
+class CheckForm(forms.Form):
+    empty = forms.CharField(label='Empty', empty_value=True)
+    min = forms.CharField(label='Min', min_length=10)
+    max = forms.CharField(label='Max', max_length=10)
+
+
+リスト4-14
+class CheckForm(forms.Form):
+    required = forms.IntegerField(label='Required')
+    min = forms.IntegerField(label='Min', min_value=100)
+    max = forms.IntegerField(label='Max', max_value=1000)
+
+
+リスト4-15
+class CheckForm(forms.Form):
+    date = forms.DateField(label='Date', input_formats=['%d'])
+    time = forms.TimeField(label='Time')
+    datetime = forms.DateTimeField(label='DateTime')
+
+
+リスト4-16
+from django import forms    #☆
+
+class CheckForm(forms.Form):
+    str = forms.CharField(label='String')
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        str = cleaned_data['str']
+        if (str.lower().startswith('no')):
+            raise forms.ValidationError('You input "NO"!')
+
+
+リスト4-17
+class FriendForm(forms.ModelForm):
+    class Meta:
+        model = Friend
+        fields = ['name','mail','gender','age','birthday']
+
+
+リスト4-18
+class Friend(models.Model):
+    name = models.CharField(max_length=100)
+    mail = models.EmailField(max_length=200)
+    gender = models.BooleanField()
+    age = models.IntegerField(default=0)
+    birthday = models.DateField()
+
+
+リスト4-19
+def create(request):
+    params = {
+        'title': 'Hello',
+        'form': FriendForm(),
+    }
+    if (request.method == 'POST'):
+        obj = Friend()
+        friend = FriendForm(request.POST, instance=obj)
+        friend.save()
+        return redirect(to='/hello')
+    return render(request, 'hello/create.html', params)
+
+
+リスト4-20
+def check(request):
+    params = {
+        'title': 'Hello',
+        'message':'check validation.',
+        'form': FriendForm(),
+    }
+    if (request.method == 'POST'):
+        obj = Friend()
+        form = FriendForm(request.POST, instance=obj)
+        params['form'] = form
+        if (form.is_valid()):
+            params['message'] = 'OK!'
+        else:
+            params['message'] = 'no good.'
+    return render(request, 'hello/check.html', params)
+
+
+リスト4-21
+from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
+
+class Friend(models.Model):
+    name = models.CharField(max_length=100)
+    mail = models.EmailField(max_length=200)
+    gender = models.BooleanField()
+    age = models.IntegerField(validators=[ \
+          MinValueValidator(0), \
+          MaxValueValidator(150)])
+    birthday = models.DateField()
+
+    def __str__(self):以降省略
+
+
+リスト4-22
+from django.core.validators import MinLengthValidator    #☆
+
+class Friend(models.Model):
+    name = models.CharField(max_length=100, \
+        validators=[MinLengthValidator(10)])
+    mail = models.EmailField(max_length=200, \
+         validators=[MinLengthValidator(10)])
+    gender = models.BooleanField()
+    age = models.IntegerField()
+    birthday = models.DateField()
+
+    def __str__(self):以降省略
+
+
+リスト4-23
+from django.core.validators import URLValidator    #☆
+
+class Friend(models.Model):
+    name = models.CharField(max_length=100, \
+        validators=[URLValidator()])
+    mail = models.EmailField(max_length=200)
+    gender = models.BooleanField()
+    age = models.IntegerField()
+    birthday = models.DateField()
+
+    def __str__(self):以降省略
+
+
+リスト4-24
+from django.core.validators import RegexValidator    #☆
+
+class Friend(models.Model):
+    name = models.CharField(max_length=100, \
+        validators=[RegexValidator(r'^[a-z]*$')])
+    mail = models.EmailField(max_length=200)
+    gender = models.BooleanField()
+    age = models.IntegerField()
+    birthday = models.DateField()
+
+    def __str__(self):以降省略
+
+
+リスト4-25
+import re
+from django.db import models
+from django.core.validators import ValidationError
+
+def number_only(value):
+    if (re.match(r'^[0-9]*$', value) == None):
+        raise ValidationError(
+            '%(value)s is not Number!', \
+            params={'value': value},
+        )
+
+class Friend(models.Model):
+    name = models.CharField(max_length=100, \
+        validators=[number_only])
+    mail = models.EmailField(max_length=200)
+    gender = models.BooleanField()
+    age = models.IntegerField()
+    birthday = models.DateField()
+     
+    def __str__(self):
+        return '<Friend:id=' + str(self.id) + ', ' + \
+            self.name + '(' + str(self.age) + ')>'
+
+リスト4-26
+<body>
+    <h1>{{title}}</h1>
+    <p>{{message}}</p>
+    <hr>
+    <ol>
+    {% for item in form %}
+    <li>{{ item.name }} ({{ item.value }})
+        :{{ item.errors.as_text }}</li>
+    {% endfor %}
+    </ol>
+    <table>
+        <form action="{% url 'check' %}" method="post">
+        {% csrf_token %}
+        <tr><th>名前</th><td>{{ form.name }}</td></tr>
+        <tr><th>メール</th><td>{{ form.mail }}</td></tr>
+        <tr><th>性別</th><td>{{ form.gender }}</td></tr>
+        <tr><th>年齢</th><td>{{ form.age }}</td></tr>
+        <tr><th>誕生日</th><td>{{ form.birthday }}</td></tr>
+        <tr><td></td><td><input type="submit" value="click"></td></tr>
+        </form>
+    </table>
+</body>
+
+
+リスト4-27
+path('<int:num>', views.index, name='index'),
+
+
+リスト4-28
+from django.core.paginator import Paginator
+
+def index(request, num=1):
+    data = Friend.objects.all()
+    page = Paginator(data, 3)
+    params = {
+            'title': 'Hello',
+            'message':'',
+            'data': page.get_page(num),
+        }
+    return render(request, 'hello/index.html', params)
+
+
+リスト4-29
+<body>
+    <h1>{{title}}</h1>
+    <p>{{message|safe}}</p>
+    <table>
+        <tr>
+            <th>id</th>
+            <th>name</th>
+            <th>age</th>
+            <th>mail</th>
+            <th>birthday</th>
+        </tr>
+    {% for item in data %}
+        <tr>
+            <td>{{item.id}}</td>
+            <td>{{item.name}}</td>
+            <td>{{item.age}}</td>
+            <td>{{item.mail}}</td>
+            <td>{{item.birthday}}</td>
+        <tr>
+    {% endfor %}
+    </table>
+    <div class="pagination">
+        {% if data.has_previous %}
+            <a href="{% url 'index' %}">&laquo;first</a>
+            <a href="{% url 'index' %}{{data.previous_page_number}}">&laquo;prev</a>
+        {% endif %}
+        <span class="current">
+            [{{data.number}}/{{data.paginator.num_pages}}]
+        </span>
+        {% if data.has_next %}
+            <a href="{% url 'index' %}{{data.next_page_number }}">next&raquo;</a>
+            <a href="{% url 'index' %}{{data.paginator.num_pages}}">last&raquo;</a>
+        {% endif %}
+    </div>
+</body>
+
+リスト4-30
+class Message(models.Model):
+    friend = models.ForeignKey(Friend, on_delete=models.CASCADE)
+    title = models.CharField(max_length=100)
+    content = models.CharField(max_length=300)
+    pub_date = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return '<Message:id=' + str(self.id) + ', ' + \
+            self.title + '(' + str(self.pub_date) + ')>'
+    
+    class Meta:
+        ordering = ('pub_date',)
+
+
+リスト4-31
+from django.db import migrations, models
+import django.db.models.deletion
+
+class Migration(migrations.Migration):
+
+    dependencies = [
+        ('hello', '0001_initial'),
+    ]
+
+    operations = [
+        migrations.CreateModel(
+            name='Message',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, \
+                        serialize=False, verbose_name='ID')),
+                ('title', models.CharField(max_length=100)),
+                ('content', models.CharField(max_length=300)),
+                ('pub_date', models.DateTimeField(auto_now_add=True)),
+                ('friend', models.ForeignKey(on_delete=django.db.models.\
+                        deletion.CASCADE, to='hello.Friend')),
+            ],
+            options={
+                'ordering': ('pub_date',),
+            },
+        ),
+    ]
+
+
+リスト4-32
+from django.contrib import admin
+from .models import Friend, Message
+
+# Register your models here.
+admin.site.register(Friend)
+admin.site.register(Message)
+
+
+リスト4-33
+path('message/', views.message, name='message'),
+path('message/<int:page>', views.message, name='message'),
+
+
+リスト4-34
+from.models import Friend, Message
+            
+class MessageForm(forms.ModelForm):
+    class Meta:
+        model = Message
+        fields = ['title','content','friend']
+
+
+リスト4-35
+from .models import Friend, Message
+from .forms import FriendForm, MessageForm
+
+def message(request, page=1):
+    if (request.method == 'POST'):
+        obj = Message()
+        form = MessageForm(request.POST, instance=obj)
+        form.save()
+    data = Message.objects.all().reverse()
+    paginator = Paginator(data, 5)
+    params = {
+        'title': 'Message',
+        'form': MessageForm(),
+        'data': paginator.get_page(page),
+    }
+    return render(request, 'hello/message.html', params)
+
+
+リスト4-36
+{% load static %}
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>{{title}}</title>
+    <link rel="stylesheet" type="text/css" 
+        href="{% static 'hello/css/style.css' %}" />
+</head>
+<body>
+    <h1>{{title}}</h1>
+    <table>
+        <form action="{% url 'message' %}" method="post">
+        {% csrf_token %}
+        {{ form.as_table }}
+        <tr><td></td><td><input type="submit" value="send"></td></tr>
+        </form>
+    </table>
+    <hr>
+    <table>
+        <tr>
+            <th>title</th>
+            <th>name</th>
+            <th>datetime</th>
+        </tr>
+    {% for item in data %}
+        <tr>
+            <td>{{item.title}}</td>
+            <td>{{item.friend.name}}</td>
+            <td>{{item.pub_date}}</td>
+        <tr>
+    {% endfor %}
+    </table>
+    <div>
+        {% if data.has_previous %}
+            <a href="{% url 'message' %}{{data.previous_page_number}}">&laquo;prev</a>
+        {% endif %}
+        {% if data.has_next %}
+            <a href="{% url 'message' %}{{data.next_page_number }}">next&raquo;</a>
+        {% endif %}
+    </div>
+</body>
+</html>
+
+
+リスト4-37
+<body>
+    <h1>{{title}}</h1>
+    <p>{{message|safe}}</p>
+    <table>
+        <tr>
+            <th>id</th>
+            <th>name</th>
+            <th>age</th>
+            <th>mail</th>
+            <th>birthday</th>
+            <th>Messages</th>
+        </tr>
+    {% for item in data %}
+        <tr>
+            <td>{{item.id}}</td>
+            <td>{{item.name}}</td>
+            <td>{{item.age}}</td>
+            <td>{{item.mail}}</td>
+            <td>{{item.birthday}}</td>
+            <td><ul>
+            {% for ob in item.message_set.all %}
+                <li>{{ob.title}}</li>
+            {% endfor %}
+            </ul></td>
+        <tr>
+    {% endfor %}
+    </table>
+    <div>
+        {% if data.has_previous %}
+            <a href="{% url 'index' %}">&laquo;first</a>
+            <a href="{% url 'index' %}{{data.previous_page_number}}">&laquo;prev</a>
+        {% endif %}
+        <span class="current">
+            [{{data.number}}/{{data.paginator.num_pages}}]
+        </span>
+        {% if data.has_next %}
+            <a href="{% url 'index' %}{{data.next_page_number }}">next&raquo;</a>
+            <a href="{% url 'index' %}{{data.paginator.num_pages}}">last&raquo;</a>
+        {% endif %}
+    </div>
+</body>
+
+
+リスト5-1
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'hello',
+    'sns', # 追加したもの
+]
+
+
+リスト5-2
+from django.db import models
+from django.contrib.auth.models import User
+
+# Messageクラス
+class Message(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, \
+            related_name='message_owner')
+    group = models.ForeignKey('Group', on_delete=models.CASCADE)
+    content = models.TextField(max_length=1000)
+    share_id = models.IntegerField(default=-1)
+    good_count = models.IntegerField(default=0)
+    share_count = models.IntegerField(default=0)
+    pub_date = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return str(self.content) + ' (' + str(self.owner) + ')'
+    
+    def get_share(self):
+        return Message.objects.get(id=self.share_id)
+
+    class Meta:
+        ordering = ('-pub_date',)
+
+# Groupクラス
+class Group(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, \
+            related_name='group_owner')
+    title = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.title
+
+# Friendクラス
+class Friend(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, \
+            related_name='friend_owner')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+        
+    def __str__(self):
+        return str(self.user) + ' (group:"' + str(self.group) + '")'
+
+# Goodクラス
+class Good(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, \
+            related_name='good_owner')
+    message = models.ForeignKey(Message, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return 'good for "' + str(self.message) + '" (by ' + \
+                str(self.owner) + ')'
+
+
+リスト5-3
+from django.contrib import admin
+from .models import Message,Friend,Group,Good
+
+admin.site.register(Message)
+admin.site.register(Friend)
+admin.site.register(Group)
+admin.site.register(Good)
+
+
+リスト5-4
+from django import forms
+from.models import Message,Group,Friend,Good
+from django.contrib.auth.models import User
+
+# Messageのフォーム（未使用）
+class MessageForm(forms.ModelForm):
+    class Meta:
+        model = Message
+        fields = ['owner','group','content']
+# Groupのフォーム（未使用）
+class GroupForm(forms.ModelForm):
+    class Meta:
+        model = Group
+        fields = ['owner', 'title']
+# Friendのフォーム（未使用）
+class FriendForm(forms.ModelForm):
+    class Meta:
+        model = Friend
+        fields = ['owner', 'user', 'group']
+# Goodのフォーム（未使用）
+class GoodForm(forms.ModelForm):
+    class Meta:
+        model = Good
+        fields = ['owner', 'message']
+
+# 検索フォーム
+class SearchForm(forms.Form):
+    search = forms.CharField(max_length=100)
+
+# Groupのチェックボックスフォーム
+class GroupCheckForm(forms.Form):
+    def __init__(self, user, *args, **kwargs):
+        super(GroupCheckForm, self).__init__(*args, **kwargs)
+        public = User.objects.filter(username='public').first()
+        self.fields['groups'] = forms.MultipleChoiceField(
+            choices=[(item.title, item.title) for item in \
+                 Group.objects.filter(owner__in=[user,public])],
+            widget=forms.CheckboxSelectMultiple(),
+        )
+
+# Groupの選択メニューフォーム
+class GroupSelectForm(forms.Form):
+    def __init__(self, user, *args, **kwargs):
+        super(GroupSelectForm, self).__init__(*args, **kwargs)
+        self.fields['groups'] = forms.ChoiceField(
+            choices=[('-','-')] + [(item.title, item.title) \
+                 for item in Group.objects.filter(owner=user)],
+        )
+
+# Friendのチェックボックスフォーム
+class FriendsForm(forms.Form):
+    def __init__(self, user, friends=[], vals=[], *args, **kwargs):
+        super(FriendsForm, self).__init__(*args, **kwargs)
+        self.fields['friends'] = forms.MultipleChoiceField(
+            choices=[(item.user, item.user) for item in friends],
+            widget=forms.CheckboxSelectMultiple(),
+            initial=vals
+        )
+
+# Group作成フォーム
+class CreateGroupForm(forms.Form):
+    group_name = forms.CharField(max_length=50)
+
+# 投稿フォーム
+class PostForm(forms.Form):
+    content = forms.CharField(max_length=500, \
+            widget=forms.Textarea)
+    
+    def __init__(self, user, *args, **kwargs):
+        super(PostForm, self).__init__(*args, **kwargs)
+        public = User.objects.filter(username='public').first()
+        self.fields['groups'] = forms.ChoiceField(
+            choices=[('-','-')] + [(item.title, item.title) \
+                     for item in Group.objects. \
+                     filter(owner__in=[user,public])],
+        )
+
+
+リスト5-5
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.index, name='index'),
+    path('groups', views.groups, name='groups'),
+    path('add', views.add, name='add'),
+    path('creategroup', views.creategroup, name='creategroup'),
+    path('post', views.post, name='post'),
+    path('share/<int:share_id>', views.share, name='share'),
+    path('good/<int:good_id>', views.good, name='good'),
+]
+
+
+リスト5-6
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('hello/', include('hello.urls')),
+    path('sns/', include('sns.urls')),
+]
+
+
+リスト5-7
+from django.shortcuts import render
+from django.shortcuts import redirect
+from django.contrib.auth.models import User
+from django.contrib import messages
+
+from .models import Message,Friend,Group,Good
+from .forms import GroupCheckForm,GroupSelectForm,\
+        SearchForm,FriendsForm,CreateGroupForm,PostForm
+
+from django.db.models import Q
+from django.contrib.auth.decorators import login_required
+
+# indexのビュー関数
+@login_required(login_url='/admin/login/')
+def index(request):
+    # publicのuserを取得
+    (public_user, public_group) = get_public()
+
+    # POST送信時の処理
+    if request.method == 'POST':
+
+        # Groupsのチェックを更新した時の処理
+        if request.POST['mode'] == '__check_form__':
+            # フォームの用意
+            searchform = SearchForm()
+            checkform = GroupCheckForm(request.user,request.POST)
+            # チェックされたGroup名をリストにまとめる
+            glist = []
+            for item in request.POST.getlist('groups'):
+                glist.append(item)
+            # Messageの取得
+            messages = get_your_group_message(request.user, \
+                    glist, None)
+
+        # Groupsメニューを変更した時の処理   
+        if request.POST['mode'] == '__search_form__':
+            # フォームの用意
+            searchform = SearchForm(request.POST)
+            checkform = GroupCheckForm(request.user)
+            # Groupのリストを取得
+            gps = Group.objects.filter(owner=request.user)
+            glist = [public_group]
+            for item in gps:
+                glist.append(item)
+            # メッセージを取得
+            messages = get_your_group_message(request.user, glist, \
+                    request.POST['search'])
+
+    # GETアクセス時の処理
+    else:
+        # フォームの用意
+        searchform = SearchForm()
+        checkform = GroupCheckForm(request.user)
+        # Groupのリストを取得
+        gps = Group.objects.filter(owner=request.user)
+        glist = [public_group]
+        for item in gps:
+            glist.append(item)
+        # メッセージの取得
+        messages = get_your_group_message(request.user, glist, None)
+
+    #　共通処理
+    params = {
+            'login_user':request.user,
+            'contents':messages,
+            'check_form':checkform,
+            'search_form':searchform,
+        }
+    return render(request, 'sns/index.html', params)
+
+@login_required(login_url='/admin/login/')
+def groups(request):
+    # 自分が登録したFriendを取得
+    friends = Friend.objects.filter(owner=request.user)
+    
+    # POST送信時の処理
+    if request.method == 'POST':
+        
+        # Groupsメニュー選択肢の処理
+        if request.POST['mode'] == '__groups_form__':
+            # 選択したGroup名を取得
+            sel_group = request.POST['groups']
+            # Grooupを取得
+            gp = Group.objects.filter(owner=request.user) \
+                .filter(title=sel_group).first()
+            # Groupに含まれるFriendを取得
+            fds = Friend.objects.filter(owner=request.user) \
+                .filter(group=gp)
+            # FriendのUserをリストにまとめる
+            vlist = []
+            for item in fds:
+                vlist.append(item.user.username)
+            # フォームの用意
+            groupsform = GroupSelectForm(request.user,request.POST)
+            friendsform = FriendsForm(request.user, \
+                    friends=friends, vals=vlist)
+        
+        # Friendsのチェック更新時の処理
+        if request.POST['mode'] == '__friends_form__':
+            # 選択したGroupの取得
+            sel_group = request.POST['group']
+            group_obj = Group.objects.filter(title=sel_group).first()
+            # チェックしたFriendsを取得
+            sel_fds = request.POST.getlist('friends')
+            # FriendsのUserを取得
+            sel_users = User.objects.filter(username__in=sel_fds)
+            # Userのリストに含まれるユーザーが登録したFriendを取得
+            fds = Friend.objects.filter(owner=request.user) \
+                    .filter(user__in=sel_users)
+            # すべてのFriendにGroupを設定し保存する
+            vlist = []
+            for item in fds:
+                item.group = group_obj
+                item.save()
+                vlist.append(item.user.username)
+            # メッセージを設定
+            messages.success(request, ' チェックされたFriendを' + \
+                    sel_group + 'に登録しました。')
+            # フォームの用意
+            groupsform = GroupSelectForm(request.user, \
+                    {'groups':sel_group})
+            friendsform = FriendsForm(request.user, \
+                    friends=friends, vals=vlist)
+    
+    # GETアクセス時の処理  
+    else:
+        # フォームの用意
+        groupsform = GroupSelectForm(request.user)
+        friendsform = FriendsForm(request.user, friends=friends, \
+                vals=[])
+        sel_group = '-'
+    
+    # 共通処理
+    createform = CreateGroupForm()
+    params = {
+            'login_user':request.user,
+            'groups_form':groupsform,
+            'friends_form':friendsform,
+            'create_form':createform,
+            'group':sel_group,
+        }
+    return render(request, 'sns/groups.html', params)
+
+# Friendの追加処理
+@login_required(login_url='/admin/login/')
+def add(request):
+    # 追加するUserを取得
+    add_name = request.GET['name']
+    add_user = User.objects.filter(username=add_name).first()
+    # Userが本人だった場合の処理
+    if add_user == request.user:
+        messages.info(request, "自分自身をFriendに追加することは\
+                できません。")
+        return redirect(to='/sns')
+    # publicの取得
+    (public_user, public_group) = get_public()
+    # add_userのFriendの数を調べる
+    frd_num = Friend.objects.filter(owner=request.user) \
+            .filter(user=add_user).count()
+    # ゼロより大きければ既に登録済み
+    if frd_num > 0:
+        messages.info(request, add_user.username + \
+                ' は既に追加されています。')
+        return redirect(to='/sns')
+    
+    # ここからFriendの登録処理
+    frd = Friend()
+    frd.owner = request.user
+    frd.user = add_user
+    frd.group = public_group
+    frd.save()
+    # メッセージを設定
+    messages.success(request, add_user.username + ' を追加しました！\
+        groupページに移動して、追加したFriendをメンバーに設定して下さい。')
+    return redirect(to='/sns')
+
+# グループの作成処理
+@login_required(login_url='/admin/login/')
+def creategroup(request):
+    # Groupを作り、Userとtitleを設定して保存する
+    gp = Group()
+    gp.owner = request.user
+    gp.title = request.POST['group_name']
+    gp.save()
+    messages.info(request, '新しいグループを作成しました。')
+    return redirect(to='/sns/groups')
+
+# メッセージのポスト処理
+@login_required(login_url='/admin/login/')
+def post(request):
+    # POST送信の処理
+    if request.method == 'POST':
+        # 送信内容の取得
+        gr_name = request.POST['groups']
+        content = request.POST['content']
+        # Groupの取得
+        group = Group.objects.filter(owner=request.user) \
+                .filter(title=gr_name).first()
+        if group == None:
+            (pub_user, group) = get_public()
+        # Messageを作成し設定して保存
+        msg = Message()
+        msg.owner = request.user
+        msg.group = group
+        msg.content = content
+        msg.save()
+        # メッセージを設定
+        messages.success(request, '新しいメッセージを投稿しました！')
+        return redirect(to='/sns')
+    
+    # GETアクセス時の処理
+    else:
+        form = PostForm(request.user)
+    
+    # 共通処理
+    params = {
+            'login_user':request.user,
+            'form':form,
+        }
+    return render(request, 'sns/post.html', params)
+
+# 投稿をシェアする
+@login_required(login_url='/admin/login/')
+def share(request, share_id):
+    # シェアするMessageの取得
+    share = Message.objects.get(id=share_id)
+    
+    # POST送信時の処理
+    if request.method == 'POST':
+        # 送信内容を取得
+        gr_name = request.POST['groups']
+        content = request.POST['content']
+        # Groupの取得
+        group = Group.objects.filter(owner=request.user) \
+                .filter(title=gr_name).first()
+        if group == None:
+            (pub_user, group) = get_public()
+        # メッセージを作成し、設定をして保存
+        msg = Message()
+        msg.owner = request.user
+        msg.group = group
+        msg.content = content
+        msg.share_id = share.id
+        msg.save()
+        share_msg = msg.get_share()
+        share_msg.share_count += 1
+        share_msg.save()
+        # メッセージを設定
+        messages.success(request, 'メッセージをシェアしました！')
+        return redirect(to='/sns')
+    
+    # 共通処理
+    form = PostForm(request.user)
+    params = {
+            'login_user':request.user,
+            'form':form,
+            'share':share,
+        }
+    return render(request, 'sns/share.html', params)
+
+# goodボタンの処理
+@login_required(login_url='/admin/login/')
+def good(request, good_id):
+    # goodするMessageを取得
+    good_msg = Message.objects.get(id=good_id)
+    # 自分がメッセージにGoodした数を調べる
+    is_good = Good.objects.filter(owner=request.user) \
+            .filter(message=good_msg).count()
+    # ゼロより大きければ既にgood済み
+    if is_good > 0:
+        messages.success(request, '既にメッセージにはGoodしています。')
+        return redirect(to='/sns')
+    
+    # Messageのgood_countを１増やす
+    good_msg.good_count += 1
+    good_msg.save()
+    # Goodを作成し、設定して保存
+    good = Good()
+    good.owner = request.user
+    good.message = good_msg
+    good.save()
+    # メッセージを設定
+    messages.success(request, 'メッセージにGoodしました！')
+    return redirect(to='/sns')
+
+# これ以降はビュー関数ではなく普通の関数==================
+
+# 指定されたグループおよび検索文字によるMessageの取得
+def get_your_group_message(owner, glist, find):
+    # publicの取得
+    (public_user,public_group) = get_public()
+    # チェックされたGroupの取得
+    groups = Group.objects.filter(Q(owner=owner) \
+            |Q(owner=public_user)).filter(title__in=glist)
+    # Groupに含まれるFriendの取得
+    me_friends = Friend.objects.filter(group__in=groups)
+    # FriendのUserをリストにまとめる
+    me_users = []
+    for f in me_friends:
+        me_users.append(f.user)
+    # UserリストのUserが作ったGroupの取得
+    his_groups = Group.objects.filter(owner__in=me_users)
+    his_friends = Friend.objects.filter(user=owner) \
+            .filter(group__in=his_groups)
+    me_groups = []
+    for hf in his_friends:
+        me_groups.append(hf.group)
+    # groupがgroupsに含まれるか、me_groupsに含まれるMessageの取得
+    if find==None:
+        messages = Message.objects.filter(Q(group__in=groups) \
+            |Q(group__in=me_groups))[:100]
+    else:
+        messages = Message.objects.filter(Q(group__in=groups) \
+            |Q(group__in=me_groups)) \
+            .filter(content__contains=find)[:100]
+    return messages
+
+# publicなUserとGroupを取得する
+def get_public():
+    public_user = User.objects.filter(username='public').first()
+    public_group = Group.objects.filter \
+            (owner=public_user).first()
+    return (public_user, public_group)
+
+
+リスト5-8
+{% load static %}
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" 
+        href="{% static 'sns/style.css' %}" />
+</head>
+<body>
+    <div class="body_content">
+    <div class="body_content_inner">
+        <table class="login_table" width="100%">
+        <tr><th width="150px">menu</th><td>
+        <table class="login_table_inner">
+        <tr>
+        <td><a href="{% url 'index' %}">top</a></td>
+        <td><a href="{% url 'post' %}">post</a></td>
+        <td><a href="{% url 'groups' %}">group</a></td>
+        </tr>
+        </table>
+        </td></tr>
+        <tr><th width="150px">login user:</th>
+            <td>"{{login_user}}"</td></tr>
+        </table>
+        <div class="header">{% block header %}
+            {% endblock %}</div>
+        <div class="content">{% block content %}
+            {% endblock %}</div>
+        <div class="footer">
+        <hr>
+        <div>
+        <span style="float:left;font-weight:bold;">
+            <a href="/admin/logout?next=/sns/">
+                [ logout ]</a></span>
+        <span style="float:right">copyright 2018 
+            SYODA-Tuyano.</span>
+        </div>
+        </div>
+    </div>
+    </div>
+</body>
+</html>
+
+
+リスト5-9
+{% extends 'sns/layout.html' %}
+
+{% block title %}Index{% endblock %}
+
+{% block header %}
+<h1>Sns</h1>
+<p class="caption">※グループのチェックをONにしてupdateすると、
+そのグループに登録されている利用者のメッセージだけが表示されます。</p>
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"
+        {% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<form action="{% url 'index' %}" method="post">
+{% csrf_token %}
+<input type="hidden" name="mode" value="__search_form__">
+{{search_form}}
+<button>Search</button>
+</form>
+<hr>
+<form action="{% url 'index' %}" method="post">
+{% csrf_token %}
+<input type="hidden" name="mode" value="__check_form__">
+{{check_form}}
+<button>update</button>
+</form>
+{% for item in contents %}
+<hr>
+<p class="message_public">
+{% if item.group.title == 'public' %}
+[public]
+{% endif %}</p>
+<p class="message_content">{{item.content}}</p>
+<p class="message_date"> ({{item.pub_date}})</p>
+{% if item.share_id > 0 %}
+    <hr class="share_line">
+    <p class="share_item_content">{{item.get_share}}</P>
+{% endif %}
+<p class="message_owner">
+    <span class="message_counter">share={{item.share_count}} good={{item.good_count}}</span>
+    "{{item.owner}}"(<a href="{% url 'add' %}?name={{item.owner}}">
+        add friend</a>)
+    <a href="{% url 'share' item.id %}"><button>share</button></a>
+    <a href="{% url 'good' item.id %}"><button>good!</button></a>
+</p>
+{% endfor %}
+{% endblock %}
+
+
+リスト5-10
+{% extends 'sns/layout.html' %}
+
+{% block title %}Post{% endblock %}
+
+{% block header %}
+<h1>Post</h1>
+<p  class="caption">※投稿先のグループを選択し、メッセージを投稿します。</p>
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"
+        {% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<form action="{% url 'post' %}" method="post">
+{% csrf_token %}
+<table>
+{{form.as_table}}
+<tr><td></td><td><button>Post!</button></td></tr>
+</table>
+</form>
+{% endblock %}
+
+
+リスト5-11
+{% extends 'sns/layout.html' %}
+
+{% block title %}Share{% endblock %}
+
+{% block header %}
+<h1>Share</h1>
+<p  class="caption">※投稿先のグループを選択し、下のメッセージをシェアします。</p>
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"
+        {% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<p class="share_content">{{share.content}} ({{share.owner}})</p>
+<form action="{% url 'share' share.id %}" method="post">
+{% csrf_token %}
+<table>
+{{form.as_table}}
+<tr><td></td><td><button>Share!</button></td></tr>
+</table>
+</form>
+{% endblock %}
+
+
+リスト5-12
+{% extends 'sns/layout.html' %}
+
+{% block title %}Grooups{% endblock %}
+
+{% block header %}
+<h1>Group</h1>
+<p class="caption">※グループを選択してselect memberすると、そのグループに登録されている利用者がONになります。
+利用者のチェックをONにしてset memberすると、ONにしてある利用者がグループに追加されます。</p>
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"
+        {% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<form action="{% url 'groups' %}" method="post">
+{% csrf_token %}
+<input type="hidden" name="mode" value="__groups_form__">
+{{groups_form}}
+<button>select members</button>
+</form>
+<hr>
+<form action="{% url 'groups' %}" method="post">
+{% csrf_token %}
+<input type="hidden" name="mode" value="__friends_form__">
+<input type="hidden" name="group" value="{{group}}">
+{{friends_form}}
+<button>set members</button>
+</form>
+<hr>
+<p>※新しいGroupの登録</p>
+<form action="{% url 'creategroup' %}" method="post">
+{% csrf_token %}
+{{create_form}}
+<button>create new group</button>
+</form>
+{% endblock %}
+
+
+リスト5-13
+body {
+    background-color:#ddf;
+    color:gray;
+    font-size:14pt;
+}
+.body_content {
+    width:800px;
+    background-color:white;
+}
+.body_content_inner {
+    padding:50px;
+}
+h1 {
+    color:red;
+    opacity:0.2;
+    font-size:72pt;
+    margin-top:0px;
+    margin-bottom:0px;
+    text-align:right;
+    line-height: 70px;
+}
+p {
+    margin:10px;
+}
+a {
+    color:blue;
+    text-decoration: none;
+}
+
+table {
+    margin:10px;
+    font-size:14pt;
+}
+table tr th {
+    background-color:#99f;
+    color:white;
+    padding:2px 10px;
+    border-size:2px;
+}
+table tr td {
+    background-color:#f6f6f6;
+    color:#666;
+    padding:2px 10px;
+    border-size:2px;
+}
+.footer {
+    font-size:9pt;
+    margin-top:50px;
+    margin-bottom:100px;
+}
+.login_table {
+    position: fixed;
+    left:0px;
+    top:0px;
+    width:800px;
+    margin:8px;
+}
+.login_table_inner {
+    padding:1px;
+    margin:0px;
+}
+.login_table_inner tr th {
+    padding:0px;
+    margin:0px;
+}
+.login_table_inner tr td {
+    padding:0px 10px;
+    margin:0px;
+}
+.caption {
+    font-size:10pt;
+}
+.messages {
+    border: solid 3px #ccf;
+    padding: 10px 50px;
+}
+.message_date {
+    text-align:left;
+    font-size:10pt;
+}
+.message_owner {
+    text-align:right;
+    font-size:12pt;
+    font-weight:bold;
+    margin:30px 10px 0px 10px;
+}
+.message_public {
+    font-size:12pt;
+    font-weight:bold;
+    color:#69f;
+}
+.message_counter {
+    float:left;
+    font-weight:normal;
+    font-size:12pt;
+    color:#f66;
+}
+.share_content {
+    border: solid 3px #ddf;
+    padding: 10px 20px;    
+}
+.share_line {
+   border: 1px solid #e0e0ff;
+}
+.share_item_content {
+    margin:0px 50px;
+    font-size:12pt;
+}
+
+
+リストA-1
+price = 235
+price += 178
+price += 98
+price += 497
+price += 298
+value = price // 1.08
+tax = price - value
+'本体価格：' + str(value) + ' 消費税額：'  + str(tax)
+
+
+リストA-2
+x = 123
+if x % 2 == 0:
+    res = '偶数です。'
+else:
+    res = '奇数です。'
+str(x) + 'は、' + res
+
+
+リストA-3
+month = 8
+res = month // 3
+if month == 12:
+    res = 0
+
+if res== 0:
+    season = '冬'
+elif res == 1:
+    season ='春'
+elif res == 2:
+    season = '夏'
+elif res == 3:
+    season = '秋'
+else:
+    season  = '？'
+str(month) + '月は、' + season + 'です。'
+
+
+リストA-4
+end = 100
+total = 0
+count = 1
+while count <= end:
+    total += count
+    count+= 1
+'１から' + str(end) + 'までの合計は、' + str(total) + 'です。'
+
+
+リストA-5
+data = [0, 100, 200, 300, 400]
+data[0] = data[1] + data[2] + data[3] + data[4]
+data
+
+
+リストA-6
+data = [1, 2, 3]
+data[3] = data[0] * data[1] * data[2]
+data
+
+
+リストA-7
+data = [1234, 567, 89]
+total = 0
+for item in data:
+    total += item
+'合計：' + str(total)
+
+
+リストA-8
+data = (10, 20, 30)
+data[0] = data[1] + data[2]
+
+
+リストA-9
+data = (98, 75, 61, 83, 79)
+total = 0
+for item in data:
+    total += item
+ave = total // 5
+'合計：' + str(total) + ' 平均：' + str(ave)
+
+
+リストA-10
+total = 0
+for n in range(1, 1000+1):
+    total += n
+'合計は、' + str(total) + 'です。'
+
+
+リストA-11
+data = {'国語':98, '数学':73, '英語':85, '合計':0}
+data['合計'] = data['国語'] + data['数学'] + data['英語']
+data
+
+
+リストA-12
+data = {'国語':98, '数学':73, '英語':85, '社会':61, '理科':79, '合計':0}
+total = 0
+for key in data:
+    total += data[key]
+'合計：' + str(total)
+
+
+リストA-13
+data = {'国語':98, '数学':73, '英語':85, '社会':61, '理科':79, '合計':0}
+total = 0
+for (key,val) in data.items():
+    total += val
+'合計：' + str(total)
+
+
+リストA-14
+in_str = input('type a number:')
+num = int(in_str)
+total = 0
+for n in range(num + 1):
+    total += n
+in_str + 'までの合計は、' + str(total) + 'です。'
+
+
+リストA-15
+from math import fsum
+
+data = [123, 45, 678, 90, 98, 76, 543, 21]
+total = fsum(data)
+'合計：' + str(total)
+
+
+リストA-16
+def check(num):
+    if int(num) % 2 == 0:
+        print(str(num) + 'は偶数です。')
+    else:
+        print(str(num) + 'は奇数です。')
+
+n = input('整数を入力:')
+check(n)
+
+
+リストA-17
+def check(num):
+    if int(num) % 2 == 0:
+       return '偶数'
+    else:
+        return '奇数'
+
+n = input('整数を入力:')
+str(n) + 'は、' + check(n) + '！'
+
+
+リストA-18
+class Member:
+    name = 'no name'
+    age = 0
+    mail = 'no address'
+    
+    def print(self):
+        print(self.name + '(' + str(self.age) \
+                + ' old. ' + self.mail + ')')
+
+
+リストA-19
+# インスタンスを作る
+taro = Member()
+# 変数に値を設定する
+taro.name = 'Taro-Yamada'
+taro.age = 39
+taro.mail = 'taro@yamada.kun'
+# メソッドを実行する
+taro.print()
+
+
+リストA-20
+class Member:
+    name = 'no name'
+    age = 0
+    mail = 'no address'
+    
+    def print(self):
+        print(self.name + '(' + str(self.age) \
+                + ' old. ' + self.mail + ')')
+
+taro = Member()
+taro.name = 'Taro-Yamada'
+taro.age = 39
+taro.mail = 'taro@yamada.kun'
+taro.print()
+
+
+リストA-21
+class Member:
+    name = 'no name'
+    age = 0
+    mail = 'no address'
+    
+    def __init__(self, name, age, mail):
+        self.name = name
+        self.age = age
+        self.mail = mail
+    
+    def print(self):
+        print(self.name + '(' + str(self.age) \
+                + ' old. ' + self.mail + ')')
+
+taro = Member('Taro-Yamada', 39, 'taro@yamada.kun')
+taro.print()
+hanako = Member('Hanako-Tanaka', 28, 'hanako@flower.san')
+hanako.print()
+
+
+リストA-22
+class Member:
+    name = 'no name'
+    age = 0
+    mail = 'no address'
+    
+    def __init__(self, name='noname', age=0, mail='no address'):
+        self.name = name
+        self.age = age
+        self.mail = mail
+    
+    def print(self):
+        print(self.name + '(' + str(self.age) \
+                + ' old. ' + self.mail + ')')
+
+taro = Member('Taro-Yamada', 39, 'taro@yamada')
+taro.print()
+hanako = Member(name='Hanako-Tanaka', mail='hanako@flower')
+hanako.print()
+who = Member()
+who.print()
+
+
+リストA-23
+class Member:
+    name = 'no name'
+    age = 0
+    mail = 'no address'
+    
+    def __init__(self, name='noname', age=0, mail='no address'):
+        self.name = name
+        self.age = age
+        self.mail = mail
+    
+    def print(self):
+        print(self.name + '(' + str(self.age) \
+                + ' old. ' + self.mail + ')')
+
+class Employee(Member):
+    company = 'unemployed'
+    
+    def __init__(self, company='', name='noname', \
+            age=0, mail='no address'):
+        self.company = company
+        super().__init__(name, age, mail)
+    
+    def print(self):
+        print(self.name + '(' + str(self.age) \
+                + ' old. ' + self.mail + ' [' \
+                + self.company + '])')
+
+taro = Member('Taro-Yamada', 39, 'taro@yamada')
+taro.print()
+hanako = Employee(name='Hanako-Tanaka', company='shuwa System')
+hanako.print()
+
+

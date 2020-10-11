@@ -1,0 +1,30 @@
+{
+  "name": "cdk-workshop",
+  "version": "0.1.0",
+  "bin": {
+    "cdk-workshop": "bin/cdk-workshop.js"
+  },
+  "scripts": {
+    "deploy": "pushd lambda >/dev/null  &&  tsc  &&  popd >/dev/null  &&  echo  &&  echo  'If no changed, cloudformation:DeleteChangeSet error will be occurred.' &&  echo  'YAMLWarning means deleting stack remains.'  &&  cdk deploy --require-approval never  &&  ../deploy.sh  make-config  '../template-aws-config.ts' > '../aws_Amplify_Vue_js_REST-API/src/aws-config.ts'",
+    "synth": " pushd lambda >/dev/null  &&  tsc  &&  popd >/dev/null  &&  cdk synthesize --no-staging > template-local.yaml",
+    "invoke": "sam local invoke --template 'template-local.yaml' $(grep -m 1 -o 'MyGetLambda[0-9A-F]\\{8\\}' template-local.yaml) --no-event",
+    "watch": "echo 'Start to compile user CDK script automatically';  node_modules/typescript/bin/tsc --watch"
+  },
+  "devDependencies": {
+    "aws-cdk": "1.54.0",
+    "@aws-cdk/assert": "1.54.0",
+    "@types/jest": "^25.2.1",
+    "@types/node": "10.17.5",
+    "jest": "^25.5.0",
+    "ts-jest": "^25.3.1",
+    "ts-node": "^8.1.0",
+    "typescript": "~3.7.2"
+  },
+  "dependencies": {
+    "@aws-cdk/aws-apigateway": "^1.54.0",
+    "@aws-cdk/aws-cognito": "^1.54.0",
+    "@aws-cdk/aws-dynamodb": "^1.54.0",
+    "@aws-cdk/aws-lambda": "^1.54.0",
+    "@aws-cdk/core": "1.54.0"
+  }
+}

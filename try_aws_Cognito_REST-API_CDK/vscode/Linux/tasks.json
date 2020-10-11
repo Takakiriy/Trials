@@ -1,0 +1,15 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Compile TypeScript",
+            "type": "shell",
+            "command": "cd  __ProjectFolder__  &&  export PATH="$PATH:__NodeBinFolder__/"  &&  node_modules/typescript/bin/tsc --build tsconfig.json",
+            "problemMatcher": []
+        }
+    ]
+}
+
+Example:
+	__ProjectFolder__ = ${workspaceFolder}/aws_CDK_example/5-Cognito/cdk-workshop
+	__NodeBinFolder__ = ${workspaceFolder}/aws_CDK_example/5-Cognito/node-v10.16.1-linux-x64/bin

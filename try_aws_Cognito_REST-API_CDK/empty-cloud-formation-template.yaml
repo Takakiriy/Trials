@@ -1,0 +1,10 @@
+Resources:
+  DeletingUserPool:
+    Type: 'AWS::Cognito::UserPool'
+    Properties:
+      UserPoolName: !Sub "deleting-${AWS::StackName}"
+  DeletingUserPoolClient:
+    Type: "AWS::Cognito::UserPoolClient"
+    Properties:
+      ClientName: !Sub "deleting-${AWS::StackName}"
+      UserPoolId: !Sub "${DeletingUserPool}"

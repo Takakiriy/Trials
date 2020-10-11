@@ -12,18 +12,25 @@ https://docs.microsoft.com/ja-jp/azure/developer/jenkins/deploy-from-github-to-a
 - [step.yaml](azure-voting-app-redis/steps.yaml)
 
 
-## Django-Trial-Scripts
+## Python-Django-Trial-Scripts
 
 Django/Python
 
-- [README](Django-Trial-Scripts)
+- [README](Python-Django-Trial-Scripts)
 
 
-## Laravel-Trial-Scripts
+## PHP_Laravel-Trial-Scripts
 
 Laravel/PHP
 
-- [README](Laravel-Trial-Scripts)
+- [README](PHP_Laravel-Trial-Scripts)
+
+
+## try_aws_Cognito_REST-API_CDK
+
+aws Cognito + REST-API + CDK CloudFormation
+
+- [folder](try_aws_Cognito_REST-API_CDK)
 
 
 ## try_Azure_AKS_quick_start

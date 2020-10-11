@@ -1,0 +1,24 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "TypeScript Debug",
+            "request": "launch",
+            "preLaunchTask": "Compile TypeScript",
+            "type": "node",
+            "env": {
+                "PATH": "__NodeBinFolder__/" 
+            },
+            "program": "__ProjectFolder__/__MainJSFileName__",
+            "cwd":     "__ProjectFolder__/",
+            "args": [],
+            "stopOnEntry": false,
+            "sourceMaps": true
+        }
+    ]
+}
+
+Example:
+	__ProjectFolder__ = ${workspaceFolder}/aws_CDK_example/5-Cognito/cdk-workshop
+	__NodeBinFolder__ = ${workspaceFolder}/aws_CDK_example/5-Cognito/node-v10.16.1-linux-x64/bin
+	__MainJSFileName__ = cdk.js

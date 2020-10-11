@@ -1,123 +1,106 @@
 # Azure App Service
 
-設定:
-    __GroupName__: sagep-auth1
-    __Region__: japaneast
-    __AppName__: sagep-app-service2
-    __ServicePlan__: sagep-plan1
+準備:
+    Docker for Windows をインストールします:
+    Azure のアカウントを作成して、開発に使う PC で、 https://portal.azure.com/ にサインインします:
+        サインインしたら、ブラウザーを閉じます
+    Azure CLI をインストールします:
+        https://docs.microsoft.com/ja-jp/cli/azure/install-azure-cli-windows?view=azure-cli-latest&tabs=azure-cli
+            Microsoft Installer (MSI) >> Azure CLI current version
+            azure-cli-2.12.1.msi
 
-（初回のみ）コンテナーをレジストリに登録する（カスタム コンテナーを使う App Service を使っているため）:
-    参考: https://docs.microsoft.com/ja-jp/azure/app-service/quickstart-custom-container?pivots=container-linux
-    Azure コンテナー レジストリを作成する:
-        参考: https://docs.microsoft.com/ja-jp/azure/container-registry/container-registry-get-started-portal
-        https://portal.azure.com/ : コンテナー レジストリ
-    Visual Studio Code:
-        - Docker アイコン（左） >> REGISTRIES >> Connect Registry >> Azure（上） >> Azure（左） >> Sign in to Azure
-        - (サブスクリプション名) >> (レジストリ名) >> (イメージ名) >> (タグ名を右クリック) >> Deploy Image to Azure App Service
-        - もし、administrator 権限が要求されら:
-            - az acr update -n __RegistryName__ --admin-enabled true
-            - Visual Studio Code を再起動して Deploy Image to Azure App Service
-        - Create new web app（上）:
-            new web app: __AppName__  #// 新規の名前である必要があります
-            resource group: __GroupName__
-            service plan: __ServicePlan__
-
-Web App for Containers での継続的デプロイ:
-    参考: https://docs.microsoft.com/ja-jp/azure/app-service/deploy-ci-cd-custom-container
-    （初回のみ）:
-        継続的デプロイを有効にする:
-            - https://portal.azure.com/ >> App Service >>
-            - （アプリ名）:
-                コンテナーの設定: 単一のコンテナー
-                イメージのソース: Azure コンテナー レジストリ
-                継続的なデプロイ: オン
-                OK: 「保存」ボタン
-        ACR Webhook を有効にする:
-            - https://portal.azure.com/ >> コンテナー レジストリ >> （コンテナー名）
-            - bash:
-                - az webapp deployment container config --name "__AppName__" --resource-group "__ResourceGroupName__" --enable-cd true
-                    #// __AppName__ はデプロイ先の App Service アプリケーション名
-    デプロイ:
-        - 新しいタグ（バージョン）で、Docker イメージをビルドし、レジストリ(ACR)にプッシュします
-            #// 「Azure の ACR に Docker イメージを登録する」を参照
-        - https://portal.azure.com/ >> App Service >> （アプリ名）
-        - コンテナーの設定:
-            タグ: （新しいタグ）
+Docker イメージを ACR 経由で Azure App Service にデプロイする:
+    #// ACR = Azure Container Registory
+    設定:
+        __ResourceGroup__: web1res
+        __AppName__: sagep-web1  #// Azure 全体で唯一
+        __RegistryName__: web1reg
+        __DockerImageName__: web_server
+        __DockerImageTag__: 0.0.1
+    Docker イメージが正しく動くことをローカルで確認します:
+    ACR リソースを作成します（ACR リソースが無いとき）:
+        - 参考: https://docs.microsoft.com/ja-jp/azure/container-registry/container-registry-get-started-portal
+        - https://portal.azure.com/ >> コンテナー レジストリ >> 追加（左上）:
+            リソース グループ: 新規作成 >> web1res  #// __ResourceGroup__
+            レジストリ名: web1reg  #// __RegistryName__
+            場所: 東日本
+            SKU: Basic
+            OK1: 「確認および作成」ボタン
+            OK2: 「作成」ボタン
+            OK3: 「リソースに移動」ボタン
+    App Service を新規作成します（App Service リソースが無いとき）:
+        - https://portal.azure.com/ >> App Service:
+            - 追加（左上）:
+                リソース グループ: web1res  #// __ResourceGroup__
+                Web アプリ名: sagep-web1  #// __AppName__
+                公開: Docker コンテナー
+                オペレーティングシステム: Linux
+                地域: Japan East
+                Linux プラン: ... (F1)
+            - 次 Docker:
+                オプション: 単一コンテナー
+                イメージ ソース: クイック スタート
+                サンプル: NGINX
+            - 次 監視:
+                Application Insights を有効にする: いいえ
+            - 次 タグ:
+            - 次 確認および作成:
+                - 作成
+            - リソースに移動:
+    ACR Webhook を有効にします:
+        #// PowerShell
+        - az login
+        - az webapp deployment container config --name "sagep-web1" --resource-group "web1res" --enable-cd true
+            #template: - az webapp deployment container config --name "__AppName__" --resource-group "__ResourceGroup__" --enable-cd true
+        - az acr update --name "web1reg" --admin-enabled true
+            #template: - az acr update --name "__RegistryName__" --admin-enabled true
+            #// 下記「コンテナーの設定」に登録するために必要です
+    ACR に登録する Docker イメージを用意します:
+        #// PowerShell
+        - cd  "__FolderWithDockerFile__"
+        - docker build  -t "web1reg.azurecr.io/web_server:0.0.1"  "."
+            #template: - docker build  -t "__RegistryName__.azurecr.io/__DockerImageName__:__DockerImageTag__"  "."
+    Docker イメージを ACR にプッシュします:
+        #// PowerShell
+        - az login  #// しばらくデプロイしていないときのみ必要
+        - az acr login --name "web1reg"  #// "__RegistryName__"  #// しばらくデプロイしていないときのみ必要
+        - docker push  "web1reg.azurecr.io/web_server:0.0.1"
+            #template: - docker push  "__RegistryName__.azurecr.io/__DockerImageName__:__DockerImageTag__"
+    継続的デプロイを有効にします:
+        https://portal.azure.com/ >> App Service >>（アプリ名）>>（設定）:
+        コンテナーの設定:
+            （最初の設定）: 単一のコンテナー
+            イメージのソース: Azure コンテナー レジストリ
+            レジストリ: web1reg  #// __RegistryName__
+            イメージ: web_server  #// __DockerImageName__  すでに登録済みのイメージのみ選択できます
+            タグ: 0.0.1  #// __DockerImageTag__  すでに登録済みのイメージのみ選択できます
+            継続的なデプロイ: オン
             OK: 「保存」ボタン
-            #// SKU Basic が必要な警告がされますが無視できます
-            ログ: 「最新の情報に更新」ボタンを押して、新しいタグがダウンロードされたことを確認します。
-                #// ログの一部の例： Status: Downloaded newer image for sagep.azurecr.io/file-stamp-front:0.0.4b
-                #// アプリの再起動が先かもしれない
-    アプリを再起動します:
-        Azure portal の場合:
-            - https://portal.azure.com/ >> App Service >> （アプリ名） >> 概要 >> 再起動
-        Azure CLI の場合:
-            - az webapp restart --name "sagep-app-service-v004" --resource-group "sagep-auth1"
-                #- az webapp restart --name "__AppName__" --resource-group "__ResourceGroupName__"
-
-Azure の ACR に Docker イメージを登録する:
-    Node.js アプリケーションなら、build フォルダーを更新する:
-        - npm run build
-    Docker イメージをビルドする:
-        - docker build  -t __RepositoryHost__/__ImageName__:__Tag__  .
-
-    Azure にログインする:
-        - az login [--tenant __TenantID__]
-
-    リポジトリのホスト名＝リソース グループの「ログイン サーバー アドレス」を表示します。 __RepositoryHost__ = .:
-        - az acr list --resource-group "__RepositoryResourceGroupName__" --query "[].{acrLoginServer:loginServer}" \
-        -    --output table
-
-    ACR インスタンスにログインします:
-        - az acr login  --name "__RepositoryName__"
-
-    Docker イメージをレジストリ（ACR インスタンス）にプッシュ（登録）します。 簡単なサンプルでも 5分かかります。:
-        - docker push  "__RepositoryHost__/__ImageName__:__Tag__"
-
-    登録されたことを確認します:
-        - az acr repository show-tags  --name "__RepositoryName__"  --repository "__ImageName__"
+    起動します:
+        - https://portal.azure.com/ >> App Service >>（アプリ名）
+        - 概要 >> 参照（右半分の左上）
+    上記 Azure リソースを削除するとき:
+        https://portal.azure.com/ >> リソース グループ
 
 
-
-
-
-App Service（上記の場合、不要）:
-    - https://portal.azure.com/ >> App Service
-    - 追加（左上）:
-        リソース グループ: （新規作成） app-service-container1
-        Web アプリ名: sagep-app-service1
-        公開: Docker コンテナー
-        オペレーティングシステム: Linux
-        地域: Japan East
-        Linux プラン: ... (F1)
-    - 次 Docker:
-        オプション: 単一コンテナー
-        イメージ ソース: クイック スタート
-        サンプル: NGINX
-    - 次 監視:
-        Application Insights を有効にする: いいえ
-    - 次 タグ:
-    - 次 確認および作成:
-        - 作成
-
-ZIP パッケージから Azure App Service のアプリを直接実行する:
+（未確認）ZIP パッケージから Azure App Service のアプリを直接実行する:
     メモ: Node.js + zip。 zip の構成は不明。 下記の方法では Node.js の初期画面のみ
     参考: https://docs.microsoft.com/ja-jp/azure/app-service/deploy-run-package
     Windows:
         - Reactなどのプロジェクト/build フォルダーの中のファイルやフォルダーをすべて選択
         - 右クリック >> 送る >> 圧縮フォルダー
     bash:
-        - az group create  --name "__GroupName__"  --location "__Region__"
-        - az appservice plan create --name "__ServicePlan__" --resource-group "__GroupName__" --sku FREE --is-linux
-        - az webapp create  --name "__AppName__"  --resource-group "__GroupName__"  --plan "__ServicePlan__" --runtime "node|10.15"
-        - az webapp config appsettings set --name "__AppName__" --resource-group "__GroupName__" --settings WEBSITE_RUN_FROM_PACKAGE="1"
-        - az webapp deployment source config-zip --name "__AppName__" --resource-group "__GroupName__" --src "__FileName__.zip"
+        - az group create  --name "sagep-app1"  --location "japaneast"
+        - az appservice plan create --name "sagep-plan1" --resource-group "sagep-app1" --sku FREE --is-linux
+        - az webapp create  --name "sagep-app-zip1"  --resource-group "sagep-app1"  --plan "sagep-plan1" --runtime "NODE|12.9"
+        - az webapp config appsettings set --name "sagep-app-zip1" --resource-group "sagep-app1" --settings WEBSITE_RUN_FROM_PACKAGE="1"
+        - az webapp deployment source config-zip --name "sagep-app-zip1" --resource-group "sagep-app1" --src "react-build.zip"
         - replaced:
-            - az group create  --name "sagep-auth1"  --location "japaneast"
-            - az appservice plan create --name "sagep-plan1" --resource-group "sagep-auth1" --sku FREE --is-linux
-            - az webapp create  --name "sagep-app-zip1"  --resource-group "sagep-auth1"  --plan "sagep-plan1" --runtime "NODE|12.9"
-            - az webapp config appsettings set --name "sagep-app-zip1" --resource-group "sagep-auth1" --settings WEBSITE_RUN_FROM_PACKAGE="1"
-            - az webapp deployment source config-zip --name "sagep-app-zip1" --resource-group "sagep-auth1" --src "react-build.zip"
+            - az group create  --name "__GroupName__"  --location "__Region__"
+            - az appservice plan create --name "__ServicePlan__" --resource-group "__GroupName__" --sku FREE --is-linux
+            - az webapp create  --name "__AppName__"  --resource-group "__GroupName__"  --plan "__ServicePlan__" --runtime "node|10.15"
+            - az webapp config appsettings set --name "__AppName__" --resource-group "__GroupName__" --settings WEBSITE_RUN_FROM_PACKAGE="1"
+            - az webapp deployment source config-zip --name "__AppName__" --resource-group "__GroupName__" --src "__FileName__.zip"
 
-FTP:
-	App Service の概要に FTP のホスト名などが表示されます。
+（未確認）FTP:
+    App Service の概要に FTP のホスト名などが表示されます。

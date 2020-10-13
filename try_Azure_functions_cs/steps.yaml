@@ -4,10 +4,10 @@
     https://docs.microsoft.com/ja-jp/azure/azure-functions/functions-add-output-binding-storage-queue-vs-code
 
 設定:
-    - __ProjectFolder__: try_Azure_functions_cs
-    - __FunctionAppName__: sagep-function-cs
-    - __FunctionName__: HttpTriggerCShap1
-    - __AzureWebJobsStorage__: local.settings.json にダウンロードされます
+    __ProjectFolder__: try_Azure_functions_cs
+    __FunctionAppName__: sagep-function-cs
+    __FunctionName__: HttpTriggerCSharp1
+    __AzureWebJobsStorage__: local.settings.json にダウンロードされます
 
 準備:
     Visual Studio Code をインストールします:
@@ -47,7 +47,7 @@
                 #template: ProjectFolder: __ProjectFolder__
             Language: C#
             Template: HttpTrigger
-            FunctionName: HttpTriggerCShap1
+            FunctionName: HttpTriggerCSharp1
                 #template: FunctionName: __FunctionName__
             NameSpace: Company.Function
             AccessRights: Anonymous

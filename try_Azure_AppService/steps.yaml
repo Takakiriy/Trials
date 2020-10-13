@@ -47,7 +47,7 @@ Docker イメージを ACR 経由で Azure App Service にデプロイする:
             - 次 確認および作成:
                 - 作成
             - リソースに移動:
-    ACR Webhook を有効にします:
+    ACR Webhook を有効にします（App Service を新規作成したとき）:
         #// PowerShell
         - az login
         - az webapp deployment container config --name "sagep-web1" --resource-group "web1res" --enable-cd true
@@ -66,7 +66,7 @@ Docker イメージを ACR 経由で Azure App Service にデプロイする:
         - az acr login --name "web1reg"  #// "__RegistryName__"  #// しばらくデプロイしていないときのみ必要
         - docker push  "web1reg.azurecr.io/web_server:0.0.1"
             #template: - docker push  "__RegistryName__.azurecr.io/__DockerImageName__:__DockerImageTag__"
-    継続的デプロイを有効にします:
+    継続的デプロイを有効にします（有効にしたことがないとき）:
         https://portal.azure.com/ >> App Service >>（アプリ名）>>（設定）:
         コンテナーの設定:
             （最初の設定）: 単一のコンテナー

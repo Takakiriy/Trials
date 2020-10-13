@@ -18,6 +18,9 @@ angular.module('todoApp')
         putItem : function(item){
             return $http.put(apiEndpoint + '/api/Todo/' + item.id, item);
         },
+        setAuth: function (token) {
+            $http.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+        },
         deleteItem : function(id){
             return $http({
                 method: 'DELETE',

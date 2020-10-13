@@ -16,7 +16,7 @@ namespace TodoApi.Controllers
     public class TodoController : Controller
     {
         private static readonly HttpClient _client = new HttpClient();
-        private static readonly string _remoteUrl = "https://sagep-back1.azurewebsites.net";
+        private static readonly string _remoteUrl = "https://sagex-back1.azurewebsites.net";
 
         private readonly TodoContext _context;
 

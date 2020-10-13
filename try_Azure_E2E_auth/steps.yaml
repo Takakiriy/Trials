@@ -1,6 +1,6 @@
 # Azure App Service でユーザーをエンド ツー エンドで認証および承認する
 
-（確認中）Azure App Service でユーザーをエンド ツー エンドで認証および承認する（すでにプロジェクト フォルダーが存在するとき）:
+Azure App Service でユーザーをエンド ツー エンドで認証および承認する（すでにプロジェクト フォルダーが存在するとき）:
     参考: https://docs.microsoft.com/ja-jp/azure/app-service/tutorial-auth-aad?pivots=platform-linux
     ホスティング プラットフォームを選択する: Linux
 
@@ -15,78 +15,79 @@
         __ServicePlan__: sagex-free-plan  #// Azure App Service のプラン名
         __FrontEndAppName__: sagex-front1
         __BackEndAppName__: sagex-back1
-        __FrontEndGitURL__: https://sagex-deploy@sagep-front1.scm.azurewebsites.net/sagep-front1.git
+        __FrontEndGitURL__: https://sagex-deploy@sagex-front1.scm.azurewebsites.net/sagex-front1.git
         __BackEndGitURL__: https://sagex-deploy@sagex-back1.scm.azurewebsites.net/sagex-back1.git
-        __BackEndClientID__: 3b5ade42-2332-4f83-bd92-87c07b5a7d3e #★秘密
-    Git for Windows をインストールします:
-        - https://git-scm.com/ >> Downloads >> Windows
-        - インストール オプションはデフォルトで構いません
-    .NET Core SDK をインストールします:
-        https://dotnet.microsoft.com/download/dotnet-core/3.1
-            Build apps - SDK >> Windows >> Installers >> x64
-    Azure CLI をインストールします:
-        https://docs.microsoft.com/ja-jp/cli/azure/install-azure-cli-windows?view=azure-cli-latest&tabs=azure-cli
-            Microsoft Installer (MSI) >> Azure CLI current version
-            azure-cli-2.12.1.msi
-    Azure のアカウントを作成して、開発に使う PC で、 https://portal.azure.com/ にサインインします:
-        サインインしたら、ブラウザーを閉じます
-    シェルから Azure にログインします:
-        # PowerShell
-        - az login
-    Azure のデプロイ ユーザーを新規作成します:
-        # PowerShell
-        - az webapp deployment user set --user-name "sagex-deploy" --password "password83"
-            #template:- az webapp deployment user set --user-name "__DeployUserName__" --password "__DeployUserPassword__"
-    Azure のリソース グループを新規作成します:
-        # PowerShell
-        - az group create --name "e2e" --location "japaneast"
-            #template:- az group create --name "__ResourceGroup__" --location "__Location__"
-    Azure App Service のプランを新規作成します:
-        # PowerShell
-        - az appservice plan create --name "sagex-free-plan" --resource-group "e2e" --sku FREE --is-linux
-            #template:- az appservice plan create --name "__ServicePlan__" --resource-group "__ResourceGroup__" --sku FREE --is-linux
-    Azure App Service リソースを作成します（関数アプリも App Service です）:
-        # PowerShell
-        - az webapp create --resource-group "e2e" --plan "sagex-free-plan" --name "sagex-front1" --runtime '"DOTNETCORE|3.1"' --deployment-local-git --query deploymentLocalGitUrl
-            #template:- az webapp create --resource-group "__ResourceGroup__" --plan "__ServicePlan__" --name "__FrontEndAppName__" --runtime '"DOTNETCORE|3.1"' --deployment-local-git --query deploymentLocalGitUrl
-        - #// フロントエンドの Git の URL (__FrontEndGitURL__) をメモします
-        - az webapp create --resource-group "e2e" --plan "sagex-free-plan" --name "sagex-back1"  --runtime '"DOTNETCORE|3.1"' --deployment-local-git --query deploymentLocalGitUrl
-            #template:- az webapp create --resource-group "__ResourceGroup__" --plan "__ServicePlan__" --name "__BackEndAppName__"  --runtime '"DOTNETCORE|3.1"' --deployment-local-git --query deploymentLocalGitUrl
-        - #// バックエンドの Git の URL (__BackEndGitURL__) をメモします
-        #// アプリケーションの Git の URL は、以下のコマンドでも確認できます
-        - az webapp deployment source config-local-git --name "__AppName__" --resource-group "__ResourceGroup__"
+        __BackEndClientID__: d7f70825-49be-4b57-bf3a-61b2c35cc669 #★秘密
+    ローカルPCへ各種ソフトウェアをインストールします:
+        Git for Windows をインストールします:
+            - https://git-scm.com/ >> Downloads >> Windows
+            - インストール オプションはデフォルトで構いません
+        .NET Core SDK をインストールします（要らないかも？）:
+            https://dotnet.microsoft.com/download/dotnet-core/3.1
+                Build apps - SDK >> Windows >> Installers >> x64
+        Azure CLI をインストールします:
+            https://docs.microsoft.com/ja-jp/cli/azure/install-azure-cli-windows?view=azure-cli-latest&tabs=azure-cli
+                Microsoft Installer (MSI) >> Azure CLI current version
+                azure-cli-2.12.1.msi
+    クラウド上の各種リソースを新規作成します:
+        Azure のアカウントを作成して、開発に使う PC で、 https://portal.azure.com/ にサインインします:
+            サインインしたら、ブラウザーを閉じます
+        シェルから Azure にログインします:
+            # PowerShell
+            - az login
+        Azure のデプロイ ユーザーを新規作成します:
+            # PowerShell
+            - az webapp deployment user set --user-name "sagex-deploy" --password "password83"
+                #template:- az webapp deployment user set --user-name "__DeployUserName__" --password "__DeployUserPassword__"
+        Azure のリソース グループを新規作成します:
+            # PowerShell
+            - az group create --name "e2e" --location "japaneast"
+                #template:- az group create --name "__ResourceGroup__" --location "__Location__"
+        Azure App Service のプランを新規作成します:
+            # PowerShell
+            - az appservice plan create --name "sagex-free-plan" --resource-group "e2e" --sku FREE --is-linux
+                #template:- az appservice plan create --name "__ServicePlan__" --resource-group "__ResourceGroup__" --sku FREE --is-linux
+        Azure App Service リソースを作成します（関数アプリも App Service です）:
+            # PowerShell
+            - az webapp create --resource-group "e2e" --plan "sagex-free-plan" --name "sagex-front1" --runtime '"DOTNETCORE|3.1"' --deployment-local-git --query deploymentLocalGitUrl
+                #template:- az webapp create --resource-group "__ResourceGroup__" --plan "__ServicePlan__" --name "__FrontEndAppName__" --runtime '"DOTNETCORE|3.1"' --deployment-local-git --query deploymentLocalGitUrl
+            - #// フロントエンドの Git の URL (__FrontEndGitURL__) をメモします
+            - az webapp create --resource-group "e2e" --plan "sagex-free-plan" --name "sagex-back1"  --runtime '"DOTNETCORE|3.1"' --deployment-local-git --query deploymentLocalGitUrl
+                #template:- az webapp create --resource-group "__ResourceGroup__" --plan "__ServicePlan__" --name "__BackEndAppName__"  --runtime '"DOTNETCORE|3.1"' --deployment-local-git --query deploymentLocalGitUrl
+            - #// バックエンドの Git の URL (__BackEndGitURL__) をメモします
+            #// アプリケーションの Git の URL は、以下のコマンドでも確認できます
+            - az webapp deployment source config-local-git --name "__AppName__" --resource-group "__ResourceGroup__"
     .NET Core Web アプリのプロジェクト（ソース）を git push コマンドで Azure へプッシュします:
         参考:
             Azure App Service へのローカル Git デプロイ:
                 https://docs.microsoft.com/ja-jp/azure/app-service/deploy-local-git
         バックエンドの Web API を呼び出すように URL を設定します: |
-            // in Controllers/TodoController.cs
+            // in dotnet-core-api/Controllers/TodoController.cs
             private static readonly string _remoteUrl = "https://sagex-back1.azurewebsites.net";
                 #template: private static readonly string _remoteUrl = "https://__BackEndAppName__.azurewebsites.net";
 
-            // in wwwroot/index.html
+            // in dotnet-core-api/wwwroot/index.html
             var apiEndpoint = "https://sagex-back1.azurewebsites.net";
                 #template: var apiEndpoint = "https://__BackEndAppName__.azurewebsites.net";
                 #// apiEndpoint は右のようなコードで使われています return $http.get(apiEndpoint + '/api/Todo');
 
         フロントエンドのコードをコミットします:
-            - cd "__FolderWithDotGitIgnore__"
+            - cd "../dotnet-core-api"
             - git init  #// .git フォルダーを作成します
             - git config --global user.name "test_user"  #template: __GitUserName__
             - git config --global user.email "test@example.com"  #template: __GitUserMail__
             - git add "."
             - git commit -m "__commit_message__"
         フロントエンドのコードを Azure App Service 内の Git リポジトリにプッシュします:
-            - git remote add frontend "https://sagex-deploy@sagep-front1.scm.azurewebsites.net/sagep-front1.git"  #template: __FrontEndGitURL__
-            - git push frontend master  #// 接続できないときは、もう一度実行するか、.netrc ファイルを作成してください
+            - git remote add frontend "https://sagex-deploy@sagex-front1.scm.azurewebsites.net/sagex-front1.git"  #template: __FrontEndGitURL__
+            - git push frontend master
             - password83  #template: __DeployUserPassword__
         プッシュしたら、Kudu ビルド サーバーが動き、そのまま Web アプリになります（REST API呼び出しは失敗します）:
             - https://sagex-front1.azurewebsites.net
                 #template:- https://__FrontEndAppName__.azurewebsites.net
 
         バックエンドのコードをコミットします:
-            #// 添付のプロジェクトはフロントエンドとバックエンドのコードを共有しているため、以下のコミットまでの操作は不要です
-            - cd "__FolderWithDotGitIgnore__"
+            - cd "../dotnet-core-api_base"  #// フロントエンドと異なるフォルダーです（チュートリアルでは同じフォルダーでした）
             - git init  #// .git フォルダーを作成します
             - git config --global user.name "test_user"  #template: __GitUserName__
             - git config --global user.email "test@example.com"  #template: __GitUserMail__
@@ -94,26 +95,26 @@
             - git commit -m "__commit_message__"
         バックエンドのコードを Azure App Service 内の Git リポジトリにプッシュします:
             - git remote add backend "https://sagex-deploy@sagex-back1.scm.azurewebsites.net/sagex-back1.git"  #template: __BackEndGitURL__
-            - git push backend master  #// 接続できないときは、もう一度実行するか、.netrc ファイルを作成してください
+            - git push backend master
             - password83  #template: __DeployUserPassword__
-        プッシュしたら、Kudu ビルド サーバーが動き、そのままバックエンドになります（REST API呼び出しは失敗します）:
+        プッシュしたら、Kudu ビルド サーバーが動き、そのままバックエンドになります（正しく動作します）:
             #// 添付のプロジェクトは Web サーバーも持っているので以下のURLにアクセスできます:
             - https://sagex-back1.azurewebsites.net
                 #template:- https://__BackEndAppName__.azurewebsites.net
     認証の設定をします:
         バックエンドを実行するのに認証が必要になるように設定し、クライアント ID を調べます:
             https://portal.azure.com/ >> App Service >> sagex-back1 >> 認証/承認:
-                    #template:__BackEndAppName__ >> 認証/承認:
+                    #template: __BackEndAppName__ >> 認証/承認:
                 App Service 認証: オン
                 要求が認証されない場合に実行するアクション: Azure Active Directory でのログイン
                 認証プロバイダー: Azure Active Directory
                 管理モード: 簡易
-                OK1: OK ボタン
+                OK1: OK ボタン  #// Azure Active Directory のアプリの登録に追加されます
                 OK2: 保存ボタン
             アプリの認証設定の保存が完了するまで待つ:
             クライアント ID (__BackEndClientID__) をメモする:
                 - App Service >> 認証/承認 >> Azure Active Directory >> 管理モード=既存のADアプリを選択する >>
-                    Azure AD アプリ >> （App Service名） >> クライアント ID
+                    Azure AD アプリ >> sagex-back1 >> クライアント ID  #template: __BackEndAppName__ >> クライアント ID
         バックエンドに CORS の設定を追加します（認証とは別にフロントエンドからバックエンドを呼び出すときに必要なことです）:
             - az webapp cors add --resource-group "e2e" --name "sagex-back1" --allowed-origins 'https://sagex-front1.azurewebsites.net'
                 #template: az webapp cors add --resource-group "__ResourceGroup__" --name "__BackEndAppName__" --allowed-origins 'https://__FrontEndAppName__.azurewebsites.net'
@@ -124,14 +125,13 @@
                 要求が認証されない場合に実行するアクション: Azure Active Directory でのログイン
                 認証プロバイダー: Azure Active Directory
                 管理モード: 簡易
-                OK1: OK ボタン
+                OK1: OK ボタン  #// Azure Active Directory のアプリの登録に追加されます
                 OK2: 保存ボタン
         フロントエンドから Web API を呼び出すときにトークンを含めるようにします:
             Active Directory に、認証を許可するアプリケーションを登録します:
                 - https://portal.azure.com/ >> Azure Active Directory:
                     - アプリの登録（左） >> すべてのアプリケーション（タブ）
-                    - sagex-front1 （を検索）:
-                            #template:- __FrontEndAppName__ （を検索）
+                    - sagex-front1 （を検索）:  #template:- __FrontEndAppName__ （を検索）
                         - API のアクセス許可（左）>> アクセス許可の追加 >> 所属する組織で使用している API（タブ）
                         - sagex-back1:  #template:- __BackEndAppName__
                             user_impersonation: チェック
@@ -141,34 +141,26 @@
                     - （左のツリー） sagex-front1 >> config >> authsettings:  #template: __FrontEndAppName__
                         - Read/Write（右上）
                         - [Edit]: |
-                            "additionalLoginParams": ["response_type=code id_token","resource=3b5ade42-2332-4f83-bd92-87c07b5a7d3e"],
+                            "additionalLoginParams": ["response_type=code id_token","resource=d7f70825-49be-4b57-bf3a-61b2c35cc669"],
                                 #tepmlate: "additionalLoginParams": ["response_type=code id_token","resource=__BackEndClientID__"],
                         - [PUT]
                         - ReadOnly（右上）
     Web にアクセスします:
-        - https://sagex-back1.azurewebsites.net
-            #template:- https://__BackEndAppName__.azurewebsites.net
         - https://sagex-front1.azurewebsites.net
             #template:- https://__FrontEndAppName__.azurewebsites.net
+        - https://sagex-back1.azurewebsites.net
+            #template:- https://__BackEndAppName__.azurewebsites.net
+    不要になったら、クラウドから削除します:
+        - https://portal.azure.com/ >> リソース グループ >> e2e >> リソース グループの削除
+            #template: >> __ResourceGroup__ >> リソース グループの削除
+        - https://portal.azure.com/ >> Azure Active Directory
+        - アプリの登録（左） >> すべてのアプリケーション（タブ）:
+            - sagex-front1 （を検索） >> 削除  #template:- __FrontEndAppName__ （を検索） >> 削除
+            - sagex-back1 （を検索） >> 削除  #template:- __BackEndAppName__ （を検索） >> 削除
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-Microsoft アカウントを持っているユーザーを Azure AD の管理者の許可なくゲストユーザーとしてサインアップできるようにする:
+（確認中）Microsoft アカウントを持っているユーザーを Azure AD の管理者の許可なくゲストユーザーとしてサインアップできるようにする:
     参考: https://docs.microsoft.com/ja-jp/azure/active-directory/external-identities/self-service-sign-up-user-flow
-
-
 
 
 
@@ -198,15 +190,16 @@ Microsoft アカウントを持っているユーザーを Azure AD の管理者
         - Angular.js フロントエンド
         - ローカル ASP.NET Core アプリ
 
-    Git for Windows をインストールします:
-        https://git-scm.com/ >> Downloads >> Windows
-        インストール オプションはデフォルトで構いません
-    Git bash(デスクトップ等で):
-        - git config --global user.name "test_user"  #template: __GitUserName__
-        - git config --global user.email "test@example.com"  #template: __GitUserMail__
-    .NET Core SDK をインストールします:
-        https://dotnet.microsoft.com/download/dotnet-core/3.1
-            Build apps - SDK >> Windows >> Installers >> x64
+    ローカルPCへ各種ソフトウェアをインストールします:
+        Git for Windows をインストールします:
+            https://git-scm.com/ >> Downloads >> Windows
+            インストール オプションはデフォルトで構いません
+        Git bash(デスクトップ等で):
+            - git config --global user.name "test_user"  #template: __GitUserName__
+            - git config --global user.email "test@example.com"  #template: __GitUserMail__
+        .NET Core SDK をインストールします:
+            https://dotnet.microsoft.com/download/dotnet-core/3.1
+                Build apps - SDK >> Windows >> Installers >> x64
 
     .NET Core Web アプリのサーバーをローカルで起動します:
         参考: https://docs.microsoft.com/ja-jp/azure/app-service/tutorial-auth-aad?pivots=platform-linux#create-local-net-core-app
@@ -218,41 +211,43 @@ Microsoft アカウントを持っているユーザーを Azure AD の管理者
             - http://localhost:5000 を開く
             - bash で [Ctrl]+[C] を押して、サーバーを終了する
 
-
     Azure CLI をインストールします:
         https://docs.microsoft.com/ja-jp/cli/azure/install-azure-cli-windows?view=azure-cli-latest&tabs=azure-cli
             Microsoft Installer (MSI) >> Azure CLI current version
             azure-cli-2.12.1.msi
-    Azure のアカウントを作成して、開発に使う PC で、 https://portal.azure.com/ にサインインします:
-        サインインしたら、ブラウザーを閉じます
-    シェルから Azure にログインします:
-        # PowerShell
-        - az login
-    Azure のデプロイ ユーザーを新規作成します（Azure アカウントの初回のみ）:
-        # PowerShell
-        - az webapp deployment user set --user-name "sagex-deploy" --password "password83"
-            #template:- az webapp deployment user set --user-name "__DeployUserName__" --password "__DeployUserPassword__"
-    Azure のリソース グループを新規作成します:
-        # PowerShell
-        - az group create --name "e2e-auth1" --location "japaneast"
-            #template:- az group create --name "__ResourceGroup__" --location "__Location__"
-    Azure App Service のプランを新規作成します:
-        # PowerShell
-        - az appservice plan create --name "sagep-free-plan1" --resource-group "e2e-auth1" --sku FREE --is-linux
-            #template:- az appservice plan create --name "__ServicePlan__" --resource-group "__ResourceGroup__" --sku FREE --is-linux
-    Azure App Service リソースを作成します（関数アプリも App Service です）:
-        # PowerShell
-        - az webapp create --resource-group "e2e-auth1" --plan "sagep-free-plan1" --name "sagep-front1" --runtime '"DOTNETCORE|3.1"' --deployment-local-git --query deploymentLocalGitUrl
-            #template:- az webapp create --resource-group "__ResourceGroup__" --plan "__ServicePlan__" --name "__FrontEndAppName__" --runtime '"DOTNETCORE|3.1"' --deployment-local-git --query deploymentLocalGitUrl
-        - #// フロントエンドの Git の URL (__FrontEndGitURL__) をメモします
-        - az webapp create --resource-group "e2e-auth1" --plan "sagep-free-plan1" --name "sagep-back1"  --runtime '"DOTNETCORE|3.1"' --deployment-local-git --query deploymentLocalGitUrl
-            #template:- az webapp create --resource-group "__ResourceGroup__" --plan "__ServicePlan__" --name "__BackEndAppName__"  --runtime '"DOTNETCORE|3.1"' --deployment-local-git --query deploymentLocalGitUrl
-        - #// バックエンドの Git の URL (__BackEndGitURL__) をメモします
-        #// アプリケーションの Git の URL は、以下のコマンドでも確認できます
-        - az webapp deployment source config-local-git --name "__AppName__" --resource-group "__ResourceGroup__"
+
+    クラウド上の各種リソースを新規作成します:
+        Azure のアカウントを作成して、開発に使う PC で、 https://portal.azure.com/ にサインインします:
+            サインインしたら、ブラウザーを閉じます
+        シェルから Azure にログインします:
+            # PowerShell
+            - az login
+        Azure のデプロイ ユーザーを新規作成します（Azure アカウントの初回のみ）:
+            # PowerShell
+            - az webapp deployment user set --user-name "sagex-deploy" --password "password83"
+                #template:- az webapp deployment user set --user-name "__DeployUserName__" --password "__DeployUserPassword__"
+        Azure のリソース グループを新規作成します:
+            # PowerShell
+            - az group create --name "e2e-auth1" --location "japaneast"
+                #template:- az group create --name "__ResourceGroup__" --location "__Location__"
+        Azure App Service のプランを新規作成します:
+            # PowerShell
+            - az appservice plan create --name "sagep-free-plan1" --resource-group "e2e-auth1" --sku FREE --is-linux
+                #template:- az appservice plan create --name "__ServicePlan__" --resource-group "__ResourceGroup__" --sku FREE --is-linux
+        Azure App Service リソースを作成します（関数アプリも App Service です）:
+            # PowerShell
+            - az webapp create --resource-group "e2e-auth1" --plan "sagep-free-plan1" --name "sagep-front1" --runtime '"DOTNETCORE|3.1"' --deployment-local-git --query deploymentLocalGitUrl
+                #template:- az webapp create --resource-group "__ResourceGroup__" --plan "__ServicePlan__" --name "__FrontEndAppName__" --runtime '"DOTNETCORE|3.1"' --deployment-local-git --query deploymentLocalGitUrl
+            - #// フロントエンドの Git の URL (__FrontEndGitURL__) をメモします
+            - az webapp create --resource-group "e2e-auth1" --plan "sagep-free-plan1" --name "sagep-back1"  --runtime '"DOTNETCORE|3.1"' --deployment-local-git --query deploymentLocalGitUrl
+                #template:- az webapp create --resource-group "__ResourceGroup__" --plan "__ServicePlan__" --name "__BackEndAppName__"  --runtime '"DOTNETCORE|3.1"' --deployment-local-git --query deploymentLocalGitUrl
+            - #// バックエンドの Git の URL (__BackEndGitURL__) をメモします
+            #// アプリケーションの Git の URL は、以下のコマンドでも確認できます
+            - az webapp deployment source config-local-git --name "__AppName__" --resource-group "__ResourceGroup__"
 
     .NET Core Web アプリのプロジェクト（ソース）を git push コマンドで Azure へプッシュします:
         フロントエンドのコードを Azure App Service 内の Git リポジトリにプッシュします:
+            # PowerShell
             - git remote add frontend "https://sagex-deploy@sagep-front1.scm.azurewebsites.net/sagep-front1.git"  #template:__FrontEndGitURL__
             - git push frontend master
             - password83  #template: __DeployUserPassword__
@@ -261,6 +256,7 @@ Microsoft アカウントを持っているユーザーを Azure AD の管理者
                 #template:- https://__FrontEndAppName__.azurewebsites.net
 
         バックエンドのコードを Azure App Service 内の Git リポジトリにプッシュします:
+            # PowerShell
             - git remote add backend "https://sagex-deploy@sagep-back1.scm.azurewebsites.net/sagep-back1.git"  #template: __BackEndGitURL__
             - git push backend master
             - password83  #template: __DeployUserPassword__
@@ -271,11 +267,12 @@ Microsoft アカウントを持っているユーザーを Azure AD の管理者
 
     フロントエンドの一部をバックエンド呼び出しに置き換えます:
         参考: https://docs.microsoft.com/ja-jp/azure/app-service/tutorial-auth-aad?pivots=platform-linux#modify-front-end-code
-        dotnet-core-api\Controllers\TodoController.cs を編集:
+        dotnet-core-api/Controllers/TodoController.cs を編集:
             - _remoteUrl 変数の値の一部を置き換える必要があることに注意:
                 - <back-end-app-name> = sagep-back1
                     #template:- <back-end-app-name> = __BackEndAppName__
-        プッシュします:
+        フロントエンドのみプッシュします:
+            # PowerShell
             - git add .
             - git commit -m "call back-end API"
             - git push frontend master
@@ -285,105 +282,115 @@ Microsoft アカウントを持っているユーザーを Azure AD の管理者
             - https://sagep-front1.azurewebsites.net  #// バックエンドと同じデータが表示されること
                 #template:- https://__FrontEndAppName__.azurewebsites.net
 
-    バックエンドを実行するのに認証が必要になるように設定し、クライアント ID を調べます:
-        https://portal.azure.com/ >> App Service >> sagep-back1 >> 認証/承認:
-                #template: __BackEndAppName__ >> 認証/承認
-            App Service 認証: オン
-            要求が認証されない場合に実行するアクション: Azure Active Directory でのログイン
-            認証プロバイダー: Azure Active Directory
-            管理モード: 簡易
-            OK1: OK ボタン
-            OK2: 保存ボタン
-        クライアント ID (__BackEndClientID__) をメモする:
-            - App Service >> 認証/承認 >> Azure Active Directory >> 管理モード=既存のADアプリを選択する >> Azure AD アプリ >>
-                sagep-back1 >> クライアント ID  #template:  __BackEndAppName__ >> クライアント ID
+    認証の設定をします:
+        バックエンドを実行するのに認証が必要になるように設定し、クライアント ID を調べます:
+            https://portal.azure.com/ >> App Service >> sagep-back1 >> 認証/承認:
+                    #template: __BackEndAppName__ >> 認証/承認
+                App Service 認証: オン
+                要求が認証されない場合に実行するアクション: Azure Active Directory でのログイン
+                認証プロバイダー: Azure Active Directory
+                管理モード: 簡易
+                OK1: OK ボタン  #// Azure Active Directory のアプリの登録に追加されます
+                OK2: 保存ボタン
+            クライアント ID (__BackEndClientID__) をメモする:
+                - App Service >> 認証/承認 >> Azure Active Directory >> 管理モード=既存のADアプリを選択する >> Azure AD アプリ >>
+                    sagep-back1 >> クライアント ID  #template:  __BackEndAppName__ >> クライアント ID
 
-    フロントエンドを実行するのに認証が必要になるように設定します:
-        - https://portal.azure.com/ >> App Service >> sagep-front1 >> 認証/承認:
-                #template: __FrontEndAppName__ >> 認証/承認
-            App Service 認証: オン
-            要求が認証されない場合に実行するアクション: Azure Active Directory でのログイン
-            認証プロバイダー: Azure Active Directory
-            管理モード: 簡易
-            OK1: OK ボタン
-            OK2: 保存ボタン
+        フロントエンドを実行するのに認証が必要になるように設定します:
+            - https://portal.azure.com/ >> App Service >> sagep-front1 >> 認証/承認:
+                    #template: __FrontEndAppName__ >> 認証/承認
+                App Service 認証: オン
+                要求が認証されない場合に実行するアクション: Azure Active Directory でのログイン
+                認証プロバイダー: Azure Active Directory
+                管理モード: 簡易
+                OK1: OK ボタン  #// Azure Active Directory のアプリの登録に追加されます
+                OK2: 保存ボタン
 
-    フロントエンドから Web API を呼び出すときにトークンを含めるようにします:
-        - Active Directory に、認証を許可するアプリケーションを登録します:
-            - https://portal.azure.com/ >> Azure Active Directory:
-                - アプリの登録（左） >> すべてのアプリケーション（タブ）
-                - sagep-front1 （を検索）:  #template:- __FrontEndAppName__ （を検索）
-                    - API のアクセス許可（左）>> アクセス許可の追加 >> 所属する組織で使用している API（タブ）
-                    - sagep-back1:  #template:- __BackEndAppName__:
-                        user_impersonation: チェック
-                        OK: 「アクセス許可の追加」を押す
-            - https://resources.azure.com/ >> sagep-front1 （を検索してリストから選択）:
-                    #template: __FrontEndAppName__ （を検索してリストから選択）
-                - （左のツリー） sagep-front1 >> config  #template: __FrontEndAppName__ >> config
-                - authsettings:
-                    - Read/Write（右上）
-                    - [Edit]: |
-                        "additionalLoginParams": ["response_type=code id_token","resource=2bb58ad6-329f-40f4-9414-11c3f0365c37"],
-                            #template: "additionalLoginParams": ["response_type=code id_token","resource=__BackEndClientID__"],
-                    - [PUT]
-                    - ReadOnly（右上）
-        - もし、他のプロバイダー用にアクセス トークンを構成する場合、「ID プロバイダー トークンの更新」を参照（未確認）:
-            https://docs.microsoft.com/ja-jp/azure/app-service/app-service-authentication-how-to#refresh-identity-provider-tokens
+        フロントエンドから Web API を呼び出すときにトークンを含めるようにします:
+            - Active Directory に、認証を許可するアプリケーションを登録します:
+                - https://portal.azure.com/ >> Azure Active Directory:
+                    - アプリの登録（左） >> すべてのアプリケーション（タブ）
+                    - sagep-front1 （を検索）:  #template:- __FrontEndAppName__ （を検索）
+                        - API のアクセス許可（左）>> アクセス許可の追加 >> 所属する組織で使用している API（タブ）
+                        - sagep-back1:  #template:- __BackEndAppName__:
+                            user_impersonation: チェック
+                            OK: 「アクセス許可の追加」を押す
+                - https://resources.azure.com/ >> sagep-front1 （を検索してリストから選択）:
+                        #template: __FrontEndAppName__ （を検索してリストから選択）
+                    - （左のツリー） sagep-front1 >> config  #template: __FrontEndAppName__ >> config
+                    - authsettings:
+                        - Read/Write（右上）
+                        - [Edit]: |
+                            "additionalLoginParams": ["response_type=code id_token","resource=2bb58ad6-329f-40f4-9414-11c3f0365c37"],
+                                #template: "additionalLoginParams": ["response_type=code id_token","resource=__BackEndClientID__"],
+                        - [PUT]
+                        - ReadOnly（右上）
+            - もし、他のプロバイダー用にアクセス トークンを構成する場合、「ID プロバイダー トークンの更新」を参照（未確認）:
+                https://docs.microsoft.com/ja-jp/azure/app-service/app-service-authentication-how-to#refresh-identity-provider-tokens
 
-        - （しなくてもよい？）フロントエンドから呼び出す C# の Web API がバックエンドの API を呼び出すときにトークンを含めるようにします:
-            - 参考: https://docs.microsoft.com/ja-jp/azure/app-service/tutorial-auth-aad?pivots=platform-linux#call-api-securely-from-server-code
-            - dotnet-core-api\Controllers\TodoController.cs を編集（編集済み）:
-                - OnActionExecuting メソッドを追加
-                    #// フロントエンドの HTTP リクエストに X-MS-TOKEN-AAD-ACCESS-TOKEN が含まれるようになります
-            - プッシュします:
-                - git add .
-                - git commit -m "add authorization header for server code"
-                - git push frontend master
-            - Azure で動作確認します:
-                - http://sagep-front1.azurewebsites.net  #// ブラウザーの再起動とリロードが必要かもしれません
-                    #template:- http://__FrontEndAppName__.azurewebsites.net
+            - （しなくてもよい？）フロントエンドから呼び出す C# の Web API がバックエンドの API を呼び出すときにトークンを含めるようにします:
+                - 参考: https://docs.microsoft.com/ja-jp/azure/app-service/tutorial-auth-aad?pivots=platform-linux#call-api-securely-from-server-code
+                - dotnet-core-api/Controllers/TodoController.cs を編集:
+                    - OnActionExecuting メソッドを追加
+                        #// フロントエンドの HTTP リクエストに X-MS-TOKEN-AAD-ACCESS-TOKEN が含まれるようになります
+        フロントエンドのみプッシュします:
+            # PowerShell
+            - git add .
+            - git commit -m "add authorization header for server code"
+            - git push frontend master
+        Azure で動作確認します:
+            - http://sagep-front1.azurewebsites.net  #// ブラウザーの再起動とリロードが必要かもしれません
+                #template:- http://__FrontEndAppName__.azurewebsites.net
 
-        - ブラウザー コードから API を安全に呼び出す:
-            - 概要（操作なし）:
-                - アクセス トークンを取得する:
-                    サーバー: 要求ヘッダーにあるアクセス トークンを取得する
-                    クライアント: HTTP GET /.auth/me にアクセスする
-                    #// JavaScript 用 Microsoft Authentication Library は Angular.js 用。 Node.js用はアルファ版
-                
-            - バックエンドに CORS の設定を追加します（認証とは別にフロントエンドからバックエンドを呼び出すときに必要なことです）:
-                - az webapp cors add --resource-group "e2e-auth1" --name "sagep-back1" --allowed-origins 'https://sagep-front1.azurewebsites.net'
-                    #template:- az webapp cors add --resource-group "__ResourceGroup__" --name "__BackEndAppName__" --allowed-origins 'https://__FrontEndAppName__.azurewebsites.net'
-            - HTTP GET /.auth/me にアクセスして、アクセス トークンを取得します:
-                - in wwwroot/app/scripts/app.js: |
-                    $routeProvider.when("/Home", {
-                        controller: "todoListCtrl",
-                        templateUrl: "/App/Views/TodoList.html",
-                        resolve: {
-                            token: ['$http', 'todoListSvc', function ($http, todoListSvc) {
-                                return $http.get('/.auth/me').then(function (response) {
-                                    todoListSvc.setAuth(response.data[0].access_token);
-                                    return response.data[0].access_token;
-                                });
-                            }]
-                        },
-                    }).otherwise({ redirectTo: "/Home" });
-                #// $routeProvider.when(...) の部分を上記のコードに置き換えます
-                #// angular.module の routeProvider の resolve は、Angular でビューのレンダリングを始める前に行う処理です
-                #// token は、 setAuth （後述）の引数に渡ります
-            - バックエンドの Web API を呼び出すように URL を設定します: |
-                // in wwwroot/index.html
-                var apiEndpoint = "https://sagep-back1.azurewebsites.net";  #template: https://__BackEndAppName__.azurewebsites.net
-                    #// apiEndpoint は右のようなコードで使われています return $http.get(apiEndpoint + '/api/Todo');
-            - アクセス トークンをすべての HTML リクエスト ヘッダーに追加するようにします: |
-                // in wwwroot/app/scripts/todoListSvc.js
-                setAuth: function (token) {
-                    $http.defaults.headers.common['Authorization'] = 'Bearer ' + token;
-                },
-            - プッシュします:
-                - git add .
-                - git commit -m "add authorization header for Angular"
-                - git push frontend master
-            - Azure で動作確認します:
-                - http://sagep-front1.azurewebsites.net  #// ブラウザーの再起動とリロードが必要かもしれません
-                    #template: http://__FrontEndAppName__.azurewebsites.net
-                - 'HTTP 要求ヘッダー authorization: Bearer にトークン（複雑な長い文字列）があることを確認します'
+    ブラウザー コードから API を安全に呼び出す:
+        - 概要（操作なし）:
+            - アクセス トークンを取得する:
+                サーバー: 要求ヘッダーにあるアクセス トークンを取得する
+                クライアント: HTTP GET /.auth/me にアクセスする
+                #// JavaScript 用 Microsoft Authentication Library は Angular.js 用。 Node.js用はアルファ版
+            
+        - バックエンドに CORS の設定を追加します（認証とは別にフロントエンドからバックエンドを呼び出すときに必要なことです）:
+            - az webapp cors add --resource-group "e2e-auth1" --name "sagep-back1" --allowed-origins 'https://sagep-front1.azurewebsites.net'
+                #template:- az webapp cors add --resource-group "__ResourceGroup__" --name "__BackEndAppName__" --allowed-origins 'https://__FrontEndAppName__.azurewebsites.net'
+        - HTTP GET /.auth/me にアクセスして、アクセス トークンを取得します:
+            - in dotnet-core-api/wwwroot/app/scripts/app.js: |
+                $routeProvider.when("/Home", {
+                    controller: "todoListCtrl",
+                    templateUrl: "/App/Views/TodoList.html",
+                    resolve: {
+                        token: ['$http', 'todoListSvc', function ($http, todoListSvc) {
+                            return $http.get('/.auth/me').then(function (response) {
+                                todoListSvc.setAuth(response.data[0].access_token);
+                                return response.data[0].access_token;
+                            });
+                        }]
+                    },
+                }).otherwise({ redirectTo: "/Home" });
+            #// $routeProvider.when(...) の部分を上記のコードに置き換えます
+            #// angular.module の routeProvider の resolve は、Angular でビューのレンダリングを始める前に行う処理です
+            #// token は、 setAuth （後述）の引数に渡ります
+        - バックエンドの Web API を呼び出すように URL を設定します: |
+            // in dotnet-core-api/wwwroot/index.html
+            var apiEndpoint = "https://sagep-back1.azurewebsites.net";  #template: https://__BackEndAppName__.azurewebsites.net
+                #// apiEndpoint は右のようなコードで使われています return $http.get(apiEndpoint + '/api/Todo');
+        - アクセス トークンをすべての HTML リクエスト ヘッダーに追加するようにします: |
+            // in dotnet-core-api/wwwroot/app/scripts/todoListSvc.js
+            setAuth: function (token) {
+                $http.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+            },
+    フロントエンドのみプッシュします:
+        # PowerShell
+        - git add .
+        - git commit -m "add authorization header for Angular"
+        - git push frontend master
+    Azure で動作確認します:
+        - http://sagep-front1.azurewebsites.net  #// ブラウザーの再起動とリロードが必要かもしれません
+            #template: http://__FrontEndAppName__.azurewebsites.net
+        - 'HTTP 要求ヘッダー authorization: Bearer にトークン（複雑な長い文字列）があることを確認します'
+    不要になったら、クラウドから削除します:
+        - https://portal.azure.com/ >> リソース グループ >> e2e-auth1 >> リソース グループの削除
+            #template: >> __ResourceGroup__ >> リソース グループの削除
+        - https://portal.azure.com/ >> Azure Active Directory
+        - アプリの登録（左） >> すべてのアプリケーション（タブ）:
+            - sagep-front1 （を検索） >> 削除  #template:- __FrontEndAppName__ （を検索） >> 削除
+            - sagep-back1 （を検索） >> 削除  #template:- __BackEndAppName__ （を検索） >> 削除

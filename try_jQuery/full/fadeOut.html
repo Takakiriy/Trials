@@ -1,0 +1,24 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+<!-- Character Code Encoding: "WHITE SQUARE" is □ -->
+<meta charset="UTF-8">
+<title>メインページ</title>
+<script src="js/jquery.min.js"></script>
+<script>
+</script>
+</head>
+
+<body>
+
+<div id="content">
+  <p>ここをクリックすると、徐々に消えます</p>
+</div>
+
+<script type="text/javascript">
+  $("#content").click(function () {
+    $("#content").fadeOut("slow");  // slim 版 jQuery ではエラーになります
+  });
+</script>
+</body>
+</html>

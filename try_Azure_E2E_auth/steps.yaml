@@ -431,9 +431,224 @@ Azure App Service でユーザーをエンド ツー エンドで認証および
             「Call API」ボタンを押す
             JSON が表示されます。 例：{"name":"Example2"}
 
-（確認中）チュートリアル:Azure Active Directory B2C:
-    参考: https://docs.microsoft.com/ja-jp/azure/active-directory-b2c/tutorial-create-tenant
-
+（確認中）チュートリアル:Azure Active Directory B2C (Azure AD B2C):
+    設定:
+        __TenantName__: b2c_tenant1  #// Azure AD B2C リソースの名前
+        __B2C_DomainName__: sagepb2ctenant1  #// __B2C_DomainName__.onmicrosoft.com
+        __AD_DomainName__: example1sagep  #// __AD_DomainName__.onmicrosoft.com
+        __AppName__: webapp1
+        __AppForIDP__: Azure AD B2C App
+        __ClientID__: ceb494b5-2202-4660-9b74-6ee03cde377
+        __ClientSecret__: z3EgK4jAZ-M6_cY..Vj2Pa9gM.22n_mPCB #★秘密
+        __RedirectURI__: https://jwt.ms
+        __SignUpSignInUserFlow__: signupsignin1
+        __ProfileEditingUserFlow__: profileediting1
+        __PasswordResetUserFlow__: passwordreset1
+        __ClientIDForIDP__: 966a213f-49a6-4f07-a911-7b0126b27249
+        __ClientSecretForIDP__: nb_rSsE~a.XqaeMeQ_0YHEo9Vzo0769f.2 #★秘密
+        __AzureIDP__: Contoso Azure AD
+    テナントの作成:
+        参考: https://docs.microsoft.com/ja-jp/azure/active-directory-b2c/tutorial-create-tenant
+        対象ディレクトリの選択:
+            - https://portal.azure.com/
+            - （必要なら）アカウント名（右上） >> ディレクトリの切り替え
+        場所: ホーム >> リソースの作成 >> Azure Active Directory B2C（を検索） >> 作成 >>
+        新しい Azure AD B2C テナントを作成する:
+            組織名: b2c_tenant1  #template: __TenantName__
+            初期ドメイン名: sagepb2ctenant1  #template: __B2C_DomainName__
+            国またはリージョン: 日本
+            OK1: 次 確認及び作成
+            OK2: 作成
+    Web アプリケーションを登録します:
+        参考: https://docs.microsoft.com/ja-jp/azure/active-directory-b2c/tutorial-register-applications?tabs=app-reg-ga
+        対象ディレクトリの選択（Azure AD B2C のリソースを選択）:
+            - https://portal.azure.com/
+            - （必要なら）アカウント名（右上） >> ディレクトリの切り替え >> b2c_tenant1  #template: __TenantName__
+        Web アプリケーションを登録します:
+            場所: https://portal.azure.com/ >> Azure AD B2C >> アプリの登録 >> ＋新規登録
+            名前: webapp1  #template: __AppName__
+            サポートされているアカウントの種類: 任意の組織のディレクトリまたは任意の ID プロバイダーのアカウント
+            リダイレクト URI:
+                Web: https://jwt.ms  #template: __RedirectURI__
+                    #// アプリのエンドポイント。例 https://contoso.com/auth-response
+            OK: 登録 ボタン
+            #// アプリケーション (レガシ) は未確認
+            アプリケーション（クライアント）ID を参照する:
+                - （ https://portal.azure.com/ >> Azure AD B2C >> アプリの登録 >> webapp1 >> ） #template: __AppName__
+                - アプリケーション（クライアント）ID
+            クライアント シークレットの作成:
+                場所:
+                    - （ https://portal.azure.com/ >> Azure AD B2C >> アプリの登録 >> webapp1 >> ） #template: __AppName__
+                    - 証明書とシークレット >> ＋新しいクライアント シークレット:
+                        説明: clientsecret1
+                        OK: 追加 ボタン
+                クライアント シークレットの値を参照する(__ClientSecret__):
+                    - （ https://portal.azure.com/ >> Azure AD B2C >> アプリの登録 >> webapp1 >> ） #template: __AppName__
+                    - 証明書とシークレット >> クライアント シークレット >> 値
+                    #// メモしないと、いずれ見えなくなります
+    ユーザー フローを作成する:
+        参考: https://docs.microsoft.com/ja-jp/azure/active-directory-b2c/tutorial-create-user-flows
+        対象ディレクトリの選択（Azure AD B2C のリソースを選択）:
+            - https://portal.azure.com/
+            - （必要なら）アカウント名（右上） >> ディレクトリの切り替え >> b2c_tenant1  #template: __TenantName__
+        サインアップとサインインのユーザー フローを作成する:
+            場所: https://portal.azure.com/ >> Azure AD B2C >> （ポリシー） >> ユーザー フロー
+            新しいユーザー フロー:
+                ユーザー フロー タイプ: サインアップとサインイン
+                バージョン: 推奨
+                OK1: 作成 ボタン
+                作成:
+                    1. 名前: signupsignin1  #template: __SignUpSignInUserFlow__
+                    2. ID プロバイダー:
+                        - Email signup
+                    5. ユーザー属性とトークン要求:
+                        詳細を表示:
+                            属性を収集する: [ 国/地域, 表示名, 郵便番号 ]  #// 例
+                            要求を返す:     [ 国/地域, 表示名, 郵便番号 ]  #// 例
+                        OK: OK ボタン
+                    OK2: 作成 ボタン
+            ユーザー フローをテストする:
+                場所: https://portal.azure.com/ >> Azure AD B2C >> （ポリシー） >> ユーザー フロー
+                    B2C_1_signupsignin1 >> ユーザー フローを実行します
+                        #template: B2C_1___SignUpSignInUserFlow__ >> ユーザー フローを実行します
+                アプリケーション: webapp1  #template: __AppName__
+                応答 URL: https://jwt.ms  #template: __RedirectURI__
+                OK: ユーザー フローを実行します
+            ユーザー フローのテスト ページ:
+                Press: Sign up now
+                Email Address: example2@sage-p.com
+                Press1: Send Verification Code
+                Verification code: ____
+                Press2: Verify code
+                New Password: 123456a!
+                Confirm New Password: 123456a!
+                Contry/Region: Japan
+                Display Name: Example2
+                Postal Code: 1200000
+                Press3: Create
+        プロファイルを編集するユーザー フローを作成する:
+            場所: https://portal.azure.com/ >> Azure AD B2C >> （ポリシー） >> ユーザー フロー
+            新しいユーザー フロー:
+                ユーザー フロー タイプ: プロファイル編集
+                バージョン: 推奨
+                OK1: 作成 ボタン
+                作成:
+                    1. 名前: profileediting1  #template: __ProfileEditingUserFlow__
+                    2. ID プロバイダー:
+                        - Email signin
+                    5. ユーザー属性とトークン要求:
+                        詳細を表示:
+                            属性を収集する: [ 表示名, 役職 ]  #// 例
+                            要求を返す:     [ 表示名, 役職 ]  #// 例
+                        OK: OK ボタン
+                    OK2: 作成 ボタン
+            ユーザー フローをテストする:
+                場所: https://portal.azure.com/ >> Azure AD B2C >> （ポリシー） >> ユーザー フロー
+                    B2C_1_profileediting1 >> ユーザー フローを実行します
+                        #template: __ProfileEditingUserFlow__ >> ユーザー フローを実行します
+                アプリケーション: webapp1  #template: __AppName__
+                応答 URL: https://jwt.ms  #template: __RedirectURI__
+                OK: ユーザー フローを実行します
+            ユーザー フローのテスト ページ:
+                Email Address: example2@sage-p.com
+                New Password: 123456a!
+                OK: Continue
+        パスワードをリセットするユーザー フローを作成する:
+            場所: https://portal.azure.com/ >> Azure AD B2C >> （ポリシー） >> ユーザー フロー
+            新しいユーザー フロー:
+                ユーザー フロー タイプ: プロファイル編集
+                バージョン: 推奨
+                OK1: 作成 ボタン
+                作成:
+                    1. 名前: passwordreset1  #template: __PasswordResetUserFlow__
+                    2. ID プロバイダー:
+                        - Reset password using email address
+                    5. ユーザー属性とトークン要求:
+                        詳細を表示:
+                            要求を返す:     [ ユーザーのオブジェクト ID ]  #// 例
+                        OK: OK ボタン
+                    OK2: 作成 ボタン
+            ユーザー フローをテストする:
+                場所: https://portal.azure.com/ >> Azure AD B2C >> （ポリシー） >> ユーザー フロー
+                    passwordreset1 >> ユーザー フローを実行します
+                        #template: __PasswordResetUserFlow__ >> ユーザー フローを実行します
+                アプリケーション: webapp1  #template: __AppName__
+                応答 URL: https://jwt.ms  #template: __RedirectURI__
+                OK: ユーザー フローを実行します
+            ユーザー フローのテスト ページ:
+                Email Address: example2@sage-p.com
+                Press1: Send Verification Code
+                Verification code: ____
+                Press2: Verify code
+                OK1: Continue
+                New Password: 123456a!
+                Confirm New Password: 123456a!
+                OK2: Continue
+        #// 「リソース所有者のパスワード資格情報 (ROPC) フロー」は未確認
+    ID プロバイダーを追加する:
+        参考: https://docs.microsoft.com/ja-jp/azure/active-directory-b2c/tutorial-add-identity-providers
+        ID プロバイダー アプリケーションを作成する:
+            対象ディレクトリの選択（Azure AD のリソースを選択、Azure AD B2C ではない）:
+                - https://portal.azure.com/
+                - （必要なら）アカウント名（右上） >> ディレクトリの切り替え >> （例）既定のディレクトリ
+            場所: https://portal.azure.com/ >> アプリの登録 >> ＋新規登録
+            名前: Azure AD B2C App  #template: __AppForIDP__
+            サポートされているアカウントの種類: この組織ディレクトリのみに含まれるアカウント
+            リダイレクト URI:
+                Web: https://sagepb2ctenant1.b2clogin.com/sagepb2ctenant1.onmicrosoft.com/oauth2/authresp
+                    #template: https://__B2C_DomainName__.b2clogin.com/__B2C_DomainName__.onmicrosoft.com/oauth2/authresp
+            OK: 登録 ボタン
+            アプリケーション（クライアント）ID（ __ClientIDForIDP__ ）を参照する:
+                - （ https://portal.azure.com/ >> Azure AD B2C >> アプリの登録 >> Azure AD B2C App >> ） #template: __AppForIDP__
+                - アプリケーション（クライアント）ID
+            クライアント シークレットの作成:
+                場所:
+                    - （ https://portal.azure.com/ >> Azure AD B2C >> アプリの登録 >> Azure AD B2C App >> ） #template: __AppForIDP__
+                    - 証明書とシークレット >> ＋新しいクライアント シークレット:
+                        説明: Azure AD B2C App Secret
+                        OK: 追加 ボタン
+                クライアント シークレットの値を参照する(__ClientSecretForIDP__):
+                    - （ https://portal.azure.com/ >> Azure AD B2C >> アプリの登録 >> Azure AD B2C App >> ） #template: __AppForIDP__
+                    - 証明書とシークレット >> クライアント シークレット >> 値
+        Facebook アプリケーションを作成する（ここでは対象外とする）:
+        ID プロバイダーを追加する:
+            - 対象ディレクトリの選択（Azure AD B2C のリソースを選択）:
+                - https://portal.azure.com/
+                - （必要なら）アカウント名（右上） >> ディレクトリの切り替え >> b2c_tenant1  #template: __TenantName__
+            - https://portal.azure.com/ >> Azure AD B2C >> ID プロバイダー
+            - ＋新しい OpenID Connect プロバイダー:
+                名前: Contoso Azure AD  #template: __AzureIDP__
+                メタデータ URL: https://login.microsoftonline.com/example1sagep.onmicrosoft.com/.well-known/openid-configuration
+                    #template: https://login.microsoftonline.com/__AD_DomainName__.onmicrosoft.com/.well-known/openid-configuration
+                クライアント ID: 966a213f-49a6-4f07-a911-7b0126b27249  #template: __ClientIDForIDP__
+                クライアント シークレット: nb_rSsE~a.XqaeMeQ_0YHEo9Vzo0769f.2  #template: __ClientSecretForIDP__
+                ドメインのヒント: ContosoAD
+                ユーザー ID: oid
+                表示名: name
+                名: given_name
+                姓: family_name
+                電子メール: unique_name
+                OK: 保存 ボタン（上）
+        Facebook の ID プロバイダーを追加する（ここでは対象外とする）:
+        ユーザー フローを更新する:
+            - https://portal.azure.com/ >> Azure AD B2C >> （ポリシー） >> ユーザー フロー >>
+                B2C_1_signupsignin1 >> ID プロバイダー（左）
+                    #template: B2C_1___SignUpSignInUserFlow__
+            - OpenID Connect | Contoso Azure AD にチェック  #template: __AzureIDP__
+            - 保存
+        ユーザー フローをテストする:
+            場所: https://portal.azure.com/ >> Azure AD B2C >> （ポリシー） >> ユーザー フロー
+                B2C_1_signupsignin1 >> ユーザー フローを実行します
+                    #template: B2C_1___SignUpSignInUserFlow__ >> ユーザー フローを実行します
+            アプリケーション: webapp1  #template: __AppName__
+            応答 URL: https://jwt.ms  #template: __RedirectURI__
+            OK: ユーザー フローを実行します
+        ユーザー フローのテスト ページ:
+            Press1: Contoso Azure AD  #template: __AzureIDP__
+            Press2: Confirm
+            Country/Region: Japan
+            Postal Code: 1200000
+            Press3: Continue
 
 （エラー）Azure Active Directory B2C を使用して ASP.NET アプリケーションへのサインインを設定する:
     参考: https://docs.microsoft.com/ja-jp/azure/active-directory-b2c/quickstart-web-app-dotnet
@@ -458,6 +673,7 @@ Azure App Service でユーザーをエンド ツー エンドで認証および
             Press2: Verify code
             New Password: 123456a!
             Confirm New Password: 123456a!
+            Contry/Region: Japan
             Display Name: Example2
             City: Yokohama
             Job Title: Chief

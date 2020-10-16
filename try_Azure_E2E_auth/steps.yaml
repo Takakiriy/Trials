@@ -101,6 +101,13 @@ Azure App Service でユーザーをエンド ツー エンドで認証および
             #// 添付のプロジェクトは Web サーバーも持っているので以下のURLにアクセスできます:
             - https://sagex-back1.azurewebsites.net
                 #template:- https://__BackEndAppName__.azurewebsites.net
+
+        .git フォルダーを復活させるには:
+            #// bash
+            - mv "__Project__"  "_back_up"
+            - git clone "https://sagex-deploy@sagex-back1.scm.azurewebsites.net/sagex-back1.git"  #template: __BackEndGitURL__
+            - rm -rf "_back_up"
+
     認証の設定をします:
         バックエンドを実行するのに認証が必要になるように設定し、クライアント ID を調べます:
             https://portal.azure.com/ >> App Service >> sagex-back1 >> 認証/承認:
@@ -157,15 +164,6 @@ Azure App Service でユーザーをエンド ツー エンドで認証および
         - アプリの登録（左） >> すべてのアプリケーション（タブ）:
             - sagex-front1 （を検索） >> 削除  #template:- __FrontEndAppName__ （を検索） >> 削除
             - sagex-back1 （を検索） >> 削除  #template:- __BackEndAppName__ （を検索） >> 削除
-
-
-（確認中）Microsoft アカウントを持っているユーザーを Azure AD の管理者の許可なくゲストユーザーとしてサインアップできるようにする:
-    参考: https://docs.microsoft.com/ja-jp/azure/active-directory/external-identities/self-service-sign-up-user-flow
-
-
-
-
-
 
 チュートリアル:Azure App Service でユーザーをエンド ツー エンドで認証および承認する:
     #// アプリケーションのコードを変えながらになるため、少し遠回りです
@@ -394,3 +392,141 @@ Azure App Service でユーザーをエンド ツー エンドで認証および
         - アプリの登録（左） >> すべてのアプリケーション（タブ）:
             - sagep-front1 （を検索） >> 削除  #template:- __FrontEndAppName__ （を検索） >> 削除
             - sagep-back1 （を検索） >> 削除  #template:- __BackEndAppName__ （を検索） >> 削除
+
+クイックスタート：Azure Active Directory B2C を使用したシングルページ アプリのサインインの設定:
+    参考: https://docs.microsoft.com/ja-jp/azure/active-directory-b2c/quickstart-single-page-app
+    準備:
+        Visual Studio Code をインストールします:
+            https://code.visualstudio.com/
+            オプションはすべてデフォルト
+            必要なら、Visual Studio Code をタスクバーにピン止めします
+        Git for Windows をインストールします:
+            https://git-scm.com/ >> Downloads >> Windows
+            インストール オプションはデフォルトで構いません
+        Node.js をインストールします:
+            https://nodejs.org/ja/download/ >> Windows Installer (.msi) >> 64-bit
+            例 node-v12.18.3-x64
+    サンプル アプリケーションのダウンロードと起動:
+        #Git bash:
+        - git clone https://github.com/Azure-Samples/active-directory-b2c-javascript-msal-singlepageapp.git
+        - cd active-directory-b2c-javascript-msal-singlepageapp
+        - npm install && npm update
+        - npm start  #// Web サーバーの起動が完了するとポート番号が表示されます。 例 Listening on port 6420...
+    アプリケーションの動作確認:
+        http://localhost:6420 （←例） >> Sign in（右上） >> Sign up now:
+            Email Address: example2@sage-p.com
+            Press1: Send Verification code
+            Verification code: ____
+            Press2: Verify code
+            New Password: 123456a!
+            Confirm New Password: 123456a!
+            Job Title: Chief
+            City: Yokohama
+            Country/Region: Japan
+            Display Name: Example2
+            Press3: Create
+        ユーザープロファイルの編集:
+            Example2 （右上、Sign out の左） >> Edit Profile
+        保護された API リソースにアクセスする:
+            「Call API」ボタンを押す
+            JSON が表示されます。 例：{"name":"Example2"}
+
+（確認中）チュートリアル:Azure Active Directory B2C:
+    参考: https://docs.microsoft.com/ja-jp/azure/active-directory-b2c/tutorial-create-tenant
+
+
+（エラー）Azure Active Directory B2C を使用して ASP.NET アプリケーションへのサインインを設定する:
+    参考: https://docs.microsoft.com/ja-jp/azure/active-directory-b2c/quickstart-web-app-dotnet
+    Visual Studio 2019 をインストールします:
+        https://www.visualstudio.com/downloads/ >> （コミュニティ）ダウンロード >>
+        ASP.NET および Web の開発 >> インストール >>
+        PC再起動
+    サンプル アプリケーションのダウンロード:
+        - https://github.com/Azure-Samples/active-directory-b2c-dotnet-webapp-and-webapi/archive/master.zip
+        - zip を展開します
+        - B2C-WebAPI-DotNet.sln ファイルをダブルクリック
+        - B2C-WebAPI-DotNet ソリューションを右クリック[スタートアップ プロジェクトの設定] >>
+            マルチ スタートアップ プロジェクト >> （両方のプロジェクトの）アクション = 開始 >> OK
+    アプリケーションの動作確認:
+        F5 キーを押すと、ブラウザーで以下が開きます:
+            - https://localhost:44316/ ... Webアプリ。複数のサインアップ方法に対応
+            - https://localhost:44332/ ... Web API
+        https://localhost:44316/ >> Sign up（右上） >> Sign up now:
+            Email Address: example2@sage-p.com
+            Press1: Send verification code
+            Verification code: ____
+            Press2: Verify code
+            New Password: 123456a!
+            Confirm New Password: 123456a!
+            Display Name: Example2
+            City: Yokohama
+            Job Title: Chief
+            Press3: Create
+        ユーザープロファイルの編集:
+            Example2 （右上、Sign out の左） >> Edit Profile
+    エラー:
+        保護された API リソースにアクセスする:
+            To-Do リストを押すとエラー
+
+（エラー）Microsoft アカウントを持っているユーザーを Azure AD の管理者の許可なくゲストユーザーとしてサインアップできるようにする:
+    参考: https://docs.microsoft.com/ja-jp/azure/active-directory/external-identities/self-service-sign-up-user-flow
+    設定:
+        __UserFlowName__: UserFlow1
+        __FrontEndAppName__: sagex-front1
+    手順:
+        セルフサービス サインアップを有効にする:
+            https://portal.azure.com/ >> Azure Active Directory >> ユーザー設定 >>
+            （外部ユーザー） >> 外部コラボレーションの設定を管理します >>
+            ユーザー フローによるゲストのセルフサービス サインアップを有効にする >>
+            はい >>
+            保存
+        ユーザー フローを作成する:
+            - https://portal.azure.com/ >> Azure Active Directory >>
+                External Identities >> ユーザー フロー >>
+            - 新しいユーザー フロー:
+                名前: UserFlow1  #template: __UserFlowName__
+                ID プロバイダー: Azure Active Directory サインアップ
+                ユーザー属性: 名、姓、市区町村、国/地域、表示名
+                OK: 作成
+        サインアップ ページでユーザー属性を表示する順序を設定する（しなくてもよい）:
+            - （ https://portal.azure.com/ >> Azure Active Directory >>
+                External Identities >> ユーザー フロー >> ）
+            - UserFlow1:  #template: __UserFlowName__
+                （カスタマイズ） >> ページ レイアウト >> 上へ移動（など）
+        ユーザー フローにアプリケーションを追加する:
+            - （ https://portal.azure.com/ >> Azure Active Directory >>
+                External Identities >> ユーザー フロー >> ）
+            - UserFlow1:  #template: __UserFlowName__
+                - （使用） >> アプリケーション >> アプリケーションの追加 >>
+                - sagex-front1  #tepmlate: __FrontEndAppName__
+                - 選択
+    試行:
+        Web にアクセスします:
+            - https://sagex-front1.azurewebsites.net
+                #template:- https://__FrontEndAppName__.azurewebsites.net
+            - https://sagex-front1.azurewebsites.net/.auth/logout
+            - https://sagex-front1.azurewebsites.net/.auth/me
+            - exapmle2@sage-p.com
+        エラー: |
+            AADSTS50020: User account 'example2@sage-p.com' from identity provider 'live.com' does not exist in tenant '既定のディレクトリ'
+            and cannot access the application 'a9a85998-d695-4899-9faa-a61b4507c8f1'(sagex-front1) in that tenant.
+            The account needs to be added as an external user in the tenant first.
+            Sign out and sign in again with a different Azure Active Directory user account.
+        検索キー: |
+
+        参考: |
+            https://docs.microsoft.com/ja-jp/azure/active-directory/manage-apps/grant-admin-consent#grant-admin-consent-in-enterprise-apps
+        手順: |
+            （初回のみ） もし、Azure のテナント全体の管理者以外が始めて Web アプリを使うときは、管理者の同意を付与します。
+            https://portal.azure.com/
+            >> Azure Active Directory >> エンタープライズ アプリケーション
+            >> （Web アプリケーション名） >> アクセス許可（左） >> 既定のディレクトリに管理者の同意を与えます
+        手順2: |
+            - UserFlow1:  #template: __UserFlowName__
+                - （使用） >> アプリケーション >> アプリケーションの追加 >>
+                - sagex-back1  #tepmlate: __FrontEndAppName__
+                - 選択
+        手順3: |
+            ゲストユーザーを追加した
+            新しいゲストユーザー >> ユーザーの作成
+

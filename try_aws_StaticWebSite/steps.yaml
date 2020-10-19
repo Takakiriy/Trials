@@ -1,0 +1,408 @@
+﻿# aws 静的Webサイトホスティング
+
+HTTP（HTTPSではない）で静的 Web サイトを構築します:
+    参考: https://docs.aws.amazon.com/ja_jp/AmazonS3/latest/dev/HostingWebsiteOnS3Setup.html
+    #// HTTPS アクセスはできません（上記サイトに書いてあります）
+    設定:
+        __Bucket__: sageps3web1  #// HTML ファイルを入れる S3 のバケット名
+        __Region__: northeast-1
+    バケットを作成する:
+        メニュー: https://console.aws.amazon.com/s3/ >> バケットを作成する
+        バケット名: sageps3web1  #template: __Bucket__
+        リージョン: 東京 (northeast-1)  #template: __Region__
+        OK: 作成 ボタン
+    静的ウェブサイトホスティングを有効にする:
+        メニュー: https://console.aws.amazon.com/s3/ >> sageps3web1 >> プロパティ（タブ） >>
+            #template: __Bucket__ >> プロパティ
+        Static website hosting:
+            選択: このバケットを使用してウェブサイトをホストする
+            インデックスドキュメント: index.html
+            OK: 保存 ボタン
+    パブリックアクセスブロックをしないように設定する:
+        メニュー: https://console.aws.amazon.com/s3/ >> sageps3web1 >> アクセス権限 >>
+            #template: __Bucket__ >> アクセス権限
+        ブロックパブリックアクセス:
+            Press: 編集 ボタン
+            パブリックアクセスをすべてブロック: オフ
+            OK: 保存 ボタン
+    バケットの内容の公開を許可するバケットポリシーを追加する:
+        メニュー: https://console.aws.amazon.com/s3/ >> sageps3web1 >> アクセス権限 >>
+            #template: __Bucket__ >> アクセス権限
+        バケットポリシー:
+            JSON: |
+                {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Sid": "PublicReadGetObject",
+                            "Effect": "Allow",
+                            "Principal": "*",
+                            "Action": [
+                                "s3:GetObject"
+                            ],
+                            "Resource": [
+                                "__BucketARN__/*"
+                            ]
+                        }
+                    ]
+                }
+            上記 JSON の __BucketARN__ を置き換えます:
+                __BucketARN__: arn:aws:s3:::sageps3web1  #template: arn:aws:s3:::__Bucket__ 
+                #// ARN はバケットの一覧から１つのバケットをクリックして「バケット ARN をコピーする」
+            OK: 保存 ボタン
+    インデックスドキュメントを設定する:
+        index.html のサンプル: |
+            <html xmlns="http://www.w3.org/1999/xhtml" >
+            <head>
+                <title>My Website Home Page</title>
+            </head>
+            <body>
+            <h1>Welcome to my website</h1>
+            <p>Now hosted on Amazon S3!</p>
+            </body>
+            </html>
+        メニュー: https://console.aws.amazon.com/s3/ >> sageps3web1 >> アップロード
+            #template: >> __Bucket__ >> アップロード
+        操作: index.html ファイルをドラッグ＆ドロップします
+        OK: アップロード ボタン
+    ウェブサイトエンドポイントをテストする:
+        http://sageps3web1.s3-website-ap-northeast-1.amazonaws.com
+            #template: http://__Bucket__.s3-website-ap-__Region__.amazonaws.com
+    （使わなくなったら）クリーンアップ:
+        メニュー: https://console.aws.amazon.com/s3/ >> sageps3web1 （の左のチェックボックス） >> 削除
+            #template: >> __Bucket__ （の左のチェックボックス） >> 削除
+
+Route 53 に登録されたカスタムドメインを使用した静的ウェブサイト(S3)の設定:
+    参考: https://docs.aws.amazon.com/ja_jp/AmazonS3/latest/dev/website-hosting-custom-domain-walkthrough.html
+    設定:
+        __Domain__: sage-p.tk
+        __SubDomain__: www.sage-p.tk
+        __Region__: northeast-1
+        __CloudFrontOAI__: E1JDA62UGBURMM
+    #// また、www.sage-p.tk から sage-p.tk にリダイレクトします  #template: __SubDomain__ から __Domain__
+    #// また、アクセスのログも記録します
+    自分が使えるドメイン(URL)を用意します（カスタムドメインを Route 53 に登録する）:
+        aws の場合（有料）: #// 設置後12時間以内の利用であれば無料らしい
+            参考: https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-register.html
+            メニュー: https://console.aws.amazon.com/route53/ >> 登録済みドメイン（左） >> ドメインの登録（上）
+            続き: （未確認）
+        Freenom の場合（無料）:
+            #// .tk（ニュージーランドの領土であるトケラウ）などレアな TLD （トップ レベル ドメイン）を持つドメインを取得できます
+            http://www.freenom.com/en/index.html >> __NewDomain__ >> Check Availability >>
+            Checkout（右上） >> Continue >> （メールアドレスを入力） >> Verify My Email Address >>
+            受信したメールの中にあるボタンをPCから押す） >> （名前などを入力する）
+            #// 3か月後（設定による）に更新を忘れないこと
+    HTML ファイルを入れるバケットを作成する:
+        ドメインのバケットを作成する:
+            メニュー: https://console.aws.amazon.com/s3/ >> バケットを作成する
+            バケット名: sage-p.tk  #template: : __Domain__
+            リージョン: 東京 (northeast-1)  #template: __Region__
+            OK: 作成 ボタン
+        サブ ドメインのバケットを作成する（内容は空でドメインにリダイレクトします）:
+            メニュー: https://console.aws.amazon.com/s3/ >> バケットを作成する
+            バケット名: www.sage-p.tk  #template: __SubDomain__
+            リージョン: 東京 (northeast-1)  #template: __Region__
+            OK: 作成 ボタン
+    静的ウェブサイトホスティングを有効にする（ウェブサイトホスティング用にルートドメインのバケットを設定する）:
+        メニュー: https://console.aws.amazon.com/s3/ >> sage-p.tk >> プロパティ（タブ） >>
+            #template: >> __Domain__ >> プロパティ
+        Static website hosting:
+            選択: このバケットを使用してウェブサイトをホストする
+            インデックスドキュメント: index.html
+            OK: 保存 ボタン
+    サブ ドメインからリダイレクトするように設定する:
+        #// www.sage-p.tk から sage-p.tk にリダイレクトさせます  #template: __SubDomain__ から __Domain__
+        メニュー: https://console.aws.amazon.com/s3/ >> www.sage-p.tk >> プロパティ（タブ） >>
+            #template: >> __SubDomain__ >> プロパティ
+        Static website hosting:
+            選択: リクエストをリダイレクトする
+            ターゲットバケットまたはドメイン: sage-p.tk  #template: : __Domain__
+            プロトコル: http
+            OK: 保存 ボタン
+        ウェブサイトトラフィックのログ記録を設定する:
+            メニュー1: https://console.aws.amazon.com/s3/ >> バケットを作成する
+            バケット名: logs.sage-p.tk  #template: logs.__Domain__
+            リージョン: 東京 (northeast-1)  #template: __Region__
+                #// ログの対象と同じドメインであること
+            OK: 作成 ボタン
+            メニュー2: https://console.aws.amazon.com/s3/ >> logs.sage-p.tk >> フォルダの作成
+                #template: logs.__Domain__ >> フォルダの作成
+            フォルダーの名前1: logs
+            フォルダーの名前2: cdn  #// ２つ目の作成するフォルダー
+            メニュー3: https://console.aws.amazon.com/s3/ >> sage-p.tk >> プロパティ
+                #template: >> __Domain__ >> プロパティ
+            サーバーアクセスのログ記録:
+                選択: ログの有効化
+                ターゲットバケット: logs.sage-p.tk  #template: : logs.__Domain__
+                ターゲットプレフィックス: logs/
+                OK: 保存 ボタン
+    パブリックアクセスブロックをしないように設定する:
+        メニュー: https://console.aws.amazon.com/s3/ >> sage-p.tk >> アクセス権限 >>
+            #template: __Domain__ >> アクセス権限
+        ブロックパブリックアクセス:
+            Press: 編集 ボタン
+            パブリックアクセスをすべてブロック: オフ
+            OK: 保存 ボタン
+    バケットの内容の公開を許可するバケットポリシーを追加する:
+        メニュー: https://console.aws.amazon.com/s3/ >> sage-p.tk >> アクセス権限 >>
+            #template: __Domain__ >> アクセス権限
+        バケットポリシー:
+            JSON: |
+                {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Sid": "PublicReadGetObject",
+                            "Effect": "Allow",
+                            "Principal": "*",
+                            "Action": [
+                                "s3:GetObject"
+                            ],
+                            "Resource": [
+                                "__BucketARN__/*"
+                            ]
+                        }
+                    ]
+                }
+            上記 JSON の __BucketARN__ を置き換えます:
+                __BucketARN__: arn:aws:s3:::sage-p.tk  #template: arn:aws:s3:::__Domain__ 
+                #// ARN はバケットの一覧から１つのバケットをクリックして「バケット ARN をコピーする」
+            OK: 保存 ボタン
+    インデックスとウェブサイトのコンテンツをアップロードする:
+        index.html のサンプル: |
+            <html xmlns="http://www.w3.org/1999/xhtml" >
+            <head>
+                <title>My Website Home Page</title>
+            </head>
+            <body>
+            <h1>Welcome to my website</h1>
+            <p>Now hosted on Amazon S3!</p>
+            </body>
+            </html>
+        メニュー: https://console.aws.amazon.com/s3/ >> sage-p.tk >> アップロード
+            #template: >> __Domain__ >> アップロード
+        操作: index.html ファイルをドラッグ＆ドロップします
+        OK: アップロード ボタン
+    ウェブサイトエンドポイント（.amazonaws.com）をテストする:
+        http://sage-p.tk.s3-website-ap-northeast-1.amazonaws.com
+            #template: http://__Domain__.s3-website-ap-__Region__.amazonaws.com
+        #// ここでは、また、～.amazonaws.com です
+    ドメインを Route53 のホストゾーンに追加する:
+        参考: https://avinton.com/academy/route53-dns-vhost/
+        メニュー: https://console.aws.amazon.com/route53/ >> ホストゾーン（左） >> ホストゾーンの作成（下）
+        ドメイン名: sage-p.tk  #template: : __Domain__
+        OK: ホストゾーンの作成 ボタン
+    エイリアスレコードを追加する（ドメイン）:
+        メニュー: https://console.aws.amazon.com/route53/ >> ホストゾーン （左） >> sage-p.tk  #template: >> __Domain__
+        Press1: レコードを作成 ボタン
+        Press2: シンプルルーティング >> 次へ
+        Press3: シンプルなレコードを定義
+        レコード名: （空欄）
+        値/トラフィックのルーティング先: S3 ウェブサイトエンドポイントへのエイリアス
+            #// リストの中でマウスのホイールを回すと見つかります
+        リージョン: 東京
+        S3 バケット: ～ (sage-p.tk)  #template: ～ (__Domain__)
+        レコードタイプ: A – ～
+        ターゲットのヘルスを評価: いいえ
+        OK1: シンプルなレコードを定義 ボタン
+        （サブ ドメインを作らないとき）OK2: レコードを作成 ボタン
+    エイリアスレコードを追加する（サブ ドメイン）:
+        Press3: シンプルなレコードを定義
+        レコード名: www (www.sage-p.tk)  #template: (__SubDomain__)
+        値/トラフィックのルーティング先: S3 ウェブサイトエンドポイントへのエイリアス
+            #// リストの中でマウスのホイールを回すと見つかります
+        リージョン: 東京
+        S3 バケット: ～ (www.sage-p.tk)  #template: ～ (__SubDomain__)
+        レコードタイプ: A – ～
+        ターゲットのヘルスを評価: いいえ
+        OK1: シンプルなレコードを定義 ボタン
+        OK2: レコードを作成 ボタン
+    （freenomを使っている場合）ネームサーバーを変更します:
+        参考1: https://note.com/dafujii/n/n12bb564081f1
+        参考2: https://dev.classmethod.jp/articles/mesoko-r53-cdn/
+        NS レコードの値ネームサーバーのアドレスをメモします:
+            メニュー: https://console.aws.amazon.com/route53/ >> ホストゾーン （左） >> sage-p.tk  #template: >> __Domain__
+            操作: レコード名 = sage-p.tk, タイプ = NS の行の「値/トラフィックのルーティング先」の列にある4つの値をメモ
+            例:
+                - ns-431.awsdns-53.com.
+                - ns-2004.awsdns-58.co.uk.
+                - ns-1010.awsdns-62.net.
+                - ns-1116.awsdns-11.org.
+        freenom 内での設定変更:
+            メニュー: http://www.freenom.com/en/index.html >> Services >> My Domains >> Manage Domain >>
+                Management Tools >> Nameservers >> Use custom nameservers(enter below)
+            操作: Nameserver1～4 に ns- から始まりピリオドで終わる4つの値を貼り付けて「Change Nameservers」ボタン
+            5～10分待つ:
+    ウェブサイトエンドポイントをテストする:
+        - http://sage-p.tk/
+            #template: http://__Domain__/
+        - http://www.sage-p.tk/
+            #template: http://__SubDomain__/
+            #// ブラウザーを開きなおしてリロードしてください
+            #// freenomを使っている場合に表示できないときは、上記「ネームサーバーを変更します」が正しくない可能性があります
+    ACM（AWS Certificate Manage）に証明書を管理させます:
+        参考: https://labs.mobingi.com/aws-certificate-manager-and-freenom/
+        メニュー: https://console.aws.amazon.com/acm/home >> 証明書のプロビジョニング >> 今すぐ始める >>
+            証明書のリクエスト ボタン（右下）
+        ドメイン名: sage-p.tk  #template: : __Domain__
+        Press1: この証明書に別の名前を追加 ボタン
+        ドメイン名2: "*.sage-p.tk"  #template: "*.__Domain__"
+            #// 上記 " " の中を入力します
+        Press2: 次へ ボタン
+        検証方法の選択: DNS の検証
+        操作: 次へ >> 確認 >> 確定とリクエスト >> （検証保留中が表示される） >> 続行 >>
+            sage-p.tk >> Route 53 でのレコードの作成（同じ値なので片方のボタンだけ押せばよい）
+
+Amazon CloudFront によるウェブサイトの高速化(HTTPS対応、CloudFormation を使わない場合):
+    前提: http://sage-p.tk/ と http://www.sage-p.tk/ にアクセスできること
+        #template: http://__Domain__/ と http://__SubDomain__/ にアクセスできること
+        #// 上記「Route 53 に登録されたカスタムドメインを使用した静的ウェブサイト(S3)の設定」を行ってください
+    参考: https://docs.aws.amazon.com/ja_jp/AmazonS3/latest/dev/website-hosting-cloudfront-walkthrough.html
+    CloudFront ディストリビューションを作成する:
+        メニュー: https://console.aws.amazon.com/cloudfront/ >> Create Distribution >> (Web) >> Get Started
+        Origin Settings:
+            Origin Domain Name (オリジンドメイン名): sage-p.tk.s3-website-ap-northeast-1.amazonaws.com
+                #template: : __Domain__.s3-website-ap-__Region__.amazonaws.com
+            参考: https://tech.torico-corp.com/blog/aws-cloudfront-acm-ssl-sertificate/
+        Default Cache Behavior Settings:
+            Viewer Protocol Policy: Redirect HTTP to HTTPS
+        Distribution Settings:
+            Price Class: Use All Edge Locations (Best Performance)  #// デフォルト
+            Alternate Domain Names (CNAMEs): |
+                sage-p.tk      #template: __Domain__
+                www.sage-p.tk  #template: __SubDomain__
+            SSL Certificate:
+                Custom SSL Certificate: sage-p.tk  #template: __Domain__
+                    #// 上記「ACM（AWS Certificate Manage）に証明書を管理させます」によって選べるようになります
+            Default Root Object: index.html
+            Standard Logging: On
+            S3 Bucket for Logs: logs.sage-p.tk.s3.amazonaws.com  #template: logs.__Domain__.s3.amazonaws.com
+            Log Prefix: cdn/
+        OK: Create Distribution ボタン
+        トラブルシューティング:
+            エラー: |
+                com.amazonaws.services.cloudfront.model.InvalidViewerCertificateException:
+                To add an alternate domain name (CNAME) to a CloudFront distribution,
+                you must attach a trusted certificate that validates your authorization
+                to use the domain name. For more details,
+                see: https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/CNAMEs.html#alternate-domain-names-requirements
+                (Service: AmazonCloudFront; Status Code: 400; Error Code: InvalidViewerCertificate; Request ID: ...; Proxy: null)
+            対策:
+                上記「Custom SSL Certificate」の設定を行ってください
+    CloudFront の Origin Access Identity（ __CloudFrontOAI__ ）をメモする:
+        メニュー: https://console.aws.amazon.com/cloudfront/ >> (Security) >> Origin accesss identity
+        Create OAI:
+            Comment: sage-p.tk  #template: : __Domain__
+            OK: Create ボタン
+        新しくできた OAI の「ID」の列をメモします:
+            __CloudFrontOAI__: E1JDA62UGBURMM  #template: __CloudFrontOAI__
+    CloudFront ディストリビューションに Origin Access Identity を設定する:
+        メニュー:
+            - https://console.aws.amazon.com/cloudfront/ >> Distributions >> 
+            - Origin の列 = sage-p.tk.s3.amazonaws.com （の行の） ID >>
+            - Origins and Origin Groups （タブ） >>
+            - Origin ID の列 = S3-sage-p.tk （の行の行頭をチェック） >> Edit
+        Restrict Bucket Access: Yes
+        Your Identities: sage-p.tk  #template: : __Domain__
+            #// OAI の Comment
+        Grant Read Permissions on Bucket: Yes
+        OK: Yes, Edit ボタン
+    Route53 から CloudFront へルーティングする（ドメインから）:
+        参考: https://devlog.arksystems.co.jp/2019/10/07/7210/
+        メニュー:
+            - https://console.aws.amazon.com/route53/ >> ホストゾーン （左） >> sage-p.tk  #template: >> __Domain__
+            - レコード名の列 = sage-p.tk （かつ） タイプ = A （の行の行頭にチェック） >> 編集  #template: = __Domain__
+        値/トラフィックのルーティング先:
+            - CroudFront ディストリビューションへのエイリアス
+            - us-east-1
+            - __HashValue__.cloudfront.net.
+        OK: 変更を保存 ボタン
+    Route53 から CloudFront へルーティングする（サブドメインから）:
+        参考: https://devlog.arksystems.co.jp/2019/10/07/7210/
+        メニュー:
+            - https://console.aws.amazon.com/route53/ >> ホストゾーン （左） >> sage-p.tk  #template: >> __Domain__
+            - レコード名の列 = www.sage-p.tk （かつ） タイプ = A （の行の行頭にチェック） >> 編集  #template: = __SubDomain__
+        値/トラフィックのルーティング先:
+            - CroudFront ディストリビューションへのエイリアス
+            - us-east-1
+            - __HashValue__.cloudfront.net.
+        OK: 変更を保存 ボタン
+    パブリックアクセスブロックするように設定する（ドメイン）:
+        メニュー: https://console.aws.amazon.com/s3/ >> sage-p.tk >> アクセス権限 >>
+            #template: __Domain__ >> アクセス権限
+        ブロックパブリックアクセス:
+            Press: 編集 ボタン
+            パブリックアクセスをすべてブロック: チェック
+            OK: 保存 ボタン  #// www.sage-p.tk のパブリックアクセスブロックも設定されます #template: __SubDomain__
+    バケットの内容の公開を許可するバケットポリシーを追加する:
+        メニュー: https://console.aws.amazon.com/s3/ >> sage-p.tk >> アクセス権限 >>
+            #template: __Domain__ >> アクセス権限
+        バケットポリシー:
+            JSON: |
+                {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "AWS": "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity __CloudFrontOAI__"
+                            },
+                            "Action": "s3:GetObject",
+                            "Resource": "__BucketARN__/*"
+                        }
+                    ]
+                }
+            上記 JSON の __CloudFrontOAI__, __BucketARN__ を置き換えます:
+                __CloudFrontOAI__: E1JDA62UGBURMM  #template: __CloudFrontOAI__
+                __BucketARN__: arn:aws:s3:::sage-p.tk  #template: arn:aws:s3:::__Domain__ 
+                #// ARN はバケットの一覧から１つのバケットをクリックして「バケット ARN をコピーする」
+            OK: 保存 ボタン
+    ウェブサイトエンドポイントをテストする:
+        #// Route53 を変更してから 5～10分待ってから
+        - https://sage-p.tk/
+            #template: https://__Domain__/
+        - https://www.sage-p.tk/
+            #template: https://__SubDomain__/
+        - HTTP の応答ヘッダーに下記があることをチェックします:
+            X-Cache: Hit from cloudfront
+    トラブルシューティング:
+        エラー: |
+            接続がプライベートではありません
+        対処: |
+            上記「Route53 から CloudFront へルーティングする」をもう一度行ってください
+    （使わなくなったら）クリーンアップ:
+        https://console.aws.amazon.com/cloudfront/ :
+            Distribution の無効化:
+                Origin の列 = sage-p.tk.s3.amazonaws.com （の行の行頭にチェック） >> Disable（上）
+                    #template: = __Domain__.s3.amazonaws.com
+                #// 無効化が完了するまで待つ
+            Distribution の削除:
+                Origin の列 = sage-p.tk.s3.amazonaws.com （の行の行頭にチェック） >> Delete（上）
+            OAI の削除:
+                (Security) >> Origin accesss identity（左）:
+                    Comment: sage-p.tk （の左をチェック） #template: : __Domain__
+                    Press: Delete
+        （freenom を使っている場合）freenom 内での設定変更:
+            メニュー: http://www.freenom.com/en/index.html >> Services >> My Domains >> Manage Domain >>
+                Management Tools >> Nameservers >> Use default nameservers (Freenom Nameservers)
+            OK: Change Nameservers ボタン
+        https://console.aws.amazon.com/route53/ >> ホストゾーン （左） :
+            - ドメイン名の列 = sage-p.tk:
+                - タイプ = NS, SOA 以外（のすべての行の行頭にチェック） >> 削除
+            - ドメイン名の列 = sage-p.tk >> 削除（上）
+        https://console.aws.amazon.com/s3/ :
+            - logs.sage-p.tk （の左のチェックボックス） >> 削除
+                #template: - logs.__Domain__ （の左のチェックボックス） >> 削除
+            - sage-p.tk （の左のチェックボックス） >> 削除
+                #template: - __Domain__ （の左のチェックボックス） >> 削除
+            - www.sage-p.tk （の左のチェックボックス） >> 削除
+                #template: - __SubDomain__ （の左のチェックボックス） >> 削除
+
+
+
+（確認中）CloudFormation テンプレートを使用して:
+    参考: https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/getting-started-secure-static-website-cloudformation-template.html
+
+
+
+

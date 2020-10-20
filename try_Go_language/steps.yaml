@@ -1,0 +1,76 @@
+﻿Go言語と Visual Studio Code を Windows 10 にインストールしてデバッグ実行します:
+    ローカルPCへ各種ソフトウェアをインストールします:
+        Go言語をインストールします:
+            - https://golang.org/dl/ >> Microsoft Windows >> ...msi をダウンロードして実行
+            - インストール オプションはデフォルトで構いません
+        Visual Studio Code をインストールします:
+            - https://code.visualstudio.com/
+            - オプションはすべてデフォルト
+            - 必要なら、Visual Studio Code をタスクバーにピン止めします
+            - 以下の拡張機能（Extensions）をインストールします:
+                - Go
+        Go言語の各種ツールをインストールします:
+            F1 キー: |
+                Go: Install/Update Tools
+            全てのツールを選択します:
+                最も上のボックスをクリックすると全部選択します
+        （この手順では不要、参考）Go言語のインストール状況を表示します:
+            F1 キー: |
+                Go: Locate Configured Go Tools
+        （この手順では不要、参考）fmt.Println の出力が表示されないときの対処法:
+            メニュー: File >> Preferences >> Settings >> Open Settings (JSON)（右上のアイコン）
+            JSON: |
+                {
+                    "go.testFlags": ["-v"]
+                }
+    Visual Studio Code で C:\Go を開きます:
+        File >> Open Folder >> C:\Go
+    Go言語のソース ファイルを作成します:
+        C:\Go\example_test.go : |
+            package main // このソースが所属するパッケージの名前
+
+            import (
+                "fmt" // format  // インポートするパッケージ
+                "testing"
+            )
+
+            func main() { // function  // 関数定義
+                fmt.Println("Hello, playground") // print line  // 実行内容
+            }
+
+            func add(x int, y int) int {
+                return x + y
+            }
+
+            func TestExample(t *testing.T) {
+                main()
+            }
+    推奨されるインストールを実行します:
+        上記ソース ファイルを保存すると、Install All ボタンが右下に表示されるので押します
+    実行します:
+        TestExample 関数の定義の上にある run test をクリックします
+    デバッグ実行します:
+        ブレーク ポイントを張ります:
+            fmt.Println を呼び出す行の行番号の左をクリック
+        デバッグ実行を開始します:
+            TestExample 関数の定義の上にある debug test をクリックします
+        ブレークしたとき:
+            ステップ実行する: F10 キー
+            ステップインする: F11 キー
+            実行を再開する: F5 キー
+
+go get でプロジェクトをインストールして実行します:
+    準備:
+        Git for Windows をインストールします:
+            - https://git-scm.com/ >> Downloads >> Windows
+            - インストール オプションはデフォルトで構いません
+    Visual Studio Code を開いていたら閉じます:
+    Visual Studio Code のターミナルを開きます:
+        Terminal >> New Terminal (PowerShell)
+    hello をインストールします:
+        参考: https://github.com/golang/example
+        PowerShell:
+            go get github.com/golang/example/hello
+    テストをデバッグ実行します:
+        例： C:\Go\src\strings\example_test.go
+        #// このサンプルは fmt.Printf の出力は Visual Studio Code の output に表示されません

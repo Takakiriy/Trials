@@ -230,7 +230,8 @@ Route 53 に登録されたカスタムドメインを使用した静的ウェ�
                 - ns-1116.awsdns-11.org.
         freenom 内での設定変更:
             メニュー: http://www.freenom.com/en/index.html >> Services >> My Domains >> Manage Domain >>
-                Management Tools >> Nameservers >> Use custom nameservers(enter below)
+                Management Tools
+            Nameservers: Use custom nameservers(enter below)
             操作: Nameserver1～4 に ns- から始まりピリオドで終わる4つの値を貼り付けて「Change Nameservers」ボタン
             5～10分待つ:
     ウェブサイトエンドポイントをテストする:
@@ -384,7 +385,8 @@ Amazon CloudFront によるウェブサイトの高速化(HTTPS対応、CloudFor
                     Press: Delete
         （freenom を使っている場合）freenom 内での設定変更:
             メニュー: http://www.freenom.com/en/index.html >> Services >> My Domains >> Manage Domain >>
-                Management Tools >> Nameservers >> Use default nameservers (Freenom Nameservers)
+                Management Tools
+            Nameservers: Use default nameservers (Freenom Nameservers)
             OK: Change Nameservers ボタン
         https://console.aws.amazon.com/route53/ >> ホストゾーン （左） :
             - ドメイン名の列 = sage-p.tk:

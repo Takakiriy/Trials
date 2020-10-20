@@ -1,4 +1,6 @@
 ﻿Go言語と Visual Studio Code を Windows 10 にインストールしてデバッグ実行します:
+    設定:
+        __UserProfile__: C:\Users\ts-ne  #// Windows の %USERPROFILE% 環境変数の値
     ローカルPCへ各種ソフトウェアをインストールします:
         Go言語をインストールします:
             - https://golang.org/dl/ >> Microsoft Windows >> ...msi をダウンロードして実行
@@ -23,10 +25,10 @@
                 {
                     "go.testFlags": ["-v"]
                 }
-    Visual Studio Code で C:\Go を開きます:
-        File >> Open Folder >> C:\Go
+    Visual Studio Code で C:\Users\ts-ne\go\src を開きます:  #template: __UserProfile__
+        File >> Open Folder >> C:\Users\ts-ne\go\src
     Go言語のソース ファイルを作成します:
-        C:\Go\example_test.go : |
+        'C:\Users\ts-ne\go\src\example_test.go' : |  #template: __UserProfile__
             package main // このソースが所属するパッケージの名前
 
             import (
@@ -64,13 +66,18 @@ go get でプロジェクトをインストールして実行します:
         Git for Windows をインストールします:
             - https://git-scm.com/ >> Downloads >> Windows
             - インストール オプションはデフォルトで構いません
-    Visual Studio Code を開いていたら閉じます:
+        Visual Studio Code を開いていたら閉じます:
+    Visual Studio Code で C:\Users\ts-ne\go\src を開きます:  #template: __UserProfile__
+        File >> Open Folder >> C:\Users\ts-ne\go\src        #template: __UserProfile__
     Visual Studio Code のターミナルを開きます:
         Terminal >> New Terminal (PowerShell)
     hello をインストールします:
         参考: https://github.com/golang/example
         PowerShell:
             go get github.com/golang/example/hello
-    テストをデバッグ実行します:
-        例： C:\Go\src\strings\example_test.go
-        #// このサンプルは fmt.Printf の出力は Visual Studio Code の output に表示されません
+    デバッグ実行します:
+        - C:\Users\ts-ne\go\src\strings\example_test.go を開きます  #template: __UserProfile__
+        - F5 キーを押し、Go を選びます
+    実行します:
+        - C:\Users\ts-ne\go\src\strings\example_test.go を開きます  #template: __UserProfile__
+        - Ctrl + F5 キーを押し、Go を選びます

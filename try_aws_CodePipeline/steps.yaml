@@ -1,0 +1,184 @@
+﻿GitHub + CodePipeline で任意の bash コマンドを実行する CI/CD 環境を構築する:
+    設定:
+        __RegionName__: 東京  #// CodePipeline のパイプラインを作成するリージョンの名前
+        __RegionID__: ap-northeast-1  #// __RegionName__ の ID
+        __GitHubOwnerAccount__: Takakiriy  #// リポジトリのオーナーのアカウント名
+        __BranchName__: develop  #// 普段開発に使うブランチ名
+        __GitHubCollaboratorAccount__: Takakiriy  #// リポジトリにアクセスするユーザーのアカウント名
+        __GitCollaboratorName__: Your Name        #// git log コマンドで表示されるユーザー名
+        __GitCollaboratorMail__: you@example.com  #// git log コマンドで表示されるメールアドレス
+        __RepositoryName__: try1
+        __PipelineName__:   try1
+    参考: https://docs.aws.amazon.com/ja_jp/codepipeline/latest/userguide/tutorials-codebuild-devicefarm.html
+    aws のアカウントを作成します:
+    AWS マネジメント コンソールにサインインします:
+        URL: https://console.aws.amazon.com/
+        （ユーザー）: IAM ユーザー
+        アカウントID: __AWS_AccountID__
+        OK: 次へ ボタン
+        ユーザー名: __AWS_UserName__
+        パスワード: __AWS_UserPassword__
+        OK2: サインイン ボタン
+        OK3: ブラウザーを閉じます
+    GitHub のアカウントを作成します:
+    GitHub にサインインします:
+        メニュー: https://github.com/ >> 三（右上） >> Sign in
+        Username or email address: Takakiriy  #template: __GitHubOwnerAccount__
+        Password: ____
+        OK: Sign in ボタン
+        OK2: ブラウザーを閉じます
+    ローカルPCへ各種ソフトウェアをインストールします:
+        Git for Windows をインストールします:
+            - https://git-scm.com/ >> Downloads >> Windows
+            - ダウンロードしたファイル（例：Git-2.24.1.2-64-bit.exe）を開く
+            - Next を8回押す
+            - Configuring the line ending conversions: Checkout as-is, commit as-is
+            - 他のインストール オプションはデフォルトを使用
+            - デスクトップを右クリック >> Git Bash Here
+            - git clone  "https://github.com/githubtraining/hellogitworld.git"
+            - 成功したら、デスクトップにある hellogitworld フォルダーを削除する ( rm -rf hellogitworld )
+        （ダウンロード（クローン）するリポジトリにコミットする可能性があるとき）Git のユーザー名を設定します:
+            - git config --global user.email "you@example.com"  #template: "__GitCollaboratorMail__"
+            - git config --global user.name  "Your Name"        #template: "__GitCollaboratorName__"
+        bash を閉じます:
+    GitHub にリポジトリと develop ブランチを新規作成します:
+        リポジトリを作成します:
+            メニュー: https://github.com/ >> （左上の GitHub アイコン） >> （Repositories）New
+            Repository name: try1  #template: __RepositoryName__
+            Public or Private: Private
+            OK: Create repository
+            OK2: ブラウザーを閉じます
+        プライベート リポジトリに接続してダウンロード（クローン）します:
+            #Git bash:
+            - cd  "__ParentOfProject__"
+            - git clone "https://github.com/Takakiriy/try1.git"  #template: https://github.com/__GitHubOwnerAccount__/__RepositoryName__.git
+                #// ここでエラーになるときは Git をアンインストール＆インストールしてください
+            - Sign in with your browser ボタン  #// プライベート リポジトリのときだけこのボタンが表示されます
+            - 表示されたアカウント名を確認: wants to access your Takakiriy account
+                #template: wants to access your __GitHubCollaboratorAccount__ account
+            - Authorize GitCredentialManager ボタン
+            - 成功したらブラウザーを閉じます
+        develop ブランチを新規作成します:
+            #Git bash:
+            - cd  "try1"  #template: "__RepositoryName__"
+            - git checkout -b "develop"  #template: "__BranchName__"
+            - echo "" > README.md  #// git push に必要なため
+            - git add .
+            - git commit -a -m "First Commit"
+            - git push --set-upstream origin "develop"  #template: "__BranchName__"
+            - bash を閉じます
+    GitHub と連携（統合）する CodePipeline のパイプラインを作成します:
+        #// CodePipeline は、OAuth トークンを使用して GitHub と統合します
+        参考: https://docs.aws.amazon.com/ja_jp/codepipeline/latest/userguide/tutorials-four-stage-pipeline.html
+        URL: http://console.aws.amazon.com/codesuite/codepipeline/home
+        （リージョン）（右上）: 東京  #template: __RegionName__
+        メニュー: パイプライン >> パイプライン >> パイプラインを作成する
+        Step 1. パイプラインの設定を選択する:
+            パイプライン名: try1  #template: __PipelineName__
+            サービスロール: 新しいサービスロール
+            OK: 次に ボタン
+        Step 2. ソース:
+            ソースプロバイダー: GitHub (Version 2)
+            接続 >> GitHub に接続する（ボタン）:
+                接続名: try1connect  #template: __PipelineName__connect
+                Press: GitHub に接続する
+                表示チェック: Verify your GitHub identity (ここをチェック)
+                Press2: Authorize AWS Connector for GitHub
+            GitHub アプリ >> 新しいアプリをインストールする（ボタン）:
+                選択: Only select repositories
+                Select repositories: Takakiriy/try1  #template: __GitHubOwnerAccount__/__RepositoryName__
+                Press: Install
+                Press2: 接続
+            リポジトリ名: Takakiriy/try1  #template: __GitHubOwnerAccount__/__RepositoryName__
+            ブランチ名: develop  #template: __BranchName__
+            Press: 次に ボタン
+        Step 3. ビルドステージを追加する:
+            プロバイダーを構築する: AWS CodeBuild
+            リージョン: 東京  #template: __RegionName__
+            プロジェクト名 >> プロジェクトを作成する（ボタン）:
+                プロジェクトの設定:
+                    プロジェクト名: try1  #template: __PipelineName__
+                環境:
+                    オペレーティングシステム: Ubuntu
+                    ランタイム: Standard
+                    イメージ:   aws/codebuild/standard:4.0
+                    イメージのバージョン: aws/codebuild/standard:4.0-20.09.14  #// 当時の最新
+                    環境タイプ: Linux
+                    特権付与: なし
+                    サービスロール: 新しいサービスロール
+                        #// codebuild-try1-service-role が自動的に入ります
+                            #template: codebuild-__PipelineName__-service-role
+                Buildspec:
+                    ビルド仕様: ビルドコマンドの挿入
+                    ビルドコマンド: echo  "build command"
+                    Press: エディタに切り替え ボタン
+                ログ >> CloudWatch:
+                    グループ名: CodeBuild-try1  #template: CodeBuild-__PipelineName__
+                    ストリーム名: （なし）
+                Press2: CodePipeline に進む
+            Press: 次に ボタン
+        Step 4. デプロイステージを追加する:
+            Press: 導入段階をスキップ ボタン
+        Step 5. レビュー:
+            Press: パイプラインを作成する
+        しばらく待つとパイプラインが動作し始めます:
+        パイプラインのログを確認する:
+            Build >> 詳細 でビルドログを確認できます
+            ログの最後のほうを見て、echo  "build command" が実行されていることを確認します
+    GitHub にコミットしてパイプラインが動作することを確認します:
+        - （README.md ファイルを編集します）
+        #Git bach
+        - git add .
+        - git commit -a -m "CI test"
+        - git push
+        - http://console.aws.amazon.com/codesuite/codepipeline/home >> try1
+            #template: >> __PipelineName__
+        - Source のボックスの中の最も下にあるコミット メッセージが最新の "CI test" に変わるまで待つ
+        - (Build) >> 詳細
+    （使わなくなったら）:
+        CloudWatch ログを削除します:
+            - https://ap-northeast-1.console.aws.amazon.com/cloudwatch/ >> ロググループ
+            - CodeBuild-try1 (の左にチェック)  #template: CodeBuild-__PipelineName__
+            - アクション >> ロググループの削除
+        パイプラインを削除します:
+            - http://console.aws.amazon.com/codesuite/codepipeline/home >>
+                try1（の左をチェック） >> パイプラインを削除する ボタン
+                    #template: __PipelineName__
+            - http://console.aws.amazon.com/codesuite/codebuild/home >>
+                try1（の左をチェック） >> ビルドプロジェクトの削除 ボタン
+                    #template: __PipelineName__
+            - ブラウザーを閉じます
+        CodePipeline の IAM ロールを削除します:
+            - https://console.aws.amazon.com/iam/ >> ロール:
+                - AWSCodePipelineServiceRole-ap-northeast-1-try1 (を検索):
+                    #template: AWSCodePipelineServiceRole-__RegionID__-__PipelineName__
+                    （ロール名の左にチェックを入れて） ロールの削除
+                - codebuild-try1-service-role (を検索):
+                    #template: codebuild-__PipelineName__-service-role
+                    （ロール名の左にチェックを入れて） ロールの削除
+            - https://console.aws.amazon.com/iam/ >> ポリシー:
+                - AWSCodePipelineServiceRole-ap-northeast-1-try1 (を検索):
+                    #template: AWSCodePipelineServiceRole-__RegionID__-__PipelineName__
+                    （ポリシー名の左にチェックを入れて） ポリシーアクション >> 削除
+                - CodeBuildBasePolicy-try1-ap-northeast-1 (を検索):
+                    #template: CodeBuildBasePolicy-__PipelineName__-__RegionID__
+                    （ポリシー名の左にチェックを入れて） ポリシーアクション >> 削除
+                - CodeBuildCloudWatchLogsPolicy-try1-ap-northeast-1 (を検索):
+                    #template: CodeBuildCloudWatchLogsPolicy-__PipelineName__-__RegionID__
+                    （ポリシー名の左にチェックを入れて） ポリシーアクション >> 削除
+            - ブラウザーを閉じます
+        CodePipeline との接続を解除するように GitHub を設定します:
+            メニュー: https://github.com/ >> （ Takakiriy のプロフィール写真） >> Settings >> Applications（左下）
+                #template: （ __GitHubOwnerAccount__ のプロフィール写真）
+            Installed GitHub Apps （タブ）:
+                - (AWS Connector for GitHub) >> Configure
+                - (Uninstall "AWS Connector for GitHub")（最も下）>> Uninstall
+            Authorized OAuth Apps （タブ）:
+                - (Git Credential Manager) >> … >> Revoke >> I understand, revoke access
+            ブラウザーを閉じます:
+        （必要なら）GitHub のリポジトリを削除します:
+            - https://github.com/ >> （左上の GitHub アイコン） >> Takakiriy/try1
+                #template: __GitHubOwnerAccount__/__RepositoryName__
+            - Settings（タブ。ウィンドウ幅が狭いときは … の中にある） >> （いちばん下へスクロール） >>
+                Delete this repository >> Takakiriy/try1
+                    #template: __GitHubOwnerAccount__/__RepositoryName__

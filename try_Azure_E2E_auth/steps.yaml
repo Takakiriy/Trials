@@ -6,7 +6,7 @@ Azure App Service でユーザーをエンド ツー エンドで認証および
 
     設定:
         __DeployUserName__: sagex-deploy  #// Azure 内で一意。文字@は使えない
-        __DeployUserPassword__: password83 #★秘密
+        __DeployUserPassword__: password83  #★秘密:仮  #// 手順内でメモする値
             #// デプロイ ユーザーとは、Azure App Service の Git リポジトリにプッシュ（デプロイ）する Git のユーザーです
         __GitUserName__: test_user
         __GitUserMail__: test@example.com
@@ -17,7 +17,7 @@ Azure App Service でユーザーをエンド ツー エンドで認証および
         __BackEndAppName__: sagex-back1
         __FrontEndGitURL__: https://sagex-deploy@sagex-front1.scm.azurewebsites.net/sagex-front1.git
         __BackEndGitURL__: https://sagex-deploy@sagex-back1.scm.azurewebsites.net/sagex-back1.git
-        __BackEndClientID__: d7f70825-49be-4b57-bf3a-61b2c35cc669 #★秘密
+        __BackEndClientID__: 00000000-0000-0000-0000-000000000000  #★秘密:仮  #// 手順内でメモする値
     ローカルPCへ各種ソフトウェアをインストールします:
         Git for Windows をインストールします:
             - https://git-scm.com/ >> Downloads >> Windows
@@ -172,7 +172,7 @@ Azure App Service でユーザーをエンド ツー エンドで認証および
 
     設定:
         __DeployUserName__: sagex-deploy  #// Azure 内で一意。Azure アカウント内で１つ(?)。文字@は使えない
-        __DeployUserPassword__: password83 #★秘密
+        __DeployUserPassword__: password83  #★秘密:仮  #// 手順内でメモする値
         __GitUserName__: test_user
         __GitUserMail__: test@example.com
         __ResourceGroup__: e2e-auth1
@@ -182,7 +182,7 @@ Azure App Service でユーザーをエンド ツー エンドで認証および
         __BackEndAppName__: sagep-back1
         __FrontEndGitURL__: https://sagex-deploy@sagep-front1.scm.azurewebsites.net/sagep-front1.git  #// 下記手順で決まります
         __BackEndGitURL__: https://sagex-deploy@sagep-back1.scm.azurewebsites.net/sagep-back1.git  #// 下記手順で決まります
-        __BackEndClientID__: 2bb58ad6-329f-40f4-9414-11c3f0365c37 #★秘密
+        __BackEndClientID__: 00000000-0000-0000-0000-000000000000  #★秘密:仮  #// 手順内でメモする値
 
     構成:
         - Angular.js フロントエンド
@@ -319,7 +319,7 @@ Azure App Service でユーザーをエンド ツー エンドで認証および
                     - authsettings:
                         - Read/Write（右上）
                         - [Edit]: |
-                            "additionalLoginParams": ["response_type=code id_token","resource=2bb58ad6-329f-40f4-9414-11c3f0365c37"],
+                            "additionalLoginParams": ["response_type=code id_token","resource=00000000-0000-0000-0000-000000000000"],
                                 #template: "additionalLoginParams": ["response_type=code id_token","resource=__BackEndClientID__"],
                         - [PUT]
                         - ReadOnly（右上）
@@ -442,13 +442,13 @@ Azure App Service でユーザーをエンド ツー エンドで認証および
         __AppName__: webapp1
         __AppForIDP__: Azure AD B2C App
         __ClientID__: ceb494b5-2202-4660-9b74-6ee03cde377c
-        __ClientSecret__: z3EgK4jAZ-M6_cY..Vj2Pa9gM.22n_mPCB #★秘密
+        __ClientSecret__: zbigK4jAZ-M6_cY..Vj2Pa9gM.22n_mPCB  #★秘密:仮  #// 手順内でメモする値
         __RedirectURI__: https://jwt.ms
         __SignUpSignInUserFlow__: signupsignin1
         __ProfileEditingUserFlow__: profileediting1
         __PasswordResetUserFlow__: passwordreset1
         __ClientIDForIDP__: 966a213f-49a6-4f07-a911-7b0126b27249
-        __ClientSecretForIDP__: nb_rSsE~a.XqaeMeQ_0YHEo9Vzo0769f.2 #★秘密
+        __ClientSecretForIDP__: nb_rSsE~a.Xqaeh8t_0YHEo9Vzo0769f.2  #★秘密:仮  #// 手順内でメモする値
         __AzureIDP__: Contoso Azure AD
     テナントの作成:
         参考: https://docs.microsoft.com/ja-jp/azure/active-directory-b2c/tutorial-create-tenant
@@ -624,7 +624,7 @@ Azure App Service でユーザーをエンド ツー エンドで認証および
                 メタデータ URL: https://login.microsoftonline.com/example1sagep.onmicrosoft.com/.well-known/openid-configuration
                     #template: https://login.microsoftonline.com/__AD_DomainName__.onmicrosoft.com/.well-known/openid-configuration
                 クライアント ID: 966a213f-49a6-4f07-a911-7b0126b27249  #template: __ClientIDForIDP__
-                クライアント シークレット: nb_rSsE~a.XqaeMeQ_0YHEo9Vzo0769f.2  #template: __ClientSecretForIDP__
+                クライアント シークレット: nb_rSsE~a.Xqaeh8t_0YHEo9Vzo0769f.2  #template: __ClientSecretForIDP__
                 ドメインのヒント: ContosoAD
                 ユーザー ID: oid
                 表示名: name

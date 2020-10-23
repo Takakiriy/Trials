@@ -6,15 +6,16 @@
     __AWS_AccountID__: 123456789012  #★秘密:仮
     __RegionName__: 東京  #// CodePipeline のパイプラインを作成するリージョンの名前
     __RegionID__: ap-northeast-1  #// __RegionName__ の ID
-    __IAM_UserName__: user-dev  #// IAM ユーザー（開発用）、AWS CLI で必要な権限を持つ
+    __IAM_UserName__: user-dev1  #// IAM ユーザー（開発者用）、AWS CLI で必要な権限を持つ
     __IAM_UserAccessKeyID__: AKIAZQ2CH423P67RPDNA  #// 手順内でメモする値
     __SecretAccessKey__: AhiRlFd10ZYJClp4FDTlkIl2ZTiLnLJI3jFLhaFf  #★秘密:仮  #// 手順内でメモする値
     __GitHubOwnerAccount__: Takakiriy  #// リポジトリのオーナーのアカウント名
     __GitHubCollaboratorAccount__: Takakiriy  #// リポジトリにアクセスするユーザーのアカウント名
     __GitCollaboratorName__: Your Name        #// git log コマンドで表示されるユーザー名
     __GitCollaboratorMail__: you@example.com  #// git log コマンドで表示されるメールアドレス
+    __Domain__: sage-p.tk  #// 作成するアプリケーションの URL のドメイン部分
     __AppName__: wildrydes-site
-    __AppNamePascalCase__: WildRydesWebApp
+    __AppNamePascalCase__: WildRydes
     __RepositoryName__: wildrydes-site
     __ProductBranchName__: master  #// 本番用のブランチ名
     __Stage__: prod
@@ -189,7 +190,7 @@ Amplify Console + GitHub でフロントエンドの CI/CD 環境を構築しま
         メニュー: https://ap-northeast-1.console.aws.amazon.com/cognito/ >> ユーザープールの管理 >>
             prod-wildrydes-site >> アプリクライアント（左） >> アプリクライアントの追加
                 #template: __Stage__-__AppName__ >> アプリクライアント
-        アプリクライアント名: WildRydesWebApp  #template: __AppNamePascalCase__
+        アプリクライアント名: WildRydesWebApp  #template: __AppNamePascalCase__WebApp
         チェックしない:
             クライアントシークレットを生成:
         アプリクライアントの作成 ボタン:
@@ -250,9 +251,9 @@ Amplify Console + GitHub でフロントエンドの CI/CD 環境を構築しま
                 - AWSLambdaBasicExecutionRole
             次のステップ ボタン(2):
             次のステップ ボタン(3):
-            ロール名: WildRydesLambda
+            ロール名: WildRydesLambda  #template: __AppNamePascalCase__Lambda
             ロールの作成 ボタン:
-        WildRydesLambda:  #// 検索して左のロール名をクリックします
+        WildRydesLambda:  #// 検索して左のロール名をクリックします  #template: __AppNamePascalCase__Lambda
             メニュー: （アクセス許可）（タブ） >> インラインポリシーを追加
             サービス:
                 サービスの選択 をクリック:
@@ -277,7 +278,7 @@ Amplify Console + GitHub でフロントエンドの CI/CD 環境を構築しま
             ランタイム: Node.js 12.x  #// 最新バージョン
             デフォルトの実行ロールの変更:
                 チェック: 既存のロールを使用する
-                既存のロール: WildRydesLambda
+                既存のロール: WildRydesLambda  #template: __AppNamePascalCase__Lambda
             関数の作成 ボタン:
         関数コード:
             index.js: |
@@ -433,13 +434,13 @@ RESTful API:
         https://aws.amazon.com/jp/getting-started/hands-on/build-serverless-web-app-lambda-apigateway-s3-dynamodb-cognito/module-4/
     新しい REST API を作成する:
         メニュー: https://console.aws.amazon.com/apigateway/ >> API を作成 >> REST API >> 構築 >> 新しい API
-        API 名: WildRydes
+        API 名: WildRydes  #template: __AppNamePascalCase__
         エンドポイントタイプ: エッジ最適化
         API の作成 ボタン:
     Cognito ユーザプールオーソライザーを作成する:
-        メニュー: https://console.aws.amazon.com/apigateway/ >> WildRydes >> オーソライザー >>
-            新しいオーソライザーの作成
-        名前: WildRydes
+        メニュー: https://console.aws.amazon.com/apigateway/ >>
+            WildRydes >> オーソライザー >> 新しいオーソライザーの作成  #template: __AppNamePascalCase__
+        名前: WildRydes  #template: __AppNamePascalCase__
         タイプ: Cognito
         Cognito ユーザープール: prod-wildrydes-site  #template: __Stage__-__AppName__
         トークンのソース: Authorization
@@ -465,8 +466,8 @@ RESTful API:
                 "token_use": "id"
             }
     新しいリソースとメソッドを作成します:
-        メニュー: https://console.aws.amazon.com/apigateway/ >> WildRydes >> リソース >>
-            アクション >> リソースの作成
+        メニュー: https://console.aws.amazon.com/apigateway/ >>
+            WildRydes >> リソース >> アクション >> リソースの作成  #template: __AppNamePascalCase__
         リソース名: ride
         チェック: API Gateway CORS を有効にする
         リソースの作成 ボタン:
@@ -480,7 +481,7 @@ RESTful API:
         #// 権限を追加することの確認が表示されます
         OK ボタン:
         メソッドリクエスト:
-            認可：WildRydes
+            認可：WildRydes  #template: __AppNamePascalCase__
     API をデプロイする:
         メニュー: アクション >> API のデプロイ
         デプロイされるステージ: [新しいステージ]
@@ -507,25 +508,153 @@ RESTful API:
         - マップがロードされたら、マップ上の任意の場所をクリックして、乗る場所を設定します
         - Request Unicorn ボタンを押します
 
+URL を自社のドメイン（カスタムドメイン）に変更します:
+    参考: サードパーティDNSプロバイダーが管理するカスタムドメインの追加
+        https://docs.aws.amazon.com/ja_jp/amplify/latest/userguide/to-add-a-custom-domain-managed-by-a-third-party-dns-provider.html
+    自分が使えるドメイン(URL)を用意します（カスタムドメインを Route 53 に登録する）:
+        aws の場合（有料）: #// 設置後12時間以内の利用であれば無料らしい
+            参考: https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-register.html
+            メニュー: https://console.aws.amazon.com/route53/ >> 登録済みドメイン（左） >> ドメインの登録（上）
+            続き: （未確認）
+        Freenom の場合（無料）:
+            #// .tk（ニュージーランドの領土であるトケラウ）などレアな TLD （トップ レベル ドメイン）を持つドメインを取得できます
+            http://www.freenom.com/en/index.html >> __NewDomain__ >> Check Availability >>
+            Checkout（右上） >> Continue >> （メールアドレスを入力） >> Verify My Email Address >>
+            受信したメールの中にあるボタンをPCから押す） >> （名前などを入力する）
+            #// 3か月後（設定による）に更新を忘れないこと
+    ドメインを Route53 のホストゾーンに追加します:
+        参考: https://avinton.com/academy/route53-dns-vhost/
+        メニュー: https://console.aws.amazon.com/route53/ >> ホストゾーン（左） >> ホストゾーンの作成（下）
+        ドメイン名: sage-p.tk  #template: : __Domain__
+        OK: ホストゾーンの作成 ボタン
+    ACM（AWS Certificate Manage）に証明書を管理させます:
+        参考: https://labs.mobingi.com/aws-certificate-manager-and-freenom/
+        メニュー: https://console.aws.amazon.com/acm/home >> 証明書のプロビジョニング >> 今すぐ始める >>
+            証明書のリクエスト ボタン（右下）
+        ドメイン名: sage-p.tk  #template: : __Domain__
+        この証明書に別の名前を追加 ボタン:
+        ドメイン名2: "*.sage-p.tk"  #template: "*.__Domain__"
+            #// 上記 " " の中を入力します
+        次へ ボタン:
+        検証方法の選択: DNS の検証
+        操作: 次へ >> 確認 >> 確定とリクエスト >> （検証保留中が表示される） >> 続行 >>
+            sage-p.tk >> Route 53 でのレコードの作成 ボタン （同じ値なので片方のボタンだけ押せばよい）
+                #template: __Domain__ >> Route 53 でのレコード
+            #// CNAME リソース レコードが Route 53 に登録されます
+        もし、Route 53 でのレコードの作成 ボタンが押せないときは、手動で CNAME リソース レコードを追加します:
+            必要な CNAME の設定を調べます（ACM が提供する CNAME の場合）:
+                メニュー: https://console.aws.amazon.com/acm/home >>
+                    sage-p.tk（の左の▲） >> ドメインの左の▲
+                        #template: __Domain__（の左の▲） >> ドメインの左の▲
+                CNAME の例:
+                    名前: _51a78045aa6d7b88d8hyg70253c19812e.sage-p.tk.  #template: .__Domain__.
+                    種類: CNAME
+                    値: _ffd077863ba1518d6c169c7f4a06726b.zbkrxsrfvj.acm-validations.aws.
+            Route 53 に CNAME を設定します:
+                メニュー: https://console.aws.amazon.com/route53/ >> レコードを作成
+                ルーティングポリシー: シンプルルーティング
+                次へ ボタン:
+                シンプルなレコードを定義 ボタン:
+                    レコード名: ____  #// CNAME の名前
+                    値/トラフィックのルーティング先:
+                        - レコードタイプに応じた IP アドレスまたは別の値
+                        - ____  #// CNAME の値
+                    レコードタイプ: CNAME
+                    シンプルなレコードを定義 ボタン:
+                レコードを作成 ボタン:
+            #// サブドメインに対する CNAME は同じ値なので追加する CNAME は１つです
+    （freenomを使っている場合）ネームサーバーを変更します:
+        参考1: https://note.com/dafujii/n/n12bb564081f1
+        参考2: https://dev.classmethod.jp/articles/mesoko-r53-cdn/
+        NS レコードの値ネームサーバーのアドレスをメモします:
+            メニュー: https://console.aws.amazon.com/route53/ >> ホストゾーン （左） >> sage-p.tk  #template: >> __Domain__
+            操作: レコード名 = sage-p.tk, タイプ = NS の行の「値/トラフィックのルーティング先」の列にある4つの値をメモします
+                #template: レコード名 = __Domain__,
+            例:
+                - ns-63.awsdns-07.com.
+                - ns-649.awsdns-17.net.
+                - ns-1037.awsdns-01.org.
+                - ns-1702.awsdns-20.co.uk.
+        freenom 内での設定変更:
+            メニュー: http://www.freenom.com/en/index.html >> (Sign in) >> Services >> My Domains >>
+                Manage Domain（行末） >> Management Tools
+            Nameservers: Use custom nameservers(enter below)
+            Nameserver1～4 に、メモした ns- から始まりピリオドで終わる4つの値を貼り付ける:
+                #// 末尾のピリオドも必要です
+            Change Nameservers ボタン:
+    Amplify Console に自社のドメインを設定します:
+        メニュー: https://console.aws.amazon.com/amplify/ >> wildrydes-site >> ドメインの管理（左）  #template: __AppName__
+        カスタムドメインの追加（ボタン）:
+            ドメイン: sage-p.tk  #template: __Domain__
+            ドメインの検索 ボタン:
+            Exclude root ボタンを押して、https://sage-p.tk を削除します:  #template: __Domain__
+                #// 理由は、Route53 で取得していないドメインでは、
+                #// 下記「Route53 の ANAME レコードの値は aws の外部に設定できません」
+                #// に書いてあるように https://sage-p.tk にアクセスできないからです
+            保存 ボタン:
+            Status details の図が表示され、SSL configuration の処理中になるまで待ちます:
+    （もし、CNAME を設定するように表示されたときは）Route 53 に必要な設定を表示します:
+        DNS 設定の検証 のモーダルを開きます:
+            アクション >> DNS レコードの表示 メニュー:
+            表示例:
+                - _d49df321977f2b1d57b81408d67fac2d    CNAME    _3184fb03fe5baf52bfcda86050767f3a.zbkrxsrfvj.acm-validations.aws.
+                    #// 上記 CNAME の左（名前）は、ドメイン（.sage-p.tk.）が表示されていません（awsのバグ） #template: .__Domain__.
+                - '@    ANAME    dbwdcgexf1sy9.cloudfront.net'
+                - www    CNAME    dbwdcgexf1sy9.cloudfront.net
+            この DNS 設定の検証 のモーダルを表示させたままにします:
+        上記「手動で CNAME リソース レコードを追加します」を参考に CNAME を設定します:
+            #// 設定が正しくできていれば自動的に Status details の図が更新されます
+            #// Route53 の ANAME レコードの値は aws の外部に設定できません（ツイッター検索「Route53 ANAME」より）
+            #// このため、 https://sage-p.tk はアクセスできません。 https://www.sage-p.tk はアクセスできます
+                #template: https://__Domain__ はアクセスできません。 https://www.__Domain__ はアクセスできます
+        DNS 設定の検証 のモーダルを閉じます:
+
 リソースのクリーンアップ:
+    aws のリージョンを選択します:
+        AWS マネジメント コンソールにサインインします:
+            URL: https://console.aws.amazon.com/
+            （ユーザー）: IAM ユーザー
+            アカウントID: __AWS_AccountID__
+            次へ ボタン:
+            ユーザー名: __AWS_UserName__
+            パスワード: __AWS_UserPassword__
+            サインイン ボタン:
+        リージョン: 東京 （右上） #template: __RegionName__
+        OK: ブラウザーを閉じます
     Amplify Console の削除:
         - https://console.aws.amazon.com/amplify/home >> wildrydes-site  #template: __AppName__
         - アクション >> アプリの削除
+    （freenom を使っている場合）freenom 内での設定変更:
+        メニュー: http://www.freenom.com/en/index.html >> (Sign in) >> Services >> My Domains >>
+            Manage Domain（行末） >> Management Tools
+        Nameservers: Use default nameservers (Freenom Nameservers)
+        Change Nameservers ボタン:
+    Route 53 の削除:
+        - https://console.aws.amazon.com/route53/ >> ホストゾーン （左） :
+            - ドメイン名 = sage-p.tk の行:  #template: __Domain__
+                - タイプ = NS, SOA 以外（のすべての行の行頭にチェック） >> 削除
+            - ドメイン名 = sage-p.tk （の行の左にチェック） >> 削除（上）  #template: __Domain__
+    ACM（AWS Certificate Manage）の削除:
+        - https://console.aws.amazon.com/acm/home >> sage-p.tk（の左にチェック） >> アクション >> 削除
     Cognito ユーザープールの削除:
         - https://ap-northeast-1.console.aws.amazon.com/cognito/ >> ユーザープールの管理 >>
             prod-wildrydes-site
         - プールの削除（右上）
     Lambda の削除:
-        - https://console.aws.amazon.com/lambda/ >> RequestUnicorn
-        - アクション >> 関数の削除
+        - https://console.aws.amazon.com/lambda/ >> RequestUnicorn （の左をチェック）
+        - アクション >> 削除
     IAM の削除:
-        - https://console.aws.amazon.com/iam/ >> ロール
-        - WildRydesLambda の左にチェック >> ロールの削除
+        - https://console.aws.amazon.com/iam/ >> ロール:
+            - WildRydesLambda の左にチェック >> ロールの削除
+                #template: __AppNamePascalCase__Lambda
+        - https://console.aws.amazon.com/iam/ >> ユーザー:
+            - user-dev1 の左にチェック >> ユーザーの削除
+                #template: __IAM_UserName__
     DynamoDB >> テーブル の削除:
         - https://console.aws.amazon.com/dynamodb/ >>  テーブル
         - Rides の左にチェック >> アクション >> テーブルの削除
     API Gateway の削除:
-        - https://console.aws.amazon.com/apigateway/ >> WildRydes
+        - https://console.aws.amazon.com/apigateway/ >> WildRydes  #template: __AppNamePascalCase__
         - アクション >> API の削除
     CloudWatch >> ログ の削除:
         - https://ap-northeast-1.console.aws.amazon.com/cloudwatch/ >> ロググループ

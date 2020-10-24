@@ -1,59 +1,646 @@
-﻿#// サーバーレスのウェブアプリケーションを構築します
-#// AWS Lambda、Amazon API Gateway、AWS Amplify、Amazon DynamoDB、および Amazon Cognito を使用
-参考: https://aws.amazon.com/jp/getting-started/hands-on/build-serverless-web-app-lambda-apigateway-s3-dynamodb-cognito/
+﻿Amplify Console ＋ React のウェブアプリケーションを構築します:
+    #// AWS Amplify、Amazon Cognito、GitHub を使用
 
-設定:
-    __AWS_AccountID__: 123456789012  #★秘密:仮
-    __RegionName__: 東京  #// CodePipeline のパイプラインを作成するリージョンの名前
-    __RegionID__: ap-northeast-1  #// __RegionName__ の ID
-    __IAM_UserName__: user-dev1  #// IAM ユーザー（開発者用）、AWS CLI で必要な権限を持つ
-    __IAM_UserAccessKeyID__: AKIAZQ2CH423P67RPDNA  #// 手順内でメモする値
-    __SecretAccessKey__: AhiRlFd10ZYJClp4FDTlkIl2ZTiLnLJI3jFLhaFf  #★秘密:仮  #// 手順内でメモする値
-    __GitHubOwnerAccount__: Takakiriy  #// リポジトリのオーナーのアカウント名
-    __GitHubCollaboratorAccount__: Takakiriy  #// リポジトリにアクセスするユーザーのアカウント名
-    __GitCollaboratorName__: Your Name        #// git log コマンドで表示されるユーザー名
-    __GitCollaboratorMail__: you@example.com  #// git log コマンドで表示されるメールアドレス
-    __Domain__: sage-p.tk  #// 作成するアプリケーションの URL のドメイン部分
-    __AppName__: wildrydes-site
-    __AppNamePascalCase__: WildRydes
-    __RepositoryName__: wildrydes-site
-    __ProductBranchName__: master  #// 本番用のブランチ名
-    __Stage__: prod
-    __CognitoPoolID__: ap-northeast-1_kCQxkqzUf  #// 手順内でメモする値
-    __AppClientID__: 53cldntes2imnc2ohb6n86m77q
-    __UserMail__: example@example.com  #★秘密:仮
-    __UserPassword__: 12345aA!
-    __API_GatewayURL__: https://abcd123456.execute-api.ap-northeast-1.amazonaws.com/prod  #★秘密:仮
+    設定:
+        __AWS_AccountID__: 123456789012  #★秘密:仮
+        __RegionName__: 東京  #// CodePipeline のパイプラインを作成するリージョンの名前
+        __RegionID__: ap-northeast-1  #// __RegionName__ の ID
+        __AmplifyUser__: user-dev1-amplify  #// Amplify 用 IAM ユーザー、Amplify CLI で必要な権限を持つ
+        __AmplifyUserAccessKeyID__: AKIAZQ2CH423P67RPDNA  #★秘密:仮  #// 手順内でメモする値
+        __AmplifySecretAccessKey__: AhiRlFd10ZYJClp4FDTlkIl2ZTiLnLJI3jFLhaFf  #★秘密:仮  #// 手順内でメモする値
+        __CLI_Profile__: amplify  #// aws 関連の CLI のプロファイル名
+        __AmplifyRole__: amplifyconsole-backend-role1
+        __GitHubOwnerAccount__: Takakiriy  #// リポジトリのオーナーのアカウント名
+        __GitHubCollaboratorAccount__: Takakiriy  #// リポジトリにアクセスするユーザーのアカウント名
+        __GitCollaboratorName__: Your Name        #// git log コマンドで表示されるユーザー名
+        __GitCollaboratorMail__: you@example.com  #// git log コマンドで表示されるメールアドレス
+        __AppName__: react1
+        __AppNamePascalCase__: React1
+        __RepositoryName__: react1
+        __ProductBranchName__: master  #// 本番用のブランチ名
+        __Stage__: prod
+        __CognitoPoolID__: ap-northeast-1_kCQxkqzUf  #// 手順内でメモする値
+        __AppClientID__: 53cldntes2imnc2ohb6n86m77q
+        __UserName__: example1
+        __UserMail__: example@example.com  #★秘密:仮
+        __UserPassword__: 12345aA!
+        __StagingPassword__: 1234567_890123456789_0123456789  #★秘密:仮
 
-Amplify Console + GitHub でフロントエンドの CI/CD 環境を構築します:
-    参考: 継続的デプロイを使用した静的ウェブホスティング
-        https://aws.amazon.com/jp/getting-started/hands-on/build-serverless-web-app-lambda-apigateway-s3-dynamodb-cognito/module-1/
-    ローカルPCへ各種ソフトウェアをインストールします:
-        Git for Windows をインストールします:
-            - https://git-scm.com/ >> Downloads >> Windows
-            - ダウンロードしたファイル（例：Git-2.24.1.2-64-bit.exe）を開く
-            - Next を8回押す
-            - Configuring the line ending conversions: Checkout as-is, commit as-is
-            - 他のインストール オプションはデフォルトを使用
-            - デスクトップを右クリック >> Git Bash Here
-            - git clone  "https://github.com/githubtraining/hellogitworld.git"
-            - 成功したら、デスクトップにある hellogitworld フォルダーを削除する ( rm -rf hellogitworld )
-        （ダウンロード（クローン）するリポジトリにコミットする可能性があるとき）Git のユーザー名を設定します:
-            - git config --global user.email "you@example.com"  #template: "__GitCollaboratorMail__"
-            - git config --global user.name  "Your Name"        #template: "__GitCollaboratorName__"
-        Git bash を閉じます:
-    aws のアカウントを作成します:
-    aws のリージョンを選択します:
-        AWS マネジメント コンソールにサインインします:
-            URL: https://console.aws.amazon.com/
-            （ユーザー）: IAM ユーザー
-            アカウントID: __AWS_AccountID__
+    準備:
+        参考:
+            - AMPLIFY SNS WORKSHOP
+                https://amplify-sns.workshop.aws/ja/
+            - 継続的デプロイを使用した静的ウェブホスティング
+                https://aws.amazon.com/jp/getting-started/hands-on/build-serverless-web-app-lambda-apigateway-s3-dynamodb-cognito/module-1/
+            - AWS Amplify と Vue.js を使って、基本的な認証と CRUD 操作ができる Web アプリケーションを作る
+                https://aws.amazon.com/jp/builders-flash/202008/amplify-crud-app/
+        ローカルPCへ各種ソフトウェアをインストールします:
+            Node.js をインストールします:
+                - https://nodejs.org/ja/download/ >> Windows Installer (.msi) >> 64-bit
+                - node-v12.19.0-x64.exe をダブルクリックします
+                - インストール オプションはデフォルトを使用
+            Git for Windows をインストールします:
+                - https://git-scm.com/ >> Downloads >> Windows
+                - Git-2.29.0-64-bit.exe をダブルクリックします
+                - Next を8回押す
+                - Configuring the line ending conversions: Checkout as-is, commit as-is
+                - 他のインストール オプションはデフォルトを使用
+                - デスクトップを右クリック >> Git Bash Here
+                - git clone  "https://github.com/githubtraining/hellogitworld.git"
+                - 成功したら、デスクトップにある hellogitworld フォルダーを削除します ( rm -rf hellogitworld )
+                - Git のユーザー名を設定します:
+                    - git config --global user.email "you@example.com"  #template: "__GitCollaboratorMail__"
+                    - git config --global user.name  "Your Name"        #template: "__GitCollaboratorName__"
+                - Git bash を閉じます:
+            Visual Studio Code をインストールします:
+                - https://code.visualstudio.com/
+                - インストール オプションはデフォルトを使用
+                - 必要なら、Visual Studio Code をタスクバーにピン止めします
+        Git リポジトリを作成します:
+            参考: AMPLIFY SNS WORKSHOP >> GITHUBと連携してCI/CD環境を構築する(1)
+                https://amplify-sns.workshop.aws/ja/70_multi_env/10_amplify_console/connect_github.html
+            GitHub のアカウントを作成します:
+            GitHub にサインインします:
+                メニュー: https://github.com/ >> 三（右上） >> Sign in
+                Username or email address: Takakiriy  #template: __GitHubOwnerAccount__
+                Password: ____
+                Sign in ボタン:
+                ブラウザーを閉じます:
+            GitHub にリポジトリを新規作成します:
+                リポジトリを作成します:
+                    メニュー: https://github.com/ >> （左上の GitHub アイコン） >> （Repositories）New
+                    Repository name: react1  #template: __RepositoryName__
+                    Public or Private: Private
+                    Create repository ボタン:
+                    ブラウザーを閉じます:
+                プライベート リポジトリに接続してダウンロード（クローン）します:
+                    #Git bash:
+                    - cd  "__ParentOfProject__"
+                    - git clone "https://github.com/Takakiriy/react1.git"  #template: https://github.com/__GitHubOwnerAccount__/__RepositoryName__.git
+                        #// ここでエラーになるときは Git をアンインストール＆インストールしてください
+                    - Sign in with your browser ボタン  #// プライベート リポジトリのときだけこのボタンが表示されます
+                    - 表示されたアカウント名を確認: wants to access your Takakiriy account
+                        #template: wants to access your __GitHubCollaboratorAccount__ account
+                    - Authorize GitCredentialManager ボタン
+                    - 成功したらブラウザーを閉じます:
+    React のプロジェクトを作成します:
+        React のプロジェクトを新規作成してコミットします（リポジトリの内容がまだないとき）:
+            #Git bash
+            - cd  "react1"  #template: "__AppName__"
+            - cd  ".."
+            - npx create-react-app  "react1"  #template: "__AppName__"
+                #// npx create-react-app --template typescript  "react1"  #template: "__AppName__"
+            - cd  "react1"  #template: "__AppName__"
+            - npm start  #// 動作確認します
+                #// Windows Defender によって警告されたときは、アクセス許可します
+                #// ブラウザーが開いたら閉じます
+            - (Ctrl + C で Web サーバーを終了します)
+            - git add "."
+            - git commit -a -m "First commit"
+            - git push
+            - Git bash を閉じます
+    React のプロジェクトに Amplify を追加します:
+        aws のアカウントを作成します:
+        aws にサインインしてリージョンを選択します:
+            AWS マネジメント コンソールにサインインします:
+                URL: https://console.aws.amazon.com/
+                （ユーザー）: IAM ユーザー
+                アカウントID: __AWS_AccountID__
+                次へ ボタン:
+                ユーザー名: __AWS_UserName__
+                パスワード: __AWS_UserPassword__
+                サインイン ボタン:
+            リージョン: 東京 （右上） #template: __RegionName__
+            OK: ブラウザーを閉じます
+        Amplify CLI をインストールしてセットアップします:
+            参考:
+                - Install the Amplify CLI
+                    https://docs.amplify.aws/cli/start/install#option-1-watch-the-video-guide
+                - AMPLIFY SNS WORKSHOP >> INSTALL & CONFIGS
+                    https://amplify-sns.workshop.aws/ja/00_prerequisites/20_install_and_configs.html
+            Amplify CLI をインストールします:
+                #Git bash
+                - npm install -g @aws-amplify/cli
+                - amplify -v  #// 4.31.0
+            Amplify CLI をセットアップします:
+                起動コマンド:
+                    #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
+                    - amplify configure
+                ブラウザーが開くので、IAM の設定を変更できる権限をもったユーザーでサインインします:
+                    サインインしたらブラウザーを閉じます:
+                #// amplify configure の続きを表示します（Enter キーを押します）
+                region: ap-northeast-1  #template: __RegionID__
+                user name: user-dev1-amplify  #template: __AmplifyUser__
+                (ブラウザーが開きます):
+                    メニュー: ユーザー >> ユーザーを追加
+                    ユーザー名: user-dev1-amplify  #template: __AmplifyUser__
+                    アクセスの種類:
+                        チェック:
+                            プログラムによるアクセス
+                        チェックしない:
+                            AWS マネジメントコンソールへのアクセス:
+                        次のステップ ボタン:
+                    ユーザーをグループに追加:
+                        選択するグループ:
+                            - AdministratorGroup
+                        次のステップ ボタン:
+                    タグの追加:
+                        次のステップ ボタン:
+                    確認:
+                        ユーザーの作成 ボタン:
+                    アクセスキーをメモします:
+                        アクセスキー ID: AKIAZQ2CH423P67RPDNA  #template: __AmplifyUserAccessKeyID__
+                        シークレットアクセスキー: AhiRlFd10ZYJClp4FDTlkIl2ZTiLnLJI3jFLhaFf  #template: __AmplifySecretAccessKey__
+                        閉じる ボタン:
+                    ブラウザーを閉じます:
+                #// amplify configure の続きを表示します（Enter キーを押します）
+                accessKeyId: AKIAZQ2CH423P67RPDNA  #template: __AmplifyUserAccessKeyID__
+                secretAccessKey: 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  #template: __AmplifySecretAccessKey__
+                Profile Name: amplify  #template: __CLI_Profile__
+        React のプロジェクトに Amplify を追加します:
+            参考: AMPLIFY SNS WORKSHOP >> BOOTSTRAP
+                https://amplify-sns.workshop.aws/ja/30_mock/00_bootstrap.html
+            起動コマンド:
+                #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
+                - cd  "react1"  #template: "__AppName__"
+                - amplify init
+            Enter a name for the projec: react1  #// そのまま Enter
+            Enter a name for the environment: production
+            Choose your default editor: Visual Studio Code  #// そのまま Enter
+            Choose the type of app that you're building: javascript  #// そのまま Enter
+            What javascript framework are you using: react  #// そのまま Enter
+            Source Directory Path: src  #// そのまま Enter
+            Distribution Directory Path: build  #// そのまま Enter
+            Build Command: npm.cmd run-script build  #// そのまま Enter
+            Start Command: npm.cmd run-script start  #// そのまま Enter
+            Do you want to use an AWS profile?: Y (Yes)  #// そのまま Enter
+            Please choose the profile you want to use: amplify  #template: __CLI_Profile__
+    認証機能（Amplify auth）(authentication) のカテゴリーを追加します:
+        参考: AMPLIFY SNS WORKSHOP >> 認証機能
+            https://amplify-sns.workshop.aws/ja/30_mock/10_auth.html
+        Amplify auth のカテゴリーを追加します（amplify add auth コマンド）:
+            起動コマンド:
+                #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
+                - cd  "react1"  #template: "__AppName__"
+                - amplify add auth
+            Do you want to use the default authentication and security configuration?: Default configuration  #// そのまま Enter
+            How do you want users to be able to sign in?: Username  #// そのまま Enter
+            Do you want to configure advanced settings?: No, I am done.  #// そのまま Enter
+            コマンド:
+                - amplify status  #// Auth カテゴリーが追加されていることを確認します
+                - amplify push  #// バックエンドをクラウドに反映させます
+        フロントエンドを作成します:
+            必要な Node パッケージをインストールします:
+                - npm install --save  "aws-amplify"  "aws-amplify-react"
+            react1/src/App.js ファイルを置き換えます:
+                - ./workshop/10_auth/App.js ファイルをコピーします
+        動作確認をします:
+            コマンド:
+                - npm run start
+            (ブラウザーが開きます):
+                「アカウントを作る」をクリック:
+                サインアップ画面:
+                    ユーザー名: example1  #template: __UserName__
+                    パスワード: 12345aA!  #template: __UserPassword__
+                    メールアドレス: example@example.com  #template: __UserMail__
+                    アカウントを作る ボタン:
+                    確認コード: ____
+                    確定 ボタンをクリック:
+                サインイン画面:
+                    ユーザー名: example1  #template: __UserName__
+                    パスワード: 12345aA!  #template: __UserPassword__
+                    サインイン ボタンをクリック:
+                Hello World! と表示されることを確認します:
+                ブラウザーを閉じます:
+        ユーザーが登録されていることを確認します:
+            メニュー: https://ap-northeast-1.console.aws.amazon.com/cognito/ >> ユーザープールの管理 >>
+                react1dd050ff1_userpool_dd050ff1-production >> ユーザーとグループ（左上）
+    Amplify API (GraphQL) のカテゴリーを追加します:
+        Amplify API (GraphQL) のカテゴリーを追加します（amplify add api コマンド）:
+            参考: AMPLIFY SNS WORKSHOP >> POST機能 BACK-END(1)
+                https://amplify-sns.workshop.aws/ja/30_mock/20_post_back_end.html
+            起動コマンド:
+                #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
+                - cd  "react1"  #template: "__AppName__"
+                - amplify add api
+            Please select from one of the below mentioned services: GraphQL
+            Provide API name: api1
+            Choose the default authorization type for the API: Amazon Cognito User Pool
+            Do you want to configure advanced settings for the GraphQL API: No, I am done.
+            Do you have an annotated GraphQL schema?: No
+            Choose a schema template: Single object with fields
+            Do you want to edit the schema now?: No
+        （GraphQL を知りたいなら）ローカルでバックエンド（GraphQL によるデータベース）の動作確認をします:
+            #// スキップするときは、下記「GraphQL のスキーマにセカンダリ インデックスを追加します」だけ行ってください
+            GraphQL のスキーマを編集します:
+                react1/amplify/backend/api/api1/schema.graphql を下記に置き換えます: |  #template: __RepositoryName__/amplify/backend/api/api1/schema.graphql
+                    type Post
+                        @model (subscriptions: { level: public })
+                        @auth(rules: [
+                            {allow: owner, ownerField:"owner", provider: userPools, operations:[read, create]}
+                            {allow: private, provider: userPools, operations:[read]}
+                        ])
+                    {
+                        type: String!  #// always set to 'post'. used in the SortByTimestamp GSI
+                        id: ID
+                        content: String!
+                        owner: String
+                        timestamp: AWSTimestamp!
+                    }
+                #// スキーマには DynamoDB に関する設定が @model に、Cognito に関連する設定が @auth に含まれています
+                #// 参考: https://amplify-sns.workshop.aws/ja/30_mock/20_post_back_end.html#post型の作成
+            amplify mock api コマンドでビルドと、ローカルのデータベース操作アプリを実行します:
+                準備:
+                    Java をインストールします:
+                        - https://aws.amazon.com/jp/corretto/ >> Amazon Corretto 11
+                        - 表の中 >> Windows x64 >> https://.../msi
+                        - インストール オプションはデフォルトを使用
+                起動コマンド:
+                    #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
+                    - cd  "react1"  #template: "__AppName__"
+                    - del "amplify\mock-data\dynamodb\fake_us-fake-1.db"  #// （２回目以降）前回のキャッシュを削除
+                    - amplify mock api
+                (以下は初回のみ入力が必要です):
+                    Choose the code generation language target: javascript
+                    Enter the file name pattern of graphql queries, ...: src/graphql/**/*.js  #// そのまま Enter
+                    Do you want to generate/update all possible GraphQL operations ...: Yes
+                    Enter maximum statement depth [...]: 3
+                (起動に成功した時の表示): |
+                    Generated GraphQL operations successfully and saved at src\graphql
+                    AppSync Mock endpoint is running at http://192.168.2.110:20002
+                表示された URL をブラウザーで開きます:
+                    Mutation(POST):
+                        ADD NEW （左下）（の右のドロップダウンリスト）: Mutation
+                        その右の＋ボタン:
+                            createPost（左上）:
+                                input*:
+                                    content*: "test"
+                                    timestamp*: 1585222654
+                                    type*: "post"
+                            #// 中央列の timestamp: "1585222654" を timestamp: 1585222654 に置き換えます:
+                            #// Amplify GraphQL Explorer が AWSTimestamp型に対応していないため
+                        Execute Query ボタン（中央上の▲）:
+                        timestamp の値を 2000000000, 3000000000 に変えて、同様に Mutation を実行します:
+                        query MyMutation （左上）にマウスを合わせて[×]:
+                    Query(GET):
+                        ADD NEW （左下）（の右のドロップダウンリスト）: Query
+                        その右の＋ボタン:
+                            listPosts（左上）:
+                                items:
+                                    content: チェック
+                                    id: チェック
+                                    owner: チェック
+                                    timestamp: チェック
+                                    type: チェック
+                        Execute Query ボタン（中央上の▲）:
+                        query MyQuery （左上）にマウスを合わせて[×]:
+                    終了:
+                        #// 終了するとローカル DB の内容が消えます
+                        - ブラウザーを閉じます:
+                        - amplify mock api を実行した bash で Ctrl + C を押します:
+            GraphQL のスキーマにセカンダリ インデックスを追加します:
+                react1/amplify/backend/api/api1/schema.graphql を下記に置き換えます: |  #template: __RepositoryName__/amplify/backend/api/api1/schema.graphql
+                    type Post
+                        @model (subscriptions: { level: public })
+                        @auth(rules: [
+                                {allow: owner, ownerField:"owner", provider: userPools, operations:[read, create]}
+                                {allow: private, provider: userPools, operations:[read]}
+                            ])
+                        @key(name: "SortByTimestamp", fields:["type", "timestamp"], queryField: "listPostsSortedByTimestamp")
+                        @key(name: "BySpecificOwner", fields:["owner", "timestamp"], queryField: "listPostsBySpecificOwner")
+                    {
+                        type: String!  #// always set to 'post'. used in the SortByTimestamp GSI
+                        id: ID
+                        content: String!
+                        owner: String
+                        timestamp: AWSTimestamp!
+                    }
+                #// @key が追加されました
+                #// @key(name: "GSI名", fields:["パーティション キー", "ソート キー"], queryField: "query名")
+                #//    query名は、amplify mock api コマンドでブラウザーに表示される GUI の Query の一覧に表示されます
+                #// 参考: https://amplify-sns.workshop.aws/ja/30_mock/25_post_back_end_key.html#必要なクエリをkeyに落とし込む
+            amplify mock api コマンドでローカルのデータベースを実行します(2回目):
+                起動コマンド:
+                    #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
+                    - cd  "react1"  #template: "__AppName__"
+                    - del "amplify\mock-data\dynamodb\fake_us-fake-1.db"  #// （２回目以降）前回のキャッシュを削除
+                    - amplify mock api
+                (起動に成功した時の表示): |
+                    Generated GraphQL operations successfully and saved at src\graphql
+                    AppSync Mock endpoint is running at http://192.168.2.110:20002
+                表示された URL をブラウザーで開きます:
+                    Mutation(POST):
+                        ADD NEW （左下）（の右のドロップダウンリスト）: Mutation
+                        その右の＋ボタン:
+                            createPost（左上）:
+                                input*:
+                                    content*: "test"
+                                    timestamp*: 1585222654
+                                    type*: "post"
+                        # 中央列の timestamp: "1585222654" を timestamp: 1585222654 に置き換えます:
+                            #// Amplify GraphQL Explorer が AWSTimestamp型に対応していないため
+                        Execute Query ボタン（中央上の▲）:
+                        timestamp の値を 2000000000, 3000000000 に変えて、同様に Mutation を実行します:
+                        query MyMutation （左上）にマウスを合わせて[×]:
+                    ユーザーを変更します（？）:
+                        Update Auth ボタン（上）:
+                            Username: user_2
+                            Generate Token ボタン:
+                    Mutation(POST)(user_2):
+                        ADD NEW （左下）（の右のドロップダウンリスト）: Mutation
+                        その右の＋ボタン:
+                            createPost（左上）:
+                                input*:
+                                    content*: "test"
+                                    timestamp*: 4000000000
+                                    type*: "post"
+                        # 中央列の timestamp: "4000000000" を timestamp: 4000000000 に置き換えます:
+                            #// Amplify GraphQL Explorer が AWSTimestamp型に対応していないため
+                        Execute Query ボタン（中央上の▲）:
+                        timestamp の値を 5000000000 に変えて、同様に Mutation を実行します:
+                        query MyMutation （左上）にマウスを合わせて[×]:
+                    Query(GET):
+                        ADD NEW （左下）（の右のドロップダウンリスト）: Query
+                        その右の＋ボタン:
+                            listPostsBySpecificOwner（左上）:
+                                owner: "user_2"
+                                sortDirection: ASC
+                                items:
+                                    owner: チェック
+                                    timestamp: チェック
+                            listPostsSortedByTimestamp:
+                                sortDirection: DESC
+                                type: "post"
+                                items:
+                                    owner: チェック
+                                    timestamp: チェック
+                        Execute Query ボタン（中央上の▲）:
+                        listPostsBySpecificOwner と listPostsSortedByTimestamp の間で順序の違いがあることを確認します:
+                        query MyQuery （左上）にマウスを合わせて[×]:
+        フロントエンドを作成します。バックエンドを呼び出すコードを追加します:
+            参考: AMPLIFY SNS WORKSHOP >> POST機能 FRONT-END
+                https://amplify-sns.workshop.aws/ja/30_mock/30_post_front_end.html
+            必要な Node パッケージをインストールします:
+                npm install --save "@material-ui/core" "@material-ui/icons" "moment" "react-router" "react-router-dom"
+            ファイルを置き換えます:
+                - ./workshop/30_post_front_end/App.js ファイルを react1/src/App.js にコピーします:
+                    #// export default withAuthenticator(App ...) と function App() が全体のメインです
+                - ./workshop/30_post_front_end/Sidebar.js ファイルを react1/src/containers/Sidebar.js にコピーします:
+                    #// export default function Sidebar(...) の return が全体のメインです
+                    #// const [value, setValue] = React.useState(''); は React Hooks です
+                    #// await API.graphql(graphqlOperation(...)) が GraphQL API 呼び出しです
+                    #// Auth.signOut() でサインアウトします
+                - ./workshop/30_post_front_end/AllPosts.js ファイルを react1/src/containers/AllPosts.js にコピーします:
+                - ./workshop/30_post_front_end/PostsBySpecifiedUser.js ファイルを react1/src/containers/PostsBySpecifiedUser.js にコピーします:
+                - ./workshop/30_post_front_end/PostList.js ファイルを react1/src/components/PostList.js にコピーします:
+                #// useStateを使用して状態管理を行なっているものは react1/src/containers、そうでないものは react1/src/components に配置しています。
+        動作確認をします（フロントエンドはローカル、バックエンドはクラウド）:
+            #// バックエンド部分を Amplify Mockingで利用することができないのでフロントとバックをクラウドにデプロイします
+            - amplify mock api が動いていたら終了させます:
+            #Git bash
+            - amplify push  #// バックエンドをクラウドに反映させます。質問にはすべて Yes を入力します
+            - (以下は初回のみ入力が必要です):
+                Choose the code generation language target: javascript
+                Enter the file name pattern of graphql queries, ...: src/graphql/**/*.js  #// そのまま Enter
+                Do you want to generate/update all possible GraphQL operations ...: Yes
+                Enter maximum statement depth [...]: 3
+            #// push（デプロイ）が完了するまで待ちます。約4分かかります
+            - npm start
+    手動デプロイします:
+        参考: AMPLIFY SNS WORKSHOP >> 手動デプロイ
+            https://amplify-sns.workshop.aws/ja/40_hosting/00_manual_deployment.html
+        手動デプロイできるように Amplify hosting のカテゴリーを追加します:
+            コマンド:
+                #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
+                - amplify add hosting
+            Select the plugin module to execute: Hosting with Amplify Console (...)
+            Choose a type Manual deployment: Manual deployment
+        手動デプロイします:
+            コマンド:
+                #Git bash
+                - amplify publish  #// バックエンドとフロントエンドをクラウドに反映させます
+        コミットします:
+            #Git bash
+            - git add "."
+            - git commit -a -m "First deploy"
+            - git push
+    ステージング環境を追加します:
+        参考: AMPLIFY SNS WORKSHOP >> GITHUBと連携してCI/CD環境を構築する(2)
+            https://amplify-sns.workshop.aws/ja/70_multi_env/10_amplify_console/create_cicd.html
+        コマンド:
+            #Git bash
+            - amplify env list  #// 環境を一覧表示します
+            - amplify status
+            - amplify env add
+        Do you want to use an existing environment?: No
+        Enter a name for the environment: staging
+        Do you want to use an AWS profile?: Yes
+        Please choose the profile you want to use: amplify  #template: __CLI_Profile__
+        コマンド(2):
+            #Git bash
+            - amplify env list  #// 環境を一覧表示します
+            - amplify status    #// 最も下の表の FrontEnd Env の列に staging がまだありません
+            - amplify env checkout production  #// 環境を切り替えます
+            - amplify env checkout staging
+            - amplify push  #// バックエンドだけデプロイします
+            - npm start  #// フロントエンドはローカル、バックエンドはクラウドで実行します
+                #// cognito は別になので、production 環境で登録したユーザーは staging 環境にいません
+        ホスティングを一旦終了します:
+            #Git bash
+            - amplify env checkout production
+            - amplify remove hosting  #// クラウドとの関係が切断されます
+            - amplify push
+            - amplify env checkout staging
+            - amplify status
+            - amplify push
+            - amplify env checkout production  #// 以上で hosting の設定が削除されたことになります
+    Amplify Console + GitHub でフロントエンド＋バックエンドの CI/CD 環境を構築します:
+        参考: AMPLIFY SNS WORKSHOP >> GITHUBと連携してCI/CD環境を構築する(2)
+            https://amplify-sns.workshop.aws/jp/70_multi_env/10_amplify_console/create_cicd.html
+        起動コマンド:
+            #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
+            - amplify add hosting
+        Select the plugin module to execute: Hosting with Amplify Console (...)
+        Choose a type: Continuous deployment
+        (ブラウザーが開きます):
+            Connect a frontend web app: GitHub
+            Continue ボタン:
+                (aws と GitHub の接続がされていなかったとき):
+                    表示されたアカウント名を確認: wants to access your Takakiriy account
+                        #template: wants to access your __GitHubCollaboratorAccount__ account
+                    Authorize GitCredentialManager ボタン:
+            リポジトリブランチの追加:
+                リポジトリ: Takakiriy/react1  #template: __GitHubCollaboratorAccount__/__RepositoryName__
+                ブランチ: master  #template: __ProductBranchName__
+                次へ ボタン:
+            ビルド設定の構成:
+                チェック: Deploy updates to backend resources with your frontend on every code commit
+                Select a backend evironment: production
+                Create new role ボタン:
+                    ユースケースの選択:
+                        次のステップ ボタン:
+                    Attached アクセス権限ポリシー:
+                        次のステップ ボタン:
+                    タグの追加 (オプション):
+                        次のステップ ボタン:
+                    確認:
+                        ロール名: amplifyconsole-backend-role1  #template: __AmplifyRole__
+                        ロールの作成 ボタン:
+                    IAM が表示されているブラウザーのタブを閉じます:
+                Select an existing service role ...: amplifyconsole-backend-role1  #template: __AmplifyRole__
+                    #// ロール名を入力する右にある右回りボタンを押すと選べるようになります
+                次へ ボタン:
+            確認:
+                保存してデプロイ ボタン:
+            #// プロビジョン >> ビルド >> デプロイ >> 検証 が完了するまで待ちます（約3分）
+            #// https://..（左下）をクリックすると実行します
+            #// master（右半分の左上）をクリックするとデプロイのログが表示されます
+        Continuous deployment is configured in the Amplify Console...:  #// Enter キーを押します
+        (下記のように表示されます。Domaiin 列はバックエンドのURLです): |
+            ┌──────────────┬──────────────────────────────────────────────┐
+            │ FrontEnd Env │ Domain                                       │
+            ├──────────────┼──────────────────────────────────────────────┤
+            │ master       │ https://master.d2oudfgbjw0ivu.amplifyapp.com │
+            └──────────────┴──────────────────────────────────────────────┘
+        コミットすると CI/CD パイプラインが動くことを確認します:
+            - たとえば react1/public/index.html の <titie> を変更します
+            - git add "."
+            - git commit -a -m "Second commit"
+            - git push
+    staging 環境（＝develop ブランチ）を構築します:
+        参考: AMPLIFY SNS WORKSHOP >> 複雑な開発環境の構築(1)
+            https://amplify-sns.workshop.aws/jp/70_multi_env/20_branch_autodetection.html
+        develop ブランチを新規作成します:
+            - git status  #// clean 状態であること
+            - git branch  #// 分岐元が master ブランチであること
+            - amplify env add  #// staging 環境が無いときは作ります（上記「amplify env add」参照）
+            - git checkout -b "develop"
+            - git push --set-upstream origin "develop"
+        stating 環境と develop ブランチを紐付けます:
+            メニュー: https://ap-northeast-1.console.aws.amazon.com/amplify/home >>
+                (アプリ名) >> Frontend environments (タブ) >> ブランチの接続（右上）
+            ブランチ: develop
+            Backend environment: staging
             次へ ボタン:
-            ユーザー名: __AWS_UserName__
-            パスワード: __AWS_UserPassword__
-            サインイン ボタン:
-        リージョン: 東京 （右上） #template: __RegionName__
-        OK: ブラウザーを閉じます
+            保存してデプロイ ボタン:
+            #// デプロイが完了するまで待ちます
+        開発者以外が使えないようにするために、Basic 認証を追加します:
+            メニュー: https://ap-northeast-1.console.aws.amazon.com/amplify/home >>
+                (アプリ名) >> アクセスコントロール (左) >> アクセスの管理（右上）
+            ブランチ名: develop
+            Access setting: 制限-パスワードが必須です
+            username: staging  #// 例
+            password: 1234567_890123456789_0123456789 #template: __StagingPassword__
+            Save ボタン:
+            #// Web アプリを起動して、Basic 認証してから表示できることをチェックします
+    design 環境（バックエンドを他の環境でも共有する環境）（＝design-base ブランチなど）を構築します:
+        #// または環境やブランチを階層化します
+        design 環境を新規作成します:
+            コマンド:
+                #Git bash
+                - git status  #// clean 状態であること
+                - amplify env add
+            Do you want to use an existing environment?: No
+            Enter a name for the environment: design
+            Do you want to use an AWS profile?: Yes
+            Please choose the profile you want to use: amplify  #template: __CLI_Profile__
+            コマンド(2):
+                #Git bash
+                - git branch  #// 分岐元が develop ブランチであること
+                - amplify push  #// バックエンドをデプロイします
+                #// デプロイが完了するまで待ちます
+        design-base ブランチ（ダミー）を新規作成してコミットします:
+            #// design-baseブランチはAmplify Consoleでdesign環境を認識させるためのダミーブランチです
+            #Git bash
+            - git add "."
+            - git commit -m "add design-base env"
+            - git checkout -b "design-base"
+            - git push --set-upstream origin "design-base"
+        design 環境と design-base ブランチを紐付けます:
+            メニュー: https://ap-northeast-1.console.aws.amazon.com/amplify/home >>
+                (アプリ名) >> Frontend environments (タブ) >> ブランチの接続（右上）
+            ブランチ: design-base
+            Backend environment: design
+            次へ ボタン:
+            保存してデプロイ ボタン:
+            #// デプロイが完了するまで待ちます
+            全般（左）>> 編集（右上）:
+            Branch autodetection: Enabled
+            Branch autodetection - patterms: design/**
+            Branch autodetection - backend environment:
+                Point all branches to existing environment: design
+                #// もし「Create new backend environment for every connected branch」にすると、
+                #// ブランチごとに個別のバックエンドを構築します
+            Branch autodetection access control: Enabled
+            username: design  #// 例
+            password: 1234567_890123456789_0123456789 #template: __StagingPassword__
+            保存 ボタン:
+        design/alpha 環境/ブランチと design/beta 環境/ブランチを新規作成してコミット＆デプロイします:
+            #Git bash
+            - git checkout -b design/alpha
+            - git push --set-upstream origin design/alpha
+            - git checkout -b design/beta
+            - git push --set-upstream origin design/beta
+    （不要になったら）環境を１つ削除します:
+        メニュー: https://ap-northeast-1.console.aws.amazon.com/amplify/home >>
+            （アプリ名）>> アクション（右上）>> アプリ設定を表示 >> （ブランチ）（最も下）>>
+            （ブランチを選択） >> アクション >> ブランチの接続解除  #// aws リソースも削除されます
+        Amplify Console:
+            https://console.aws.amazon.com/amplify/home
+        aws リソースの ID 一覧:
+            - react1/amplify/backend/amplify-meta.json
+        S3, DynamoDB, Lambda, CloudFormation:
+            URL: https://ap-northeast-1.console.aws.amazon.com/resource-groups/
+            Tag Editor:
+                リソースタイプ: サポートされるすべてのリソースタイプ
+                タグ - オプション: user:Application
+                オプションのタグ値: react1
+        GraphQL:
+            https://ap-northeast-1.console.aws.amazon.com/appsync
+        Cognito:
+            https://ap-northeast-1.console.aws.amazon.com/cognito/ >> ユーザープールの管理 >>
+                react1dd050ff1_userpool_dd050ff1-production >> ユーザーとグループ（左上）
+    リソースのクリーンアップ:
+        aws のリージョンを選択します:
+            AWS マネジメント コンソールにサインインします:
+                URL: https://console.aws.amazon.com/
+                （ユーザー）: IAM ユーザー
+                アカウントID: __AWS_AccountID__
+                次へ ボタン:
+                ユーザー名: __AWS_UserName__
+                パスワード: __AWS_UserPassword__
+                サインイン ボタン:
+            リージョン: 東京 （右上） #template: __RegionName__
+            OK: ブラウザーを閉じます
+        Amplify Console の削除:
+            #Git bash
+            - amplify delete
+                #// メモ: amplify remove hosting コマンドを実行すると hosting 機能だけが削除されます
+        IAM の削除:
+            - https://console.aws.amazon.com/iam/ >> ロール:
+                - amplifyconsole-backend-role1 の左にチェック >> ロールの削除
+                    #template: __AmplifyRole__
+            - https://console.aws.amazon.com/iam/ >> ユーザー:
+                - user-dev1-amplify の左にチェック >> ユーザーの削除
+                    #template: __AmplifyUser__
+        Amplify との接続を解除するように GitHub を設定します:
+            メニュー: https://github.com/ >> （ Takakiriy のプロフィール写真） >> Settings >> Applications（左下）
+                #template: （ __GitHubOwnerAccount__ のプロフィール写真）
+            Installed GitHub Apps （タブ）:
+                - (AWS Connector for GitHub) >> Configure
+                - (Uninstall "AWS Connector for GitHub")（最も下）>> Uninstall
+            Authorized OAuth Apps （タブ）:
+                - (Git Credential Manager) >> … >> Revoke >> I understand, revoke access
+            ブラウザーを閉じます:
+        （必要なら）GitHub のリポジトリを削除します:
+            - https://github.com/ >> （左上の GitHub アイコン） >> Takakiriy/react1
+                #template: __GitHubOwnerAccount__/__RepositoryName__
+            - Settings（タブ。ウィンドウ幅が狭いときは … の中にある） >> （いちばん下へスクロール） >>
+                Delete this repository >> Takakiriy/react1
+                    #template: __GitHubOwnerAccount__/__RepositoryName__
+
+メモ:
+    デプロイの状況:
     AWS CLI をインストールしてセットアップします:
         参考: Windows での AWS CLI バージョン 2 のインストール、更新、アンインストール
             https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/install-cliv2-windows.html
@@ -61,601 +648,717 @@ Amplify Console + GitHub でフロントエンドの CI/CD 環境を構築しま
             - https://awscli.amazonaws.com/AWSCLIV2.msi
             - インストール オプションはデフォルトを使用
             #Git bash
-            - aws --version  #// aws-cli/2.0.58 Python/3.7.7 Windows/10 exe/AMD64
-        IAM ユーザー（開発者用）がなければ作成します:
-            Developers グループがなければ作成します:
-                #// ユーザーの権限はグループで定義します
-                メニュー: https://console.aws.amazon.com/iam/ >> グループ >> 新しいグループの作成
-                グループ名: Developers
-                次のステップ ボタン:
-                選択するポリシー:
-                    - AWSLambdaFullAccess
-                    - AmazonAPIGatewayAdministrator
-                    - AmazonDynamoDBFullAccess
-                    - AmazonCognitoPowerUser
-                    #// 上記は暫定です
-                    #// 後でアクセスできるリソースを制限します
-                次のステップ ボタン(2):
-                グループの作成 ボタン:
-            IAM ユーザー（開発者用）を作成します:
-                メニュー: https://console.aws.amazon.com/iam/ >> ユーザー >> ユーザーを追加
-                ユーザー名: user-dev1  #template: __IAM_UserName__
-                アクセスの種類:
-                    チェック:
-                        プログラムによるアクセス
-                    チェックしない:
-                        AWS マネジメントコンソールへのアクセス:
-                    次のステップ ボタン:
-                ユーザーをグループに追加:
-                    選択するグループ:
-                        - Developers
-                    次のステップ ボタン:
-                タグの追加:
-                    次のステップ ボタン:
-                確認:
-                    ユーザーの作成 ボタン:
-                アクセスキーをメモします:
-                    アクセスキー ID: AKIAZQ2CH423P67RPDNA  #template: __IAM_UserAccessKeyID__
-                    シークレットアクセスキー: AhiRlFd10ZYJClp4FDTlkIl2ZTiLnLJI3jFLhaFf  #template: __SecretAccessKey__
-                    閉じる ボタン:
-        定期的にアクセスキーを更新します:
-            https://console.aws.amazon.com/iam/ >> ユーザー >> (ユーザー名) >> 認証情報（タブ） >>
-                アクセスキーの作成 ボタン
-        AWS CLI と IAM ユーザーを結びつけます（ローカルPCにアクセスキーを設定します）:
-            #Git bash
-            - aws configure:
-                AWS Access Key ID [None]: AKIAZQ2CH423P67RPDNA  #template: __IAM_UserAccessKeyID__
-                AWS Secret Access Key [None]: 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  #template: __SecretAccessKey__
-                Default region name [None]: ap-northeast-1   #template: __RegionID__
-                Default output format [None]: （なし）
-            #// この設定によって、~/.aws/config と ~/.aws/credentials ファイルが作られます
-            #// Windows では ~ や ${HOME} の値は %USERPROFILE% 環境変数の値と同じです
-            #// ~/.aws/credentials ファイルにシークレットキーが保存されるので注意してください
-        AWS CLI がセットアップできたかどうかを確認します:
-            #Git bash
-            - aws s3 ls  #// エラーにならないこと (Unable to locate credentials エラー) 
-    Git リポジトリを作成します:
-        #// 下記は GitHub を使う場合です
-        #// チュートリアルでは、 wildrydes-site #template: __RepositoryName__
-        GitHub のアカウントを作成します:
-        GitHub にサインインします:
-            メニュー: https://github.com/ >> 三（右上） >> Sign in
-            Username or email address: Takakiriy  #template: __GitHubOwnerAccount__
-            Password: ____
-            Sign in ボタン:
-            ブラウザーを閉じます:
-        GitHub にリポジトリを新規作成します:
-            リポジトリを作成します:
-                メニュー: https://github.com/ >> （左上の GitHub アイコン） >> （Repositories）New
-                Repository name: wildrydes-site  #template: __RepositoryName__
-                Public or Private: Private
-                Create repository ボタン:
-                ブラウザーを閉じます:
-            プライベート リポジトリに接続してダウンロード（クローン）します:
-                #Git bash:
-                - cd  "__ParentOfProject__"
-                - git clone "https://github.com/Takakiriy/wildrydes-site.git"  #template: https://github.com/__GitHubOwnerAccount__/__RepositoryName__.git
-                    #// ここでエラーになるときは Git をアンインストール＆インストールしてください
-                - Sign in with your browser ボタン  #// プライベート リポジトリのときだけこのボタンが表示されます
-                - 表示されたアカウント名を確認: wants to access your Takakiriy account
-                    #template: wants to access your __GitHubCollaboratorAccount__ account
-                - Authorize GitCredentialManager ボタン
-                - 成功したらブラウザーを閉じます:
-    Git リポジトリにアプリケーションをコミットします（Git リポジトリを事前設定します）:
-        #Git bash
-        - cd  "wildrydes-site"  #template: "__RepositoryName__"
-        - aws s3 cp "s3://wildrydes-us-east-1/WebApplication/1_StaticWebHosting/website"  "./"  --recursive
-        - git add "."
-        - git commit -a -m "First commit"
-        - git push
-    AWS Amplify で CD/CI 環境を構築します（AWS Amplify コンソールでウェブホスティングを有効にします）:
-        メニュー: https://console.aws.amazon.com/amplify/home >> (Deploy) >> GET STARTED
-        From your existing code: GitHub
-        Continue ボタン:
-        表示されたアカウント名を確認: wants to access your Takakiriy account
-            #template: wants to access your __GitHubCollaboratorAccount__ account
-        Authorize GitCredentialManager ボタン:
-        リポジトリ: Takakiriy/wildrydes-site  #template: __GitHubCollaboratorAccount__/__RepositoryName__
-        ブランチ: master  #template: __ProductBranchName__
-        次へ ボタン:
-        次へ ボタン(2):  #// ビルドの設定はそのまま
-        保存してデプロイ ボタン:
-        #// プロビジョン >> ビルド >> デプロイ >> 検証 が完了するまで待ちます（約2分）
-        #// https://..（左下）をクリックすると実行します
-        #// master（右半分の左上）をクリックするとデプロイのログが表示されます
-        #// ただし、まだフロントエンドしか動いていません
-    Git リポジトリをコミットして自動的にデプロイされることを確認します:
-        たとえば index.html を編集してタイトルバーに表示される内容を変更します: |
-            <title>Wild Rydes - Rydes of the Future!</title>
-        コミットします:
-            #Git bash
-            - cd  "wildrydes-site"  #template: "__RepositoryName__"
-            - git add "."
-            - git commit -a -m "Second commit"
-            - git push
-        自動デプロイされた結果を確認します:
-            メニュー: https://console.aws.amazon.com/amplify/home >> wildrydes-site  #template: __RepositoryName__
+            - aws --version  #// aws-cli/2.0.59 Python/3.7.7 Windows/10 exe/AMD64
+    REST API（Amplify API）を追加します:
+        #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
+        - cd  "react1"  #template: "__AppName__"
+        - amplify add api
+        - (Amplify の設定内容):
+            Please select from one of the below mentioned services: REST
+            Provide a friendly name for your resource to be used as a label for this category in the project: api1
+                #// API ゲートウェイのリソース名になります（★未確認）
+            Provide a path (e.g., /book/{isbn}): /items  #// そのまま Enter
+            Choose a Lambda source: Create a new Lambda function
+            Provide a friendly name for your resource to be used as a label for this category in the project(2): ItemsGet
+                #// path に対応する関数の名前
+            Provide the AWS Lambda function name: ItemsGet  #// そのまま Enter
+            Choose the runtime that you want to use: NodeJS  #// そのまま Enter
+            Choose the function template that you want to use: CRUD function for DynamoDB
+            Choose a DynamoDB data source option: Create a new DynamoDB table
+            Provide a friendly name for your resource to be used as a label for this category in the project(3): items1
+            Please provide table name: items1  #// そのまま Enter
+            What would you like to name this column: id
+            Please choose the data type: string  #// そのまま Enter
+            Would you like to add another column?: n (No)
+            Please choose partition key for the table: id  #// そのまま Enter
+            Do you want to add a sort key to your table?: n (No)
+            Do you want to add global secondary indexes to your table?: n (No)
+            Do you want to add a Lambda Trigger for your Table?: N (no)
+            Do you want to access other resources in this project from your Lambda function?: n (No)
+            Do you want to invoke this function on a recurring schedule?: N (No)
+            Do you want to configure Lambda layers for this function?: N (No)
+            Do you want to edit the local lambda function now?: n (No)
+            Restrict API access: Y (Yes)
+            Who should have access?: Authenticated users only
+            What kind of access do you want for Authenticated users?: [create, read, upate, delete]
+            Do you want to add another path?: N (No)
 
-ユーザー認証機能を追加します:
-    参考: ユーザー管理
-        https://aws.amazon.com/jp/getting-started/hands-on/build-serverless-web-app-lambda-apigateway-s3-dynamodb-cognito/module-2/
-    Amazon Cognito ユーザープールを作成します:
-        メニュー: https://ap-northeast-1.console.aws.amazon.com/cognito/ >> ユーザープールの管理 >>
-            ユーザープールを作成する
-        プール名: prod-wildrydes-site  #template: __Stage__-__AppName__
-        ユーザープールをどのように作成しますか?: デフォルトを確認する
-        プールの作成 ボタン:
-        プール ID をメモします: ap-northeast-1_kCQxkqzUf  #template: __CognitoPoolID__
-    ユーザープールにアプリを追加する:
-        メニュー: https://ap-northeast-1.console.aws.amazon.com/cognito/ >> ユーザープールの管理 >>
-            prod-wildrydes-site >> アプリクライアント（左） >> アプリクライアントの追加
-                #template: __Stage__-__AppName__ >> アプリクライアント
-        アプリクライアント名: WildRydesWebApp  #template: __AppNamePascalCase__WebApp
-        チェックしない:
-            クライアントシークレットを生成:
-        アプリクライアントの作成 ボタン:
-        アプリクライアント ID をメモします: 53cldntes2imnc2ohb6n86m77q  #template: __AppClientID__
-    アプリケーションに Cognito の各種 ID を設定します（ウェブサイトの設定を更新する）:
-        wildrydes-site/js/config.js を編集します: |  #template: __RepositoryName__/js/config.js
-            userPoolId: 'ap-northeast-1_kCQxkqzUf',          #template: '__CognitoPoolID__'
-            userPoolClientId: '53cldntes2imnc2ohb6n86m77q',  #template: '__AppClientID__'
-            region: 'ap-northeast-1'                         #template: '__RegionID__'
-        コミットします:
-            #Git bash
-            - cd  "wildrydes-site"  #template: "__RepositoryName__"
-            - git add "."
-            - git commit -a -m "Set Cognito related ID"
-            - git push
-        デプロイが完了するまで待ちます:
-            メニュー: https://console.aws.amazon.com/amplify/home >> wildrydes-site  #template: __RepositoryName__
-    デプロイされた結果を確認します（実装を検証する）:
-        起動: https://..（左下）をクリック（Webアプリが開きます）
-        GIDDY UP!（サイン アップ ボタン）:
-            Email: example@example.com  #template: __UserMail__
-            Password: 12345aA!          #template: __UserPassword__
-            Confirm Password: 12345aA!  #template: __UserPassword__
-            LET'S RYDE ボタン:
-        #// ★注意: 本番はユーザープールを設定して Amazon SES で自分が所有するドメインから E メールを送信すること
-        #// http://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-message-customizations.html#cognito-user-pool-settings-ses-authorization-to-send-email
-        登録したメールアドレスに届いた確認コード（6桁の数字）をユーザーが入力する場合:
-            Email: example@example.com  #template: __UserMail__
-            Verification Code: ____  #// 6桁の数字
-            VERIFY ボタン:
-            #// Successfully Authenticated! と表示されたらサインイン成功です
-            #// API はまだ呼べません、と表示されます
-        社内の人が Cognito のページでユーザー登録を承認する場合:
-            メニュー: https://ap-northeast-1.console.aws.amazon.com/cognito/ >> ユーザープールの管理 >>
-                prod-wildrydes-site >> ユーザーとグループ >> （登録するユーザー名） >> ユーザーの確認
-                    #template: __Stage__-__AppName__ >> ユーザーとグループ
-        すでに登録済みで、サインインする場合:
-            URL: https://____.amplifyapp.com/index.html
-            SIGN IN ボタン:
+aws 公式：サーバーレスのウェブアプリケーションを構築します:
+    #// AWS Lambda、Amazon API Gateway、AWS Amplify、Amazon DynamoDB、Amazon Cognito、GitHub を使用
+    参考: https://aws.amazon.com/jp/getting-started/hands-on/build-serverless-web-app-lambda-apigateway-s3-dynamodb-cognito/
 
-バックエンドを構築します:
-    参考: サーバーレス サービス バックエンド
-        https://aws.amazon.com/jp/getting-started/hands-on/build-serverless-web-app-lambda-apigateway-s3-dynamodb-cognito/module-3/
-    DynamoDB テーブルを作成する:
-        メニュー: https://console.aws.amazon.com/dynamodb/ >> テーブルの作成
-        テーブル名: Rides
-        パーティションキー: RideId
-        作成 ボタン:
-        ARN（最も下）をメモします: arn:aws:dynamodb:ap-northeast-1:123456789012:table/Rides
-            #template: arn:aws:dynamodb:__RegionID__:__AWS_AccountID__:table/Rides
-    Lambda 関数の IAM ロールを作成する:
-        ロールを作成します:
-            メニュー: https://console.aws.amazon.com/iam/ >> ロール >> ロールの作成
-            信頼されたエンティティの種類を選択: AWS サービス
-            ユースケースの選択: Lambda  #// 信頼ポリシー
-            次のステップ ボタン:
-            ポリシー（を検索してチェックを入れる）:
-                - AWSLambdaBasicExecutionRole
-            次のステップ ボタン(2):
-            次のステップ ボタン(3):
-            ロール名: WildRydesLambda  #template: __AppNamePascalCase__Lambda
-            ロールの作成 ボタン:
-        WildRydesLambda:  #// 検索して左のロール名をクリックします  #template: __AppNamePascalCase__Lambda
-            メニュー: （アクセス許可）（タブ） >> インラインポリシーを追加
-            サービス:
-                サービスの選択 をクリック:
-                クリック: DynamoDB
-            アクションの追加:
-                アクションの指定: PutItem
-                追加 ボタン:
-            リソース:
-                ARN の追加:
-                    Region: ap-northeast-1  #template: __RegionID__
-                    Account: 123456789012   #template: __AWS_AccountID__
-                    Table name: Rides
-                    追加 ボタン:
-            ポリシーの確認 ボタン:
-            名前: DynamoDBWriteAccess
-            ポリシーの作成 ボタン:
-    Lambda 関数の作成:
-        メニュー: https://console.aws.amazon.com/lambda/
-        関数の作成（右上）:
-            選択: 一から作成
-            関数名: RequestUnicorn
-            ランタイム: Node.js 12.x  #// 最新バージョン
-            デフォルトの実行ロールの変更:
-                チェック: 既存のロールを使用する
-                既存のロール: WildRydesLambda  #template: __AppNamePascalCase__Lambda
-            関数の作成 ボタン:
-        関数コード:
-            index.js: |
-                const randomBytes = require('crypto').randomBytes;
+    設定:
+        __AWS_AccountID__: 123456789012  #★秘密:仮
+        __RegionName__: 東京  #// CodePipeline のパイプラインを作成するリージョンの名前
+        __RegionID__: ap-northeast-1  #// __RegionName__ の ID
+        __IAM_UserName__: user-dev1  #// IAM ユーザー（開発者用）、AWS CLI で必要な権限を持つ
+        __IAM_UserAccessKeyID__: AKIAZQ2CH423P67RPDNA  #// 手順内でメモする値
+        __SecretAccessKey__: AhiRlFd10ZYJClp4FDTlkIl2ZTiLnLJI3jFLhaFf  #★秘密:仮  #// 手順内でメモする値
+        __GitHubOwnerAccount__: Takakiriy  #// リポジトリのオーナーのアカウント名
+        __GitHubCollaboratorAccount__: Takakiriy  #// リポジトリにアクセスするユーザーのアカウント名
+        __GitCollaboratorName__: Your Name        #// git log コマンドで表示されるユーザー名
+        __GitCollaboratorMail__: you@example.com  #// git log コマンドで表示されるメールアドレス
+        __Domain__: sage-p.tk  #// 作成するアプリケーションの URL のドメイン部分
+        __AppName__: wildrydes-site
+        __AppNamePascalCase__: WildRydes
+        __RepositoryName__: wildrydes-site
+        __ProductBranchName__: master  #// 本番用のブランチ名
+        __Stage__: prod
+        __CognitoPoolID__: ap-northeast-1_kCQxkqzUf  #// 手順内でメモする値
+        __AppClientID__: 53cldntes2imnc2ohb6n86m77q
+        __UserMail__: example@example.com  #★秘密:仮
+        __UserPassword__: 12345aA!
+        __API_GatewayURL__: https://aafaaaaaua.execute-api.ap-northeast-1.amazonaws.com/prod  #★秘密:仮
 
-                const AWS = require('aws-sdk');
-
-                const ddb = new AWS.DynamoDB.DocumentClient();
-
-                const fleet = [
-                    {
-                        Name: 'Bucephalus',
-                        Color: 'Golden',
-                        Gender: 'Male',
-                    },
-                    {
-                        Name: 'Shadowfax',
-                        Color: 'White',
-                        Gender: 'Male',
-                    },
-                    {
-                        Name: 'Rocinante',
-                        Color: 'Yellow',
-                        Gender: 'Female',
-                    },
-                ];
-
-                exports.handler = (event, context, callback) => {
-                    if (!event.requestContext.authorizer) {
-                    errorResponse('Authorization not configured', context.awsRequestId, callback);
-                    return;
-                    }
-
-                    const rideId = toUrlString(randomBytes(16));
-                    console.log('Received event (', rideId, '): ', event);
-
-                    // Because we're using a Cognito User Pools authorizer, all of the claims
-                    // included in the authentication token are provided in the request context.
-                    // This includes the username as well as other attributes.
-                    const username = event.requestContext.authorizer.claims['cognito:username'];
-
-                    // The body field of the event in a proxy integration is a raw string.
-                    // In order to extract meaningful values, we need to first parse this string
-                    // into an object. A more robust implementation might inspect the Content-Type
-                    // header first and use a different parsing strategy based on that value.
-                    const requestBody = JSON.parse(event.body);
-
-                    const pickupLocation = requestBody.PickupLocation;
-
-                    const unicorn = findUnicorn(pickupLocation);
-
-                    recordRide(rideId, username, unicorn).then(() => {
-                        // You can use the callback function to provide a return value from your Node.js
-                        // Lambda functions. The first parameter is used for failed invocations. The
-                        // second parameter specifies the result data of the invocation.
-
-                        // Because this Lambda function is called by an API Gateway proxy integration
-                        // the result object must use the following structure.
-                        callback(null, {
-                            statusCode: 201,
-                            body: JSON.stringify({
-                                RideId: rideId,
-                                Unicorn: unicorn,
-                                Eta: '30 seconds',
-                                Rider: username,
-                            }),
-                            headers: {
-                                'Access-Control-Allow-Origin': '*',
-                            },
-                        });
-                    }).catch((err) => {
-                        console.error(err);
-
-                        // If there is an error during processing, catch it and return
-                        // from the Lambda function successfully. Specify a 500 HTTP status
-                        // code and provide an error message in the body. This will provide a
-                        // more meaningful error response to the end client.
-                        errorResponse(err.message, context.awsRequestId, callback)
-                    });
-                };
-
-                // This is where you would implement logic to find the optimal unicorn for
-                // this ride (possibly invoking another Lambda function as a microservice.)
-                // For simplicity, we'll just pick a unicorn at random.
-                function findUnicorn(pickupLocation) {
-                    console.log('Finding unicorn for ', pickupLocation.Latitude, ', ', pickupLocation.Longitude);
-                    return fleet[Math.floor(Math.random() * fleet.length)];
-                }
-
-                function recordRide(rideId, username, unicorn) {
-                    return ddb.put({
-                        TableName: 'Rides',
-                        Item: {
-                            RideId: rideId,
-                            User: username,
-                            Unicorn: unicorn,
-                            RequestTime: new Date().toISOString(),
-                        },
-                    }).promise();
-                }
-
-                function toUrlString(buffer) {
-                    return buffer.toString('base64')
-                        .replace(/\+/g, '-')
-                        .replace(/\//g, '_')
-                        .replace(/=/g, '');
-                }
-
-                function errorResponse(errorMessage, awsRequestId, callback) {
-                callback(null, {
-                    statusCode: 500,
-                    body: JSON.stringify({
-                    Error: errorMessage,
-                    Reference: awsRequestId,
-                    }),
-                    headers: {
-                    'Access-Control-Allow-Origin': '*',
-                    },
-                });
-                }
-            保存する:
-                File >> Save メニュー:
-    関数をテストする:
-        メニュー: テストイベントの選択 >> テストイベントの設定
-        イベント名: TestRequestEvent
-        （テストイベント）: |
-            {
-                "path": "/ride",
-                "httpMethod": "POST",
-                "headers": {
-                    "Accept": "*/*",
-                    "Authorization": "eyJraWQiOiJLTzRVMWZs",
-                    "content-type": "application/json; charset=UTF-8"
-                },
-                "queryStringParameters": null,
-                "pathParameters": null,
-                "requestContext": {
-                    "authorizer": {
-                        "claims": {
-                            "cognito:username": "the_username"
-                        }
-                    }
-                },
-                "body": "{\"PickupLocation\":{\"Latitude\":47.6174755835663,\"Longitude\":-122.28837066650185}}"
-            }
-        作成 ボタン:
-        テスト ボタン（右上）:
-        成功したことを確認します: |
-            "statusCode": 200,
-
-RESTful API:
-    参考: RESTful API
-        https://aws.amazon.com/jp/getting-started/hands-on/build-serverless-web-app-lambda-apigateway-s3-dynamodb-cognito/module-4/
-    新しい REST API を作成する:
-        メニュー: https://console.aws.amazon.com/apigateway/ >> API を作成 >> REST API >> 構築 >> 新しい API
-        API 名: WildRydes  #template: __AppNamePascalCase__
-        エンドポイントタイプ: エッジ最適化
-        API の作成 ボタン:
-    Cognito ユーザプールオーソライザーを作成する:
-        メニュー: https://console.aws.amazon.com/apigateway/ >>
-            WildRydes >> オーソライザー >> 新しいオーソライザーの作成  #template: __AppNamePascalCase__
-        名前: WildRydes  #template: __AppNamePascalCase__
-        タイプ: Cognito
-        Cognito ユーザープール: prod-wildrydes-site  #template: __Stage__-__AppName__
-        トークンのソース: Authorization
-        作成:
-    認証トークンをコピーします:
-        AWS Amplify Console から Web アプリケーションを開き、https://____.amplifyapp.com/ride.html
-            にアクセスすると、認証トークンが表示されます
-    認証トークンをテストします:
-        - オーソライザーのページに戻って、テストをクリックして認証トークンを「認可トークン」に貼り付けます
-        - テスト ボタン
-        - 要求（クレーム）に下記のように表示されます: |
-            {
-                "aud": "53cldntes2iinc2ohb6n86m77q",
-                "auth_time": "1603373909",
-                "cognito:username": "example2-at-sage-p.com",
-                "email": "example2@sage-p.com",
-                "email_verified": "false",
-                "event_id": "798e35c4-fc10-4d20-87fa-d700158c97ac",
-                "exp": "Thu Oct 22 17:19:16 UTC 2020",
-                "iat": "Thu Oct 22 16:19:16 UTC 2020",
-                "iss": "https://cognito-idp.ap-northeast-1.amazonaws.com/ap-northeast-1_kCQxkqzUf",
-                "sub": "beb51df0-382f-4c8e-86f0-11aca1d4b80d",
-                "token_use": "id"
-            }
-    新しいリソースとメソッドを作成します:
-        メニュー: https://console.aws.amazon.com/apigateway/ >>
-            WildRydes >> リソース >> アクション >> リソースの作成  #template: __AppNamePascalCase__
-        リソース名: ride
-        チェック: API Gateway CORS を有効にする
-        リソースの作成 ボタン:
-        選択: /ride （リソース）
-        アクション >> メソッドの作成: POST
-        チェック ボタン:
-        統合タイプ: Lambda 関数
-        チェック(2): Lambda プロキシ統合の使用
-        Lambda 関数: RequestUnicorn
-        保存 ボタン:
-        #// 権限を追加することの確認が表示されます
-        OK ボタン:
-        メソッドリクエスト:
-            認可：WildRydes  #template: __AppNamePascalCase__
-    API をデプロイする:
-        メニュー: アクション >> API のデプロイ
-        デプロイされるステージ: [新しいステージ]
-        ステージ名: prod
-        デプロイ ボタン:
-        URL の呼び出しの右の URL をメモします:
-            https://abcd123456.execute-api.ap-northeast-1.amazonaws.com/prod
-                #template: __API_GatewayURL__
-    アプリケーションに API の URL を設定します（ウェブサイトの設定を更新する）:
-        wildrydes-site/js/config.js を編集します: |  #template: __RepositoryName__/js/config.js
-            invokeUrl: 'https://abcd123456.execute-api.ap-northeast-1.amazonaws.com/prod',
-                #template: __API_GatewayURL__
-        コミットします:
-            #Git bash
-            - cd  "wildrydes-site"  #template: "__RepositoryName__"
-            - git add "."
-            - git commit -a -m "Set API related ID"
-            - git push
-        デプロイが完了するまで待ちます:
-            メニュー: https://console.aws.amazon.com/amplify/home >> wildrydes-site  #template: __RepositoryName__
-    実装を検証する:
-        - AWS Amplify Console から Web アプリケーションを開き、https://____.amplifyapp.com/ride.html
-            にアクセスして、ブラウザーをリロードします
-        - マップがロードされたら、マップ上の任意の場所をクリックして、乗る場所を設定します
-        - Request Unicorn ボタンを押します
-
-URL を自社のドメイン（カスタムドメイン）に変更します:
-    参考: サードパーティDNSプロバイダーが管理するカスタムドメインの追加
-        https://docs.aws.amazon.com/ja_jp/amplify/latest/userguide/to-add-a-custom-domain-managed-by-a-third-party-dns-provider.html
-    自分が使えるドメイン(URL)を用意します（カスタムドメインを Route 53 に登録する）:
-        aws の場合（有料）: #// 設置後12時間以内の利用であれば無料らしい
-            参考: https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-register.html
-            メニュー: https://console.aws.amazon.com/route53/ >> 登録済みドメイン（左） >> ドメインの登録（上）
-            続き: （未確認）
-        Freenom の場合（無料）:
-            #// .tk（ニュージーランドの領土であるトケラウ）などレアな TLD （トップ レベル ドメイン）を持つドメインを取得できます
-            http://www.freenom.com/en/index.html >> __NewDomain__ >> Check Availability >>
-            Checkout（右上） >> Continue >> （メールアドレスを入力） >> Verify My Email Address >>
-            受信したメールの中にあるボタンをPCから押す） >> （名前などを入力する）
-            #// 3か月後（設定による）に更新を忘れないこと
-    ドメインを Route53 のホストゾーンに追加します:
-        参考: https://avinton.com/academy/route53-dns-vhost/
-        メニュー: https://console.aws.amazon.com/route53/ >> ホストゾーン（左） >> ホストゾーンの作成（下）
-        ドメイン名: sage-p.tk  #template: : __Domain__
-        OK: ホストゾーンの作成 ボタン
-    ACM（AWS Certificate Manage）に証明書を管理させます:
-        参考: https://labs.mobingi.com/aws-certificate-manager-and-freenom/
-        メニュー: https://console.aws.amazon.com/acm/home >> 証明書のプロビジョニング >> 今すぐ始める >>
-            証明書のリクエスト ボタン（右下）
-        ドメイン名: sage-p.tk  #template: : __Domain__
-        この証明書に別の名前を追加 ボタン:
-        ドメイン名2: "*.sage-p.tk"  #template: "*.__Domain__"
-            #// 上記 " " の中を入力します
-        次へ ボタン:
-        検証方法の選択: DNS の検証
-        操作: 次へ >> 確認 >> 確定とリクエスト >> （検証保留中が表示される） >> 続行 >>
-            sage-p.tk >> Route 53 でのレコードの作成 ボタン （同じ値なので片方のボタンだけ押せばよい）
-                #template: __Domain__ >> Route 53 でのレコード
-            #// CNAME リソース レコードが Route 53 に登録されます
-        もし、Route 53 でのレコードの作成 ボタンが押せないときは、手動で CNAME リソース レコードを追加します:
-            必要な CNAME の設定を調べます（ACM が提供する CNAME の場合）:
-                メニュー: https://console.aws.amazon.com/acm/home >>
-                    sage-p.tk（の左の▲） >> ドメインの左の▲
-                        #template: __Domain__（の左の▲） >> ドメインの左の▲
-                CNAME の例:
-                    名前: _51a78045aa6d7b88d8hyg70253c19812e.sage-p.tk.  #template: .__Domain__.
-                    種類: CNAME
-                    値: _ffd077863ba1518d6c169c7f4a06726b.zbkrxsrfvj.acm-validations.aws.
-            Route 53 に CNAME を設定します:
-                メニュー: https://console.aws.amazon.com/route53/ >> レコードを作成
-                ルーティングポリシー: シンプルルーティング
+    Amplify Console + GitHub でフロントエンドの CI/CD 環境を構築します:
+        参考: 継続的デプロイを使用した静的ウェブホスティング
+            https://aws.amazon.com/jp/getting-started/hands-on/build-serverless-web-app-lambda-apigateway-s3-dynamodb-cognito/module-1/
+        ローカルPCへ各種ソフトウェアをインストールします:
+            Git for Windows をインストールします:
+                - https://git-scm.com/ >> Downloads >> Windows
+                - ダウンロードしたファイル（例：Git-2.24.1.2-64-bit.exe）を開く
+                - Next を8回押す
+                - Configuring the line ending conversions: Checkout as-is, commit as-is
+                - 他のインストール オプションはデフォルトを使用
+                - デスクトップを右クリック >> Git Bash Here
+                - git clone  "https://github.com/githubtraining/hellogitworld.git"
+                - 成功したら、デスクトップにある hellogitworld フォルダーを削除します ( rm -rf hellogitworld )
+            （ダウンロード（クローン）するリポジトリにコミットする可能性があるとき）Git のユーザー名を設定します:
+                - git config --global user.email "you@example.com"  #template: "__GitCollaboratorMail__"
+                - git config --global user.name  "Your Name"        #template: "__GitCollaboratorName__"
+            Git bash を閉じます:
+        aws のアカウントを作成します:
+        aws のリージョンを選択します:
+            AWS マネジメント コンソールにサインインします:
+                URL: https://console.aws.amazon.com/
+                （ユーザー）: IAM ユーザー
+                アカウントID: __AWS_AccountID__
                 次へ ボタン:
-                シンプルなレコードを定義 ボタン:
-                    レコード名: ____  #// CNAME の名前
-                    値/トラフィックのルーティング先:
-                        - レコードタイプに応じた IP アドレスまたは別の値
-                        - ____  #// CNAME の値
-                    レコードタイプ: CNAME
+                ユーザー名: __AWS_UserName__
+                パスワード: __AWS_UserPassword__
+                サインイン ボタン:
+            リージョン: 東京 （右上） #template: __RegionName__
+            OK: ブラウザーを閉じます
+        AWS CLI をインストールしてセットアップします:
+            参考: Windows での AWS CLI バージョン 2 のインストール、更新、アンインストール
+                https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/install-cliv2-windows.html
+            AWS CLI をインストールします:
+                - https://awscli.amazonaws.com/AWSCLIV2.msi
+                - インストール オプションはデフォルトを使用
+                #Git bash
+                - aws --version  #// aws-cli/2.0.58 Python/3.7.7 Windows/10 exe/AMD64
+            IAM ユーザー（開発者用）がなければ作成します:
+                Developers グループがなければ作成します:
+                    #// ユーザーの権限はグループで定義します
+                    メニュー: https://console.aws.amazon.com/iam/ >> グループ >> 新しいグループの作成
+                    グループ名: Developers
+                    次のステップ ボタン:
+                    選択するポリシー:
+                        - AWSLambdaFullAccess
+                        - AmazonAPIGatewayAdministrator
+                        - AmazonDynamoDBFullAccess
+                        - AmazonCognitoPowerUser
+                        #// 上記は暫定です
+                        #// 後でアクセスできるリソースを制限します
+                    次のステップ ボタン(2):
+                    グループの作成 ボタン:
+                IAM ユーザー（開発者用）を作成します:
+                    メニュー: https://console.aws.amazon.com/iam/ >> ユーザー >> ユーザーを追加
+                    ユーザー名: user-dev1  #template: __IAM_UserName__
+                    アクセスの種類:
+                        チェック:
+                            プログラムによるアクセス
+                        チェックしない:
+                            AWS マネジメントコンソールへのアクセス:
+                        次のステップ ボタン:
+                    ユーザーをグループに追加:
+                        選択するグループ:
+                            - Developers
+                        次のステップ ボタン:
+                    タグの追加:
+                        次のステップ ボタン:
+                    確認:
+                        ユーザーの作成 ボタン:
+                    アクセスキーをメモします:
+                        アクセスキー ID: AKIAZQ2CH423P67RPDNA  #template: __IAM_UserAccessKeyID__
+                        シークレットアクセスキー: AhiRlFd10ZYJClp4FDTlkIl2ZTiLnLJI3jFLhaFf  #template: __SecretAccessKey__
+                        閉じる ボタン:
+            定期的にアクセスキーを更新します:
+                https://console.aws.amazon.com/iam/ >> ユーザー >> (ユーザー名) >> 認証情報（タブ） >>
+                    アクセスキーの作成 ボタン
+            AWS CLI と IAM ユーザーを結びつけます（ローカルPCにアクセスキーを設定します）:
+                #Git bash
+                - aws configure:
+                    AWS Access Key ID [None]: AKIAZQ2CH423P67RPDNA  #template: __IAM_UserAccessKeyID__
+                    AWS Secret Access Key [None]: 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  #template: __SecretAccessKey__
+                    Default region name [None]: ap-northeast-1   #template: __RegionID__
+                    Default output format [None]: （なし）
+                #// この設定によって、~/.aws/config と ~/.aws/credentials ファイルが作られます
+                #// Windows では ~ や ${HOME} の値は %USERPROFILE% 環境変数の値と同じです
+                #// ~/.aws/credentials ファイルにシークレットキーが保存されるので注意してください
+            AWS CLI がセットアップできたかどうかを確認します:
+                #Git bash
+                - aws s3 ls  #// エラーにならないこと (Unable to locate credentials エラー) 
+        Git リポジトリを作成します:
+            #// 下記は GitHub を使う場合です
+            #// チュートリアルでは、 wildrydes-site #template: __RepositoryName__
+            GitHub のアカウントを作成します:
+            GitHub にサインインします:
+                メニュー: https://github.com/ >> 三（右上） >> Sign in
+                Username or email address: Takakiriy  #template: __GitHubOwnerAccount__
+                Password: ____
+                Sign in ボタン:
+                ブラウザーを閉じます:
+            GitHub にリポジトリを新規作成します:
+                リポジトリを作成します:
+                    メニュー: https://github.com/ >> （左上の GitHub アイコン） >> （Repositories）New
+                    Repository name: wildrydes-site  #template: __RepositoryName__
+                    Public or Private: Private
+                    Create repository ボタン:
+                    ブラウザーを閉じます:
+                プライベート リポジトリに接続してダウンロード（クローン）します:
+                    #Git bash:
+                    - cd  "__ParentOfProject__"
+                    - git clone "https://github.com/Takakiriy/wildrydes-site.git"  #template: https://github.com/__GitHubOwnerAccount__/__RepositoryName__.git
+                        #// ここでエラーになるときは Git をアンインストール＆インストールしてください
+                    - Sign in with your browser ボタン  #// プライベート リポジトリのときだけこのボタンが表示されます
+                    - 表示されたアカウント名を確認: wants to access your Takakiriy account
+                        #template: wants to access your __GitHubCollaboratorAccount__ account
+                    - Authorize GitCredentialManager ボタン
+                    - 成功したらブラウザーを閉じます:
+        Git リポジトリにアプリケーションをコミットします（Git リポジトリを事前設定します）:
+            #Git bash
+            - cd  "wildrydes-site"  #template: "__RepositoryName__"
+            - aws s3 cp "s3://wildrydes-us-east-1/WebApplication/1_StaticWebHosting/website"  "./"  --recursive
+            - git add "."
+            - git commit -a -m "First commit"
+            - git push
+        AWS Amplify Console で CD/CI 環境を構築します（AWS Amplify コンソールでウェブホスティングを有効にします）:
+            メニュー: https://console.aws.amazon.com/amplify/home >> (Deploy) >> GET STARTED
+            From your existing code: GitHub
+            Continue ボタン:
+            表示されたアカウント名を確認: wants to access your Takakiriy account
+                #template: wants to access your __GitHubCollaboratorAccount__ account
+            Authorize GitCredentialManager ボタン:
+            リポジトリ: Takakiriy/wildrydes-site  #template: __GitHubCollaboratorAccount__/__RepositoryName__
+            ブランチ: master  #template: __ProductBranchName__
+            次へ ボタン:
+            次へ ボタン(2):  #// ビルドの設定はそのまま
+            保存してデプロイ ボタン:
+            #// プロビジョン >> ビルド >> デプロイ >> 検証 が完了するまで待ちます（約2分）
+            #// https://..（左下）をクリックすると実行します
+            #// master（右半分の左上）をクリックするとデプロイのログが表示されます
+            #// ただし、まだフロントエンドしか動いていません
+        Git リポジトリをコミットして自動的にデプロイされることを確認します:
+            たとえば index.html を編集してタイトルバーに表示される内容を変更します: |
+                <title>Wild Rydes - Rydes of the Future!</title>
+            コミットします:
+                #Git bash
+                - cd  "wildrydes-site"  #template: "__RepositoryName__"
+                - git add "."
+                - git commit -a -m "Second commit"
+                - git push
+            自動デプロイされた結果を確認します:
+                メニュー: https://console.aws.amazon.com/amplify/home >> wildrydes-site  #template: __RepositoryName__
+
+    ユーザー認証機能を追加します:
+        参考: ユーザー管理
+            https://aws.amazon.com/jp/getting-started/hands-on/build-serverless-web-app-lambda-apigateway-s3-dynamodb-cognito/module-2/
+        Amazon Cognito ユーザープールを作成します:
+            メニュー: https://ap-northeast-1.console.aws.amazon.com/cognito/ >> ユーザープールの管理 >>
+                ユーザープールを作成する
+            プール名: prod-wildrydes-site  #template: __Stage__-__AppName__
+            ユーザープールをどのように作成しますか?: デフォルトを確認する
+            プールの作成 ボタン:
+            プール ID をメモします: ap-northeast-1_kCQxkqzUf  #template: __CognitoPoolID__
+        ユーザープールにアプリクライアントを追加します:
+            メニュー: https://ap-northeast-1.console.aws.amazon.com/cognito/ >> ユーザープールの管理 >>
+                prod-wildrydes-site >> アプリクライアント（左） >> アプリクライアントの追加
+                    #template: __Stage__-__AppName__ >> アプリクライアント
+            アプリクライアント名: WildRydesWebApp  #template: __AppNamePascalCase__WebApp
+            チェックしない:
+                クライアントシークレットを生成:
+            アプリクライアントの作成 ボタン:
+            アプリクライアント ID をメモします: 53cldntes2imnc2ohb6n86m77q  #template: __AppClientID__
+        アプリケーションに Cognito の各種 ID を設定します（ウェブサイトの設定を更新する）:
+            wildrydes-site/js/config.js を編集します: |  #template: __RepositoryName__/js/config.js
+                userPoolId: 'ap-northeast-1_kCQxkqzUf',          #template: '__CognitoPoolID__'
+                userPoolClientId: '53cldntes2imnc2ohb6n86m77q',  #template: '__AppClientID__'
+                region: 'ap-northeast-1'                         #template: '__RegionID__'
+            コミットします:
+                #Git bash
+                - cd  "wildrydes-site"  #template: "__RepositoryName__"
+                - git add "."
+                - git commit -a -m "Set Cognito related ID"
+                - git push
+            デプロイが完了するまで待ちます:
+                メニュー: https://console.aws.amazon.com/amplify/home >> wildrydes-site  #template: __RepositoryName__
+        デプロイされた結果を確認します（実装を検証する）:
+            起動: https://..（左下）をクリック（Webアプリが開きます）
+            GIDDY UP!（サイン アップ ボタン）:
+                Email: example@example.com  #template: __UserMail__
+                Password: 12345aA!          #template: __UserPassword__
+                Confirm Password: 12345aA!  #template: __UserPassword__
+                LET'S RYDE ボタン:
+            #// ★注意: 本番はユーザープールを設定して Amazon SES で自分が所有するドメインから E メールを送信すること
+            #// http://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-message-customizations.html#cognito-user-pool-settings-ses-authorization-to-send-email
+            登録したメールアドレスに届いた確認コード（6桁の数字）をユーザーが入力する場合:
+                Email: example@example.com  #template: __UserMail__
+                Verification Code: ____  #// 6桁の数字
+                VERIFY ボタン:
+                #// Successfully Authenticated! と表示されたらサインイン成功です
+                #// API はまだ呼べません、と表示されます
+            社内の人が Cognito のページでユーザー登録を承認する場合:
+                メニュー: https://ap-northeast-1.console.aws.amazon.com/cognito/ >> ユーザープールの管理 >>
+                    prod-wildrydes-site >> ユーザーとグループ >> （登録するユーザー名） >> ユーザーの確認
+                        #template: __Stage__-__AppName__ >> ユーザーとグループ
+            すでに登録済みで、サインインする場合:
+                URL: https://____.amplifyapp.com/index.html
+                SIGN IN ボタン:
+
+    バックエンドを構築します:
+        参考: サーバーレス サービス バックエンド
+            https://aws.amazon.com/jp/getting-started/hands-on/build-serverless-web-app-lambda-apigateway-s3-dynamodb-cognito/module-3/
+        DynamoDB テーブルを作成します:
+            メニュー: https://console.aws.amazon.com/dynamodb/ >> テーブルの作成
+            テーブル名: Rides
+            パーティションキー: RideId
+            作成 ボタン:
+            ARN（最も下）をメモします: arn:aws:dynamodb:ap-northeast-1:123456789012:table/Rides
+                #template: arn:aws:dynamodb:__RegionID__:__AWS_AccountID__:table/Rides
+        Lambda 関数の IAM ロールを作成します:
+            ロールを作成します:
+                メニュー: https://console.aws.amazon.com/iam/ >> ロール >> ロールの作成
+                信頼されたエンティティの種類を選択: AWS サービス
+                ユースケースの選択: Lambda  #// 信頼ポリシー
+                次のステップ ボタン:
+                ポリシー（を検索してチェックを入れる）:
+                    - AWSLambdaBasicExecutionRole
+                次のステップ ボタン(2):
+                次のステップ ボタン(3):
+                ロール名: WildRydesLambda  #template: __AppNamePascalCase__Lambda
+                ロールの作成 ボタン:
+            WildRydesLambda:  #// 検索して左のロール名をクリックします  #template: __AppNamePascalCase__Lambda
+                メニュー: （アクセス許可）（タブ） >> インラインポリシーを追加
+                サービス:
+                    サービスの選択 をクリック:
+                    クリック: DynamoDB
+                アクションの追加:
+                    アクションの指定: PutItem
+                    追加 ボタン:
+                リソース:
+                    ARN の追加:
+                        Region: ap-northeast-1  #template: __RegionID__
+                        Account: 123456789012   #template: __AWS_AccountID__
+                        Table name: Rides
+                        追加 ボタン:
+                ポリシーの確認 ボタン:
+                名前: DynamoDBWriteAccess
+                ポリシーの作成 ボタン:
+        Lambda 関数の作成:
+            メニュー: https://console.aws.amazon.com/lambda/
+            関数の作成（右上）:
+                選択: 一から作成
+                関数名: RequestUnicorn
+                ランタイム: Node.js 12.x  #// 最新バージョン
+                デフォルトの実行ロールの変更:
+                    チェック: 既存のロールを使用する
+                    既存のロール: WildRydesLambda  #template: __AppNamePascalCase__Lambda
+                関数の作成 ボタン:
+            関数コード:
+                index.js: |
+                    const randomBytes = require('crypto').randomBytes;
+
+                    const AWS = require('aws-sdk');
+
+                    const ddb = new AWS.DynamoDB.DocumentClient();
+
+                    const fleet = [
+                        {
+                            Name: 'Bucephalus',
+                            Color: 'Golden',
+                            Gender: 'Male',
+                        },
+                        {
+                            Name: 'Shadowfax',
+                            Color: 'White',
+                            Gender: 'Male',
+                        },
+                        {
+                            Name: 'Rocinante',
+                            Color: 'Yellow',
+                            Gender: 'Female',
+                        },
+                    ];
+
+                    exports.handler = (event, context, callback) => {
+                        if (!event.requestContext.authorizer) {
+                        errorResponse('Authorization not configured', context.awsRequestId, callback);
+                        return;
+                        }
+
+                        const rideId = toUrlString(randomBytes(16));
+                        console.log('Received event (', rideId, '): ', event);
+
+                        // Because we're using a Cognito User Pools authorizer, all of the claims
+                        // included in the authentication token are provided in the request context.
+                        // This includes the username as well as other attributes.
+                        const username = event.requestContext.authorizer.claims['cognito:username'];
+
+                        // The body field of the event in a proxy integration is a raw string.
+                        // In order to extract meaningful values, we need to first parse this string
+                        // into an object. A more robust implementation might inspect the Content-Type
+                        // header first and use a different parsing strategy based on that value.
+                        const requestBody = JSON.parse(event.body);
+
+                        const pickupLocation = requestBody.PickupLocation;
+
+                        const unicorn = findUnicorn(pickupLocation);
+
+                        recordRide(rideId, username, unicorn).then(() => {
+                            // You can use the callback function to provide a return value from your Node.js
+                            // Lambda functions. The first parameter is used for failed invocations. The
+                            // second parameter specifies the result data of the invocation.
+
+                            // Because this Lambda function is called by an API Gateway proxy integration
+                            // the result object must use the following structure.
+                            callback(null, {
+                                statusCode: 201,
+                                body: JSON.stringify({
+                                    RideId: rideId,
+                                    Unicorn: unicorn,
+                                    Eta: '30 seconds',
+                                    Rider: username,
+                                }),
+                                headers: {
+                                    'Access-Control-Allow-Origin': '*',
+                                },
+                            });
+                        }).catch((err) => {
+                            console.error(err);
+
+                            // If there is an error during processing, catch it and return
+                            // from the Lambda function successfully. Specify a 500 HTTP status
+                            // code and provide an error message in the body. This will provide a
+                            // more meaningful error response to the end client.
+                            errorResponse(err.message, context.awsRequestId, callback)
+                        });
+                    };
+
+                    // This is where you would implement logic to find the optimal unicorn for
+                    // this ride (possibly invoking another Lambda function as a microservice.)
+                    // For simplicity, we'll just pick a unicorn at random.
+                    function findUnicorn(pickupLocation) {
+                        console.log('Finding unicorn for ', pickupLocation.Latitude, ', ', pickupLocation.Longitude);
+                        return fleet[Math.floor(Math.random() * fleet.length)];
+                    }
+
+                    function recordRide(rideId, username, unicorn) {
+                        return ddb.put({
+                            TableName: 'Rides',
+                            Item: {
+                                RideId: rideId,
+                                User: username,
+                                Unicorn: unicorn,
+                                RequestTime: new Date().toISOString(),
+                            },
+                        }).promise();
+                    }
+
+                    function toUrlString(buffer) {
+                        return buffer.toString('base64')
+                            .replace(/\+/g, '-')
+                            .replace(/\//g, '_')
+                            .replace(/=/g, '');
+                    }
+
+                    function errorResponse(errorMessage, awsRequestId, callback) {
+                    callback(null, {
+                        statusCode: 500,
+                        body: JSON.stringify({
+                        Error: errorMessage,
+                        Reference: awsRequestId,
+                        }),
+                        headers: {
+                        'Access-Control-Allow-Origin': '*',
+                        },
+                    });
+                    }
+                保存する:
+                    File >> Save メニュー:
+        関数をテストします:
+            メニュー: テストイベントの選択 >> テストイベントの設定
+            イベント名: TestRequestEvent
+            （テストイベント）: |
+                {
+                    "path": "/ride",
+                    "httpMethod": "POST",
+                    "headers": {
+                        "Accept": "*/*",
+                        "Authorization": "eyJraWQiOiJLTzRVMWZs",
+                        "content-type": "application/json; charset=UTF-8"
+                    },
+                    "queryStringParameters": null,
+                    "pathParameters": null,
+                    "requestContext": {
+                        "authorizer": {
+                            "claims": {
+                                "cognito:username": "the_username"
+                            }
+                        }
+                    },
+                    "body": "{\"PickupLocation\":{\"Latitude\":47.6174755835663,\"Longitude\":-122.28837066650185}}"
+                }
+            作成 ボタン:
+            テスト ボタン（右上）:
+            成功したことを確認します: |
+                "statusCode": 200,
+
+    RESTful API:
+        参考: RESTful API
+            https://aws.amazon.com/jp/getting-started/hands-on/build-serverless-web-app-lambda-apigateway-s3-dynamodb-cognito/module-4/
+        新しい REST API を作成します:
+            メニュー: https://console.aws.amazon.com/apigateway/ >> API を作成 >> REST API >> 構築 >> 新しい API
+            API 名: WildRydes  #template: __AppNamePascalCase__
+            エンドポイントタイプ: エッジ最適化
+            API の作成 ボタン:
+        Cognito ユーザプールオーソライザーを作成します:
+            メニュー: https://console.aws.amazon.com/apigateway/ >>
+                WildRydes >> オーソライザー >> 新しいオーソライザーの作成  #template: __AppNamePascalCase__
+            名前: WildRydes  #template: __AppNamePascalCase__
+            タイプ: Cognito
+            Cognito ユーザープール: prod-wildrydes-site  #template: __Stage__-__AppName__
+            トークンのソース: Authorization
+            作成:
+        認証トークンをコピーします:
+            AWS Amplify Console から Web アプリケーションを開き、https://____.amplifyapp.com/ride.html
+                にアクセスすると、認証トークンが表示されます
+        認証トークンをテストします:
+            - オーソライザーのページに戻って、テストをクリックして認証トークンを「認可トークン」に貼り付けます
+            - テスト ボタン
+            - 要求（クレーム）に下記のように表示されます: |
+                {
+                    "aud": "53cldntes2iinc2ohb6n86m77q",
+                    "auth_time": "1603373909",
+                    "cognito:username": "example2-at-sage-p.com",
+                    "email": "example2@sage-p.com",
+                    "email_verified": "false",
+                    "event_id": "798e35c4-fc10-4d20-87fa-d700158c97ac",
+                    "exp": "Thu Oct 22 17:19:16 UTC 2020",
+                    "iat": "Thu Oct 22 16:19:16 UTC 2020",
+                    "iss": "https://cognito-idp.ap-northeast-1.amazonaws.com/ap-northeast-1_kCQxkqzUf",
+                    "sub": "beb51df0-382f-4c8e-86f0-11aca1d4b80d",
+                    "token_use": "id"
+                }
+        新しいリソースとメソッドを作成します:
+            メニュー: https://console.aws.amazon.com/apigateway/ >>
+                WildRydes >> リソース >> アクション >> リソースの作成  #template: __AppNamePascalCase__
+            リソース名: ride
+            チェック: API Gateway CORS を有効にする
+            リソースの作成 ボタン:
+            選択: /ride （リソース）
+            アクション >> メソッドの作成: POST
+            チェック ボタン:
+            統合タイプ: Lambda 関数
+            チェック(2): Lambda プロキシ統合の使用
+            Lambda 関数: RequestUnicorn
+            保存 ボタン:
+            #// 権限を追加することの確認が表示されます
+            OK ボタン:
+            メソッドリクエスト:
+                認可：WildRydes  #template: __AppNamePascalCase__
+        API をデプロイします:
+            メニュー: アクション >> API のデプロイ
+            デプロイされるステージ: [新しいステージ]
+            ステージ名: prod
+            デプロイ ボタン:
+            URL の呼び出しの右の URL をメモします:
+                https://aafaaaaaua.execute-api.ap-northeast-1.amazonaws.com/prod
+                    #template: __API_GatewayURL__
+        アプリケーションに API の URL を設定します（ウェブサイトの設定を更新する）:
+            wildrydes-site/js/config.js を編集します: |  #template: __RepositoryName__/js/config.js
+                invokeUrl: 'https://aafaaaaaua.execute-api.ap-northeast-1.amazonaws.com/prod',
+                    #template: __API_GatewayURL__
+            コミットします:
+                #Git bash
+                - cd  "wildrydes-site"  #template: "__RepositoryName__"
+                - git add "."
+                - git commit -a -m "Set API related ID"
+                - git push
+            デプロイが完了するまで待ちます:
+                メニュー: https://console.aws.amazon.com/amplify/home >> wildrydes-site  #template: __RepositoryName__
+        実装を検証します:
+            - AWS Amplify Console から Web アプリケーションを開き、https://____.amplifyapp.com/ride.html
+                にアクセスして、ブラウザーをリロードします
+            - マップがロードされたら、マップ上の任意の場所をクリックして、乗る場所を設定します
+            - Request Unicorn ボタンを押します
+
+    URL を自社のドメイン（カスタムドメイン）に変更します:
+        参考: サードパーティDNSプロバイダーが管理するカスタムドメインの追加
+            https://docs.aws.amazon.com/ja_jp/amplify/latest/userguide/to-add-a-custom-domain-managed-by-a-third-party-dns-provider.html
+        自分が使えるドメイン(URL)を用意します（カスタムドメインを Route 53 に登録する）:
+            aws の場合（有料）: #// 設置後12時間以内の利用であれば無料らしい
+                参考: https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-register.html
+                メニュー: https://console.aws.amazon.com/route53/ >> 登録済みドメイン（左） >> ドメインの登録（上）
+                続き: （未確認）
+            Freenom の場合（無料）:
+                #// .tk（ニュージーランドの領土であるトケラウ）などレアな TLD （トップ レベル ドメイン）を持つドメインを取得できます
+                http://www.freenom.com/en/index.html >> __NewDomain__ >> Check Availability >>
+                Checkout（右上） >> Continue >> （メールアドレスを入力） >> Verify My Email Address >>
+                受信したメールの中にあるボタンをPCから押す） >> （名前などを入力する）
+                #// 3か月後（設定による）に更新を忘れないこと
+        ドメインを Route53 のホストゾーンに追加します:
+            参考: https://avinton.com/academy/route53-dns-vhost/
+            メニュー: https://console.aws.amazon.com/route53/ >> ホストゾーン（左） >> ホストゾーンの作成（下）
+            ドメイン名: sage-p.tk  #template: : __Domain__
+            OK: ホストゾーンの作成 ボタン
+        ACM（AWS Certificate Manage）に証明書を管理させます:
+            参考: https://labs.mobingi.com/aws-certificate-manager-and-freenom/
+            メニュー: https://console.aws.amazon.com/acm/home >> 証明書のプロビジョニング >> 今すぐ始める >>
+                証明書のリクエスト ボタン（右下）
+            ドメイン名: sage-p.tk  #template: : __Domain__
+            この証明書に別の名前を追加 ボタン:
+            ドメイン名2: "*.sage-p.tk"  #template: "*.__Domain__"
+                #// 上記 " " の中を入力します
+            次へ ボタン:
+            検証方法の選択: DNS の検証
+            操作: 次へ >> 確認 >> 確定とリクエスト >> （検証保留中が表示される） >> 続行 >>
+                sage-p.tk >> Route 53 でのレコードの作成 ボタン （同じ値なので片方のボタンだけ押せばよい）
+                    #template: __Domain__ >> Route 53 でのレコード
+                #// CNAME リソース レコードが Route 53 に登録されます
+            もし、Route 53 でのレコードの作成 ボタンが押せないときは、手動で CNAME リソース レコードを追加します:
+                必要な CNAME の設定を調べます（ACM が提供する CNAME の場合）:
+                    メニュー: https://console.aws.amazon.com/acm/home >>
+                        sage-p.tk（の左の▲） >> ドメインの左の▲
+                            #template: __Domain__（の左の▲） >> ドメインの左の▲
+                    CNAME の例:
+                        名前: _51a78045aa6d7b88d8hyg70253c19812e.sage-p.tk.  #template: .__Domain__.
+                        種類: CNAME
+                        値: _ffd077863ba1518d6c169c7f4a06726b.zbkrxsrfvj.acm-validations.aws.
+                Route 53 に CNAME を設定します:
+                    メニュー: https://console.aws.amazon.com/route53/ >> レコードを作成
+                    ルーティングポリシー: シンプルルーティング
+                    次へ ボタン:
                     シンプルなレコードを定義 ボタン:
-                レコードを作成 ボタン:
-            #// サブドメインに対する CNAME は同じ値なので追加する CNAME は１つです
-    （freenomを使っている場合）ネームサーバーを変更します:
-        参考1: https://note.com/dafujii/n/n12bb564081f1
-        参考2: https://dev.classmethod.jp/articles/mesoko-r53-cdn/
-        NS レコードの値ネームサーバーのアドレスをメモします:
-            メニュー: https://console.aws.amazon.com/route53/ >> ホストゾーン （左） >> sage-p.tk  #template: >> __Domain__
-            操作: レコード名 = sage-p.tk, タイプ = NS の行の「値/トラフィックのルーティング先」の列にある4つの値をメモします
-                #template: レコード名 = __Domain__,
-            例:
-                - ns-63.awsdns-07.com.
-                - ns-649.awsdns-17.net.
-                - ns-1037.awsdns-01.org.
-                - ns-1702.awsdns-20.co.uk.
-        freenom 内での設定変更:
+                        レコード名: ____  #// CNAME の名前
+                        値/トラフィックのルーティング先:
+                            - レコードタイプに応じた IP アドレスまたは別の値
+                            - ____  #// CNAME の値
+                        レコードタイプ: CNAME
+                        シンプルなレコードを定義 ボタン:
+                    レコードを作成 ボタン:
+                #// サブドメインに対する CNAME は同じ値なので追加する CNAME は１つです
+        （freenomを使っている場合）ネームサーバーを変更します:
+            参考1: https://note.com/dafujii/n/n12bb564081f1
+            参考2: https://dev.classmethod.jp/articles/mesoko-r53-cdn/
+            NS レコードの値ネームサーバーのアドレスをメモします:
+                メニュー: https://console.aws.amazon.com/route53/ >> ホストゾーン （左） >> sage-p.tk  #template: >> __Domain__
+                操作: レコード名 = sage-p.tk, タイプ = NS の行の「値/トラフィックのルーティング先」の列にある4つの値をメモします
+                    #template: レコード名 = __Domain__,
+                例:
+                    - ns-63.awsdns-07.com.
+                    - ns-649.awsdns-17.net.
+                    - ns-1037.awsdns-01.org.
+                    - ns-1702.awsdns-20.co.uk.
+            freenom 内での設定変更:
+                メニュー: http://www.freenom.com/en/index.html >> (Sign in) >> Services >> My Domains >>
+                    Manage Domain（行末） >> Management Tools
+                Nameservers: Use custom nameservers(enter below)
+                Nameserver1～4 に、メモした ns- から始まりピリオドで終わる4つの値を貼り付ける:
+                    #// 末尾のピリオドも必要です
+                Change Nameservers ボタン:
+        Amplify Console に自社のドメインを設定します:
+            メニュー: https://console.aws.amazon.com/amplify/ >> wildrydes-site >> ドメインの管理（左）  #template: __AppName__
+            カスタムドメインの追加（ボタン）:
+                ドメイン: sage-p.tk  #template: __Domain__
+                ドメインの検索 ボタン:
+                Exclude root ボタンを押して、https://sage-p.tk を削除します:  #template: __Domain__
+                    #// 理由は、Route53 で取得していないドメインでは、
+                    #// 下記「Route53 の ANAME レコードの値は aws の外部に設定できません」
+                    #// に書いてあるように https://sage-p.tk にアクセスできないからです
+                保存 ボタン:
+                Status details の図が表示され、SSL configuration の処理中になるまで待ちます:
+        （もし、CNAME を設定するように表示されたときは）Route 53 に必要な設定を表示します:
+            DNS 設定の検証 のモーダルを開きます:
+                アクション >> DNS レコードの表示 メニュー:
+                表示例:
+                    - _d49df321977f2b1d57b81408d67fac2d    CNAME    _3184fb03fe5baf52bfcda86050767f3a.zbkrxsrfvj.acm-validations.aws.
+                        #// 上記 CNAME の左（名前）は、ドメイン（.sage-p.tk.）が表示されていません（awsのバグ） #template: .__Domain__.
+                    - '@    ANAME    dbwdcgexf1sy9.cloudfront.net'
+                    - www    CNAME    dbwdcgexf1sy9.cloudfront.net
+                この DNS 設定の検証 のモーダルを表示させたままにします:
+            上記「手動で CNAME リソース レコードを追加します」を参考に CNAME を設定します:
+                #// 設定が正しくできていれば自動的に Status details の図が更新されます
+                #// Route53 の ANAME レコードの値は aws の外部に設定できません（ツイッター検索「Route53 ANAME」より）
+                #// このため、 https://sage-p.tk はアクセスできません。 https://www.sage-p.tk はアクセスできます
+                    #template: https://__Domain__ はアクセスできません。 https://www.__Domain__ はアクセスできます
+            DNS 設定の検証 のモーダルを閉じます:
+
+    リソースのクリーンアップ:
+        aws のリージョンを選択します:
+            AWS マネジメント コンソールにサインインします:
+                URL: https://console.aws.amazon.com/
+                （ユーザー）: IAM ユーザー
+                アカウントID: __AWS_AccountID__
+                次へ ボタン:
+                ユーザー名: __AWS_UserName__
+                パスワード: __AWS_UserPassword__
+                サインイン ボタン:
+            リージョン: 東京 （右上） #template: __RegionName__
+            OK: ブラウザーを閉じます
+        Amplify Console の削除:
+            - https://console.aws.amazon.com/amplify/home >> wildrydes-site  #template: __AppName__
+            - アクション >> アプリの削除
+        （freenom を使っている場合）freenom 内での設定変更:
             メニュー: http://www.freenom.com/en/index.html >> (Sign in) >> Services >> My Domains >>
                 Manage Domain（行末） >> Management Tools
-            Nameservers: Use custom nameservers(enter below)
-            Nameserver1～4 に、メモした ns- から始まりピリオドで終わる4つの値を貼り付ける:
-                #// 末尾のピリオドも必要です
+            Nameservers: Use default nameservers (Freenom Nameservers)
             Change Nameservers ボタン:
-    Amplify Console に自社のドメインを設定します:
-        メニュー: https://console.aws.amazon.com/amplify/ >> wildrydes-site >> ドメインの管理（左）  #template: __AppName__
-        カスタムドメインの追加（ボタン）:
-            ドメイン: sage-p.tk  #template: __Domain__
-            ドメインの検索 ボタン:
-            Exclude root ボタンを押して、https://sage-p.tk を削除します:  #template: __Domain__
-                #// 理由は、Route53 で取得していないドメインでは、
-                #// 下記「Route53 の ANAME レコードの値は aws の外部に設定できません」
-                #// に書いてあるように https://sage-p.tk にアクセスできないからです
-            保存 ボタン:
-            Status details の図が表示され、SSL configuration の処理中になるまで待ちます:
-    （もし、CNAME を設定するように表示されたときは）Route 53 に必要な設定を表示します:
-        DNS 設定の検証 のモーダルを開きます:
-            アクション >> DNS レコードの表示 メニュー:
-            表示例:
-                - _d49df321977f2b1d57b81408d67fac2d    CNAME    _3184fb03fe5baf52bfcda86050767f3a.zbkrxsrfvj.acm-validations.aws.
-                    #// 上記 CNAME の左（名前）は、ドメイン（.sage-p.tk.）が表示されていません（awsのバグ） #template: .__Domain__.
-                - '@    ANAME    dbwdcgexf1sy9.cloudfront.net'
-                - www    CNAME    dbwdcgexf1sy9.cloudfront.net
-            この DNS 設定の検証 のモーダルを表示させたままにします:
-        上記「手動で CNAME リソース レコードを追加します」を参考に CNAME を設定します:
-            #// 設定が正しくできていれば自動的に Status details の図が更新されます
-            #// Route53 の ANAME レコードの値は aws の外部に設定できません（ツイッター検索「Route53 ANAME」より）
-            #// このため、 https://sage-p.tk はアクセスできません。 https://www.sage-p.tk はアクセスできます
-                #template: https://__Domain__ はアクセスできません。 https://www.__Domain__ はアクセスできます
-        DNS 設定の検証 のモーダルを閉じます:
-
-リソースのクリーンアップ:
-    aws のリージョンを選択します:
-        AWS マネジメント コンソールにサインインします:
-            URL: https://console.aws.amazon.com/
-            （ユーザー）: IAM ユーザー
-            アカウントID: __AWS_AccountID__
-            次へ ボタン:
-            ユーザー名: __AWS_UserName__
-            パスワード: __AWS_UserPassword__
-            サインイン ボタン:
-        リージョン: 東京 （右上） #template: __RegionName__
-        OK: ブラウザーを閉じます
-    Amplify Console の削除:
-        - https://console.aws.amazon.com/amplify/home >> wildrydes-site  #template: __AppName__
-        - アクション >> アプリの削除
-    （freenom を使っている場合）freenom 内での設定変更:
-        メニュー: http://www.freenom.com/en/index.html >> (Sign in) >> Services >> My Domains >>
-            Manage Domain（行末） >> Management Tools
-        Nameservers: Use default nameservers (Freenom Nameservers)
-        Change Nameservers ボタン:
-    Route 53 の削除:
-        - https://console.aws.amazon.com/route53/ >> ホストゾーン （左） :
-            - ドメイン名 = sage-p.tk の行:  #template: __Domain__
-                - タイプ = NS, SOA 以外（のすべての行の行頭にチェック） >> 削除
-            - ドメイン名 = sage-p.tk （の行の左にチェック） >> 削除（上）  #template: __Domain__
-    ACM（AWS Certificate Manage）の削除:
-        - https://console.aws.amazon.com/acm/home >> sage-p.tk（の左にチェック） >> アクション >> 削除
-    Cognito ユーザープールの削除:
-        - https://ap-northeast-1.console.aws.amazon.com/cognito/ >> ユーザープールの管理 >>
-            prod-wildrydes-site
-        - プールの削除（右上）
-    Lambda の削除:
-        - https://console.aws.amazon.com/lambda/ >> RequestUnicorn （の左をチェック）
-        - アクション >> 削除
-    IAM の削除:
-        - https://console.aws.amazon.com/iam/ >> ロール:
-            - WildRydesLambda の左にチェック >> ロールの削除
-                #template: __AppNamePascalCase__Lambda
-        - https://console.aws.amazon.com/iam/ >> ユーザー:
-            - user-dev1 の左にチェック >> ユーザーの削除
-                #template: __IAM_UserName__
-    DynamoDB >> テーブル の削除:
-        - https://console.aws.amazon.com/dynamodb/ >>  テーブル
-        - Rides の左にチェック >> アクション >> テーブルの削除
-    API Gateway の削除:
-        - https://console.aws.amazon.com/apigateway/ >> WildRydes  #template: __AppNamePascalCase__
-        - アクション >> API の削除
-    CloudWatch >> ログ の削除:
-        - https://ap-northeast-1.console.aws.amazon.com/cloudwatch/ >> ロググループ
-        - /aws/lambda/RequestUnicorn >> アクション >> ロググループの削除
+        Route 53 の削除:
+            - https://console.aws.amazon.com/route53/ >> ホストゾーン （左） :
+                - ドメイン名 = sage-p.tk の行:  #template: __Domain__
+                    - タイプ = NS, SOA 以外（のすべての行の行頭にチェック） >> 削除
+                - ドメイン名 = sage-p.tk （の行の左にチェック） >> 削除（上）  #template: __Domain__
+        ACM（AWS Certificate Manage）の削除:
+            - https://console.aws.amazon.com/acm/home >> sage-p.tk（の左にチェック） >> アクション >> 削除
+        Cognito ユーザープールの削除:
+            - https://ap-northeast-1.console.aws.amazon.com/cognito/ >> ユーザープールの管理 >>
+                prod-wildrydes-site
+            - プールの削除（右上）
+        Lambda の削除:
+            - https://console.aws.amazon.com/lambda/ >> RequestUnicorn （の左をチェック）
+            - アクション >> 削除
+        IAM の削除:
+            - https://console.aws.amazon.com/iam/ >> ロール:
+                - WildRydesLambda の左にチェック >> ロールの削除
+                    #template: __AppNamePascalCase__Lambda
+            - https://console.aws.amazon.com/iam/ >> ユーザー:
+                - user-dev1 の左にチェック >> （必要なら）ユーザーの削除
+                    #template: __IAM_UserName__
+            - https://console.aws.amazon.com/iam/ >> グループ:
+                - Developers の左にチェック >> グループのアクション >> （必要なら）グループの削除
+        DynamoDB >> テーブル の削除:
+            - https://console.aws.amazon.com/dynamodb/ >>  テーブル
+            - Rides の左にチェック >> アクション >> テーブルの削除
+        API Gateway の削除:
+            - https://console.aws.amazon.com/apigateway/ >> WildRydes  #template: __AppNamePascalCase__
+            - アクション >> API の削除
+        CloudWatch >> ログ の削除:
+            - https://ap-northeast-1.console.aws.amazon.com/cloudwatch/ >> ロググループ
+            - /aws/lambda/RequestUnicorn >> アクション >> ロググループの削除
+        Amplify との接続を解除するように GitHub を設定します:
+            メニュー: https://github.com/ >> （ Takakiriy のプロフィール写真） >> Settings >> Applications（左下）
+                #template: （ __GitHubOwnerAccount__ のプロフィール写真）
+            Installed GitHub Apps （タブ）:
+                - (AWS Connector for GitHub) >> Configure
+                - (Uninstall "AWS Connector for GitHub")（最も下）>> Uninstall
+            Authorized OAuth Apps （タブ）:
+                - (Git Credential Manager) >> … >> Revoke >> I understand, revoke access
+            ブラウザーを閉じます:
+        （必要なら）GitHub のリポジトリを削除します:
+            - https://github.com/ >> （左上の GitHub アイコン） >> Takakiriy/wildrydes-site
+                #template: __GitHubOwnerAccount__/__RepositoryName__
+            - Settings（タブ。ウィンドウ幅が狭いときは … の中にある） >> （いちばん下へスクロール） >>
+                Delete this repository >> Takakiriy/wildrydes-site
+                    #template: __GitHubOwnerAccount__/__RepositoryName__
+            

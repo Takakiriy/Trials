@@ -1,30 +1,27 @@
-﻿Amplify Console ＋ React のウェブアプリケーションを構築します:
+﻿（★書きかけ）Amplify Console ＋ React のウェブアプリケーションを構築します:
     #// AWS Amplify、Amazon Cognito、GitHub を使用
 
     設定:
         __AWS_AccountID__: 123456789012  #★秘密:仮
+        __AWS_UserName__: user1
         __RegionName__: 東京  #// CodePipeline のパイプラインを作成するリージョンの名前
         __RegionID__: ap-northeast-1  #// __RegionName__ の ID
-        __AmplifyUser__: user-dev1-amplify  #// Amplify 用 IAM ユーザー、Amplify CLI で必要な権限を持つ
-        __AmplifyUserAccessKeyID__: AKIAZQ2CH423P67RPDNA  #★秘密:仮  #// 手順内でメモする値
-        __AmplifySecretAccessKey__: AhiRlFd10ZYJClp4FDTlkIl2ZTiLnLJI3jFLhaFf  #★秘密:仮  #// 手順内でメモする値
+        __AmplifyUser__: user-dev2-amplify  #// Amplify 用 IAM ユーザー、Amplify CLI で必要な権限を持つ
+        __AmplifyRole__: amplifyconsole-backend-role
+        __AmplifyUserAccessKeyID__: AKIAZQ0A0A0A0A0A0A0A  #★秘密:仮  #// 手順内でメモする値
+        __AmplifySecretAccessKey__: kOn3A8FHo30F8qwofeAAAAJpoWpPwfOkaDSR_QFq  #★秘密:仮  #// 手順内でメモする値
         __CLI_Profile__: amplify  #// aws 関連の CLI のプロファイル名
-        __AmplifyRole__: amplifyconsole-backend-role1
         __GitHubOwnerAccount__: Takakiriy  #// リポジトリのオーナーのアカウント名
         __GitHubCollaboratorAccount__: Takakiriy  #// リポジトリにアクセスするユーザーのアカウント名
         __GitCollaboratorName__: Your Name        #// git log コマンドで表示されるユーザー名
         __GitCollaboratorMail__: you@example.com  #// git log コマンドで表示されるメールアドレス
-        __AppName__: react1
-        __AppNamePascalCase__: React1
-        __RepositoryName__: react1
+        __AppName__: collaborate
+        __RepositoryName__: collaborate  #// 基本的に __AppName__ と同じ
         __ProductBranchName__: master  #// 本番用のブランチ名
-        __Stage__: prod
-        __CognitoPoolID__: ap-northeast-1_kCQxkqzUf  #// 手順内でメモする値
-        __AppClientID__: 53cldntes2imnc2ohb6n86m77q
-        __UserName__: example1
-        __UserMail__: example@example.com  #★秘密:仮
-        __UserPassword__: 12345aA!
-        __StagingPassword__: 1234567_890123456789_0123456789  #★秘密:仮
+        __BackupName__: react2_auth
+        __AppUserName__: example1
+        __AppUserMail__: example@example.com  #★秘密:仮
+        __AppUserPassword__: 12345aA!
 
     準備:
         参考:
@@ -62,35 +59,35 @@
             GitHub のアカウントを作成します:
             GitHub にサインインします:
                 メニュー: https://github.com/ >> 三（右上） >> Sign in
-                Username or email address: Takakiriy  #template: __GitHubOwnerAccount__
-                Password: ____
-                Sign in ボタン:
+                Sign in ページ:
+                    Username or email address: Takakiriy  #template: __GitHubCollaboratorAccount__
+                    Password: ____
+                    Sign in ボタン:
                 ブラウザーを閉じます:
             GitHub にリポジトリを新規作成します:
                 リポジトリを作成します:
-                    メニュー: https://github.com/ >> （左上の GitHub アイコン） >> （Repositories）New
-                    Repository name: react1  #template: __RepositoryName__
+                    メニュー: https://github.com/ >>（Repositories）New （左上）
+                    Repository name: collaborate  #template: __RepositoryName__
                     Public or Private: Private
                     Create repository ボタン:
                     ブラウザーを閉じます:
-                プライベート リポジトリに接続してダウンロード（クローン）します:
-                    #Git bash:
-                    - cd  "__ParentOfProject__"
-                    - git clone "https://github.com/Takakiriy/react1.git"  #template: https://github.com/__GitHubOwnerAccount__/__RepositoryName__.git
-                        #// ここでエラーになるときは Git をアンインストール＆インストールしてください
-                    - Sign in with your browser ボタン  #// プライベート リポジトリのときだけこのボタンが表示されます
-                    - 表示されたアカウント名を確認: wants to access your Takakiriy account
-                        #template: wants to access your __GitHubCollaboratorAccount__ account
-                    - Authorize GitCredentialManager ボタン
-                    - 成功したらブラウザーを閉じます:
+        プライベート リポジトリに接続してダウンロード（クローン）します:
+            #Git bash:
+            - cd  "__ParentOfProject__"
+            - git clone "https://github.com/Takakiriy/collaborate.git"  #template: https://github.com/__GitHubOwnerAccount__/__RepositoryName__.git
+                #// ここでエラーになるときは Git をアンインストール＆インストールしてください
+            - Sign in with your browser ボタン  #// プライベート リポジトリのときだけこのボタンが表示されます
+            - 表示されたアカウント名を確認: wants to access your Takakiriy account
+                #template: wants to access your __GitHubCollaboratorAccount__ account
+            - Authorize GitCredentialManager ボタン
+            - 成功したらブラウザーを閉じます:
     React のプロジェクトを作成します:
         React のプロジェクトを新規作成してコミットします（リポジトリの内容がまだないとき）:
             #Git bash
-            - cd  "react1"  #template: "__AppName__"
-            - cd  ".."
-            - npx create-react-app  "react1"  #template: "__AppName__"
-                #// npx create-react-app --template typescript  "react1"  #template: "__AppName__"
-            - cd  "react1"  #template: "__AppName__"
+            - cd  "__ParentOfProject__"
+            - npx create-react-app  "collaborate"  #template: "__AppName__"
+                #// npx create-react-app --template typescript  "collaborate"  #template: "__AppName__"
+            - cd  "collaborate"  #template: "__AppName__"
             - npm start  #// 動作確認します
                 #// Windows Defender によって警告されたときは、アクセス許可します
                 #// ブラウザーが開いたら閉じます
@@ -105,13 +102,13 @@
             AWS マネジメント コンソールにサインインします:
                 URL: https://console.aws.amazon.com/
                 （ユーザー）: IAM ユーザー
-                アカウントID: __AWS_AccountID__
+                アカウントID: 123456789012  #template: __AWS_AccountID__
                 次へ ボタン:
-                ユーザー名: __AWS_UserName__
+                ユーザー名: user1  #template: __AWS_UserName__
                 パスワード: __AWS_UserPassword__
                 サインイン ボタン:
             リージョン: 東京 （右上） #template: __RegionName__
-            OK: ブラウザーを閉じます
+            ブラウザーを閉じます:
         Amplify CLI をインストールしてセットアップします:
             参考:
                 - Install the Amplify CLI
@@ -120,6 +117,7 @@
                     https://amplify-sns.workshop.aws/ja/00_prerequisites/20_install_and_configs.html
             Amplify CLI をインストールします:
                 #Git bash
+                #//任意のフォルダーで
                 - npm install -g @aws-amplify/cli
                 - amplify -v  #// 4.31.0
             Amplify CLI をセットアップします:
@@ -128,12 +126,12 @@
                     - amplify configure
                 ブラウザーが開くので、IAM の設定を変更できる権限をもったユーザーでサインインします:
                     サインインしたらブラウザーを閉じます:
-                #// amplify configure の続きを表示します（Enter キーを押します）
+                amplify configure の続きを表示します（Enter キーを押します）:
                 region: ap-northeast-1  #template: __RegionID__
-                user name: user-dev1-amplify  #template: __AmplifyUser__
+                user name: user-dev2-amplify  #template: __AmplifyUser__
                 (ブラウザーが開きます):
                     メニュー: ユーザー >> ユーザーを追加
-                    ユーザー名: user-dev1-amplify  #template: __AmplifyUser__
+                    ユーザー名: user-dev2-amplify  #template: __AmplifyUser__
                     アクセスの種類:
                         チェック:
                             プログラムによるアクセス
@@ -141,7 +139,7 @@
                             AWS マネジメントコンソールへのアクセス:
                         次のステップ ボタン:
                     ユーザーをグループに追加:
-                        選択するグループ:
+                        選択するグループ（にチェックを入れます）:
                             - AdministratorGroup
                         次のステップ ボタン:
                     タグの追加:
@@ -149,22 +147,22 @@
                     確認:
                         ユーザーの作成 ボタン:
                     アクセスキーをメモします:
-                        アクセスキー ID: AKIAZQ2CH423P67RPDNA  #template: __AmplifyUserAccessKeyID__
-                        シークレットアクセスキー: AhiRlFd10ZYJClp4FDTlkIl2ZTiLnLJI3jFLhaFf  #template: __AmplifySecretAccessKey__
-                        閉じる ボタン:
+                        アクセスキー ID: AKIAZQ0A0A0A0A0A0A0A  #template: __AmplifyUserAccessKeyID__
+                        シークレットアクセスキー: kOn3A8FHo30F8qwofeAAAAJpoWpPwfOkaDSR_QFq  #template: __AmplifySecretAccessKey__
+                        閉じる ボタン（右下）:
                     ブラウザーを閉じます:
-                #// amplify configure の続きを表示します（Enter キーを押します）
-                accessKeyId: AKIAZQ2CH423P67RPDNA  #template: __AmplifyUserAccessKeyID__
-                secretAccessKey: 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  #template: __AmplifySecretAccessKey__
+                amplify configure の続きを表示します（Enter キーを押します）(2):
+                accessKeyId: AKIAZQ0A0A0A0A0A0A0A  #template: __AmplifyUserAccessKeyID__
+                secretAccessKey: kOn3A8FHo30F8qwofeAAAAJpoWpPwfOkaDSR_QFq  #template: __AmplifySecretAccessKey__
                 Profile Name: amplify  #template: __CLI_Profile__
         React のプロジェクトに Amplify を追加します:
             参考: AMPLIFY SNS WORKSHOP >> BOOTSTRAP
                 https://amplify-sns.workshop.aws/ja/30_mock/00_bootstrap.html
             起動コマンド:
                 #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
-                - cd  "react1"  #template: "__AppName__"
+                - cd  "collaborate"  #template: "__AppName__"
                 - amplify init
-            Enter a name for the projec: react1  #// そのまま Enter
+            Enter a name for the projec: collaborate  #// そのまま Enter
             Enter a name for the environment: production
             Choose your default editor: Visual Studio Code  #// そのまま Enter
             Choose the type of app that you're building: javascript  #// そのまま Enter
@@ -181,7 +179,7 @@
         Amplify auth のカテゴリーを追加します（amplify add auth コマンド）:
             起動コマンド:
                 #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
-                - cd  "react1"  #template: "__AppName__"
+                - cd  "collaborate"  #template: "__AppName__"
                 - amplify add auth
             Do you want to use the default authentication and security configuration?: Default configuration  #// そのまま Enter
             How do you want users to be able to sign in?: Username  #// そのまま Enter
@@ -192,7 +190,873 @@
         フロントエンドを作成します:
             必要な Node パッケージをインストールします:
                 - npm install --save  "aws-amplify"  "aws-amplify-react"
-            react1/src/App.js ファイルを置き換えます:
+            (project)/src/App.js ファイルを置き換えます: |
+                import React from 'react';
+
+                import Amplify from '@aws-amplify/core';
+                import awsmobile from './aws-exports';
+
+                import { withAuthenticator } from 'aws-amplify-react';
+
+                Amplify.configure(awsmobile);
+
+                function App() {
+                  return (
+                    <h1>
+                    Hello World!
+                    </h1>
+                  );
+                }
+
+                export default withAuthenticator(App, {
+                  signUpConfig: {
+                    hiddenDefaults: ['phone_number']
+                  }
+                });
+            #// https://amplify-sns.workshop.aws/ja/30_mock/10_auth.html
+        動作確認をします:
+            コマンド:
+                - npm run start
+            (ブラウザーが開きます):
+                「アカウントを作る」をクリック:
+                サインアップ画面:
+                    ユーザー名: example1  #template: __AppUserName__
+                    パスワード: 12345aA!  #template: __AppUserPassword__
+                    メールアドレス: example@example.com  #template: __AppUserMail__
+                    アカウントを作る ボタン:
+                    確認コード: ____
+                    確定 ボタンをクリック:
+                または、サインイン画面:
+                    ユーザー名: example1  #template: __AppUserName__
+                    パスワード: 12345aA!  #template: __AppUserPassword__
+                    サインイン ボタンをクリック:
+                Hello World! と表示されることを確認します:
+                ブラウザーを閉じます:
+            Ctrl + C キーで npm run start を終了します:
+        ユーザーが登録されていることを確認します:
+            メニュー: https://ap-northeast-1.console.aws.amazon.com/cognito/ >> ユーザープールの管理 >>
+                collaboratedd050ff1_userpool_dd050ff1-production >> ユーザーとグループ（左上）
+                    #template: __AppName__dd050ff1_
+            ユーザー名: example1  #template: __AppUserName__
+    GitHub リポジトリへコミットします:
+        #Git bash
+        - cd  "collaborate"  #template: "__AppName__"
+        - git status  #// 変更されたファイルが表示されます
+        - git add "."
+        - git commit -a -m "Added auth (Cognito authentication)"
+        - git push
+    プロジェクト フォルダーのバックアップをとります（コミットされないファイルがある可能性があるため）:
+        #Git bash
+        - cd  "collaborate"  #template: "__AppName__"
+        - rm -rf  "node_modules"
+        - tar cvzf  "../react2_auth.tar.gz"  "."  #// tar.gz に圧縮します  #template: ../__BackupName__.tar.gz
+        - npm ci  #// node_modules を復活します
+    （参考）クラウドに作成した各種リソースを削除して復帰できることを確認します:
+        #// 注意：Cognito にある既存のユーザーは削除されます。そのため使いどころはないでしょう
+        #// 以下は、amplify add host する前のプロジェクトの場合の手順です
+        - https://ap-northeast-1.console.aws.amazon.com/amplify/home  #// add host する前ならここにアプリは表示されません
+        #Git bash
+        - amplify delete
+        - https://ap-northeast-1.console.aws.amazon.com/cognito/home  #// collaborate から始まるプールが無いこと  #template: __AppName__
+        - tar.gz 形式のバックアップをリストアします:
+            - mkdir "../react2_auth" && cd "../react2_auth" &&  tar xvf "../react2_auth.tar.gz"
+                #template: mkdir "../__BackupName__" && cd "../__BackupName__" &&  tar xvf "../__BackupName__.tar.gz"
+            - cd ..  &&  rm -rf "collaborate"  &&  mv  "react2_auth"  "collaborate"  &&  cd  "collaborate"
+                #template: cd ..  &&  rm -rf "__RepositoryName__"  &&  mv  "__BackupName__"  "__RepositoryName__"  &&  cd  "__RepositoryName__"
+        #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
+        - cd "collaborate"  #template: "__AppName__"
+        - npm ci
+        - amplify init
+        - amplify add auth
+        - amplify push  #// デプロイ
+        - npm start  #// 動作確認。ユーザーは新規作成してください
+    Amplify Console に CI/CD環境を構築します:
+        参考: AMPLIFY SNS WORKSHOP >> 手動デプロイ
+            https://amplify-sns.workshop.aws/ja/40_hosting/00_manual_deployment.html
+        Amplify hosting のカテゴリーを追加します:
+            コマンド:
+                #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
+                - cd "collaborate"  #template: "__AppName__"
+                - amplify add hosting
+            Select the plugin module to execute: Hosting with Amplify Console (...)
+            Choose a type Manual deployment: Continuous deployment
+            (ブラウザーが開きます):
+                Connect a frontend web app: GitHub
+                Continue ボタン:
+                    (aws と GitHub の接続がされていなかったとき):
+                        表示されたアカウント名を確認: wants to access your Takakiriy account
+                            #template: wants to access your __GitHubCollaboratorAccount__ account
+                        Authorize GitCredentialManager ボタン:
+                リポジトリブランチの追加:
+                    リポジトリ: Takakiriy/collaborate  #template: __GitHubOwnerAccount__/__RepositoryName__
+                    ブランチ: master  #template: __ProductBranchName__
+                    次へ ボタン:
+                ビルド設定の構成:
+                    チェック: Deploy updates to backend resources with your frontend on every code commit
+                    Select a backend evironment: production
+                    Create new role ボタン:
+                        ユースケースの選択:
+                            次のステップ ボタン:
+                        Attached アクセス権限ポリシー:
+                            次のステップ ボタン:
+                        タグの追加 (オプション):
+                            次のステップ ボタン:
+                        確認:
+                            ロール名: amplifyconsole-backend-role  #template: __AmplifyRole__
+                            ロールの作成 ボタン:
+                        IAM が表示されているブラウザーのタブを閉じます:
+                    Select an existing service role ...: amplifyconsole-backend-role  #template: __AmplifyRole__
+                        #// ロール名を入力する右にある右回りボタンを押すと選べるようになります
+                    次へ ボタン:
+                確認:
+                    保存してデプロイ ボタン:
+                #// プロビジョン >> ビルド >> デプロイ >> 検証 が完了するまで待ちます（約7分）
+                #// https://..（左下）をクリックすると実行します
+                #// 登録済みのユーザーの一覧を見るには、 
+                #//     https://ap-northeast-1.console.aws.amazon.com/cognito/home >>
+                #//     ユーザープールの管理 >> collaborate... >> ユーザーとグループ  #template: __AppName__
+                #// master（右半分の左上）をクリックするとデプロイのログが表示されます
+            Continuous deployment is configured in the Amplify Console...:  #// Enter キーを押します
+            (下記のように表示されます。Domaiin 列はバックエンドのURLです): |
+                ┌──────────────┬──────────────────────────────────────────────┐
+                │ FrontEnd Env │ Domain                                       │
+                ├──────────────┼──────────────────────────────────────────────┤
+                │ master       │ https://master.d2oudfgbjw0ivu.amplifyapp.com │
+                └──────────────┴──────────────────────────────────────────────┘
+            コミットすると CI/CD パイプラインが動くことを確認します:
+                - たとえば (project)/public/index.html の <titie> を変更します
+                - git add "."
+                - git commit -a -m "Test of CI/CD pipeline"
+                - git push
+                - https://ap-northeast-1.console.aws.amazon.com/amplify/home
+
+Lambda from GraphQL のログを取れるようにする:
+    設定:
+        __AWS_AccountID__: 123456789012  #★秘密:仮
+        __AWS_UserName__: user1
+        __RegionName__: 東京  #// CodePipeline のパイプラインを作成するリージョンの名前
+        __RegionID__: ap-northeast-1  #// __RegionName__ の ID
+        __AmplifyUser__: amplify-react4  #// Amplify 用 IAM ユーザー、Amplify CLI で必要な権限を持つ
+        __AmplifyUserAccessKeyID__: AKIAZQ0A0A0A0A0A0A0A  #★秘密:仮  #// 手順内でメモする値
+        __AmplifySecretAccessKey__: kOn3A8FHo30F8qwofeAAAAJpoWpPwfOkaDSR_QFq  #★秘密:仮  #// 手順内でメモする値
+        __CLI_Profile__: amplify-react4  #// aws 関連の CLI のプロファイル名
+        __GitHubOwnerAccount__: Takakiriy  #// リポジトリのオーナーのアカウント名
+        __GitHubCollaboratorAccount__: Takakiriy  #// リポジトリにアクセスするユーザーのアカウント名
+        __GitCollaboratorName__: Your Name        #// git log コマンドで表示されるユーザー名
+        __GitCollaboratorMail__: you@example.com  #// git log コマンドで表示されるメールアドレス
+        __AppName__: react4
+        __RepositoryName__: react4  #// 基本的に __AppName__ と同じ
+        __BackupName__: react4_back_up
+        __AppUserName__: example1
+        __AppUserMail__: example@example.com  #★秘密:仮
+        __AppUserPassword__: 12345a_A
+        __FirstFunctionName__: createExample
+    （下記は、下記「AMPLIFY SNS WORKSHOP」の amplify add api コマンドまでのコピーです）:
+        準備:
+            参考:
+                - AMPLIFY SNS WORKSHOP
+                    https://amplify-sns.workshop.aws/ja/
+                - 継続的デプロイを使用した静的ウェブホスティング
+                    https://aws.amazon.com/jp/getting-started/hands-on/build-serverless-web-app-lambda-apigateway-s3-dynamodb-cognito/module-1/
+                - AWS Amplify と Vue.js を使って、基本的な認証と CRUD 操作ができる Web アプリケーションを作る
+                    https://aws.amazon.com/jp/builders-flash/202008/amplify-crud-app/
+            ローカルPCへ各種ソフトウェアをインストールします:
+                Node.js をインストールします:
+                    - https://nodejs.org/ja/download/ >> Windows Installer (.msi) >> 64-bit
+                    - node-v12.19.0-x64.exe をダブルクリックします
+                    - インストール オプションはデフォルトを使用
+                Git for Windows をインストールします:
+                    - https://git-scm.com/ >> Downloads >> Windows
+                    - Git-2.29.0-64-bit.exe をダブルクリックします
+                    - Next を8回押す
+                    - Configuring the line ending conversions: Checkout as-is, commit as-is
+                    - 他のインストール オプションはデフォルトを使用
+                    - デスクトップを右クリック >> Git Bash Here
+                    - git clone  "https://github.com/githubtraining/hellogitworld.git"
+                    - 成功したら、デスクトップにある hellogitworld フォルダーを削除します ( rm -rf hellogitworld )
+                    - Git のユーザー名を設定します:
+                        - git config --global user.email "you@example.com"  #template: "__GitCollaboratorMail__"
+                        - git config --global user.name  "Your Name"        #template: "__GitCollaboratorName__"
+                    - Git bash を閉じます:
+                Visual Studio Code をインストールします:
+                    - https://code.visualstudio.com/
+                    - インストール オプションはデフォルトを使用
+                    - 必要なら、Visual Studio Code をタスクバーにピン止めします
+            Git リポジトリを作成します:
+                参考: AMPLIFY SNS WORKSHOP >> GITHUBと連携してCI/CD環境を構築する(1)
+                    https://amplify-sns.workshop.aws/ja/70_multi_env/10_amplify_console/connect_github.html
+                GitHub のアカウントを作成します:
+                GitHub にサインインします:
+                    メニュー: https://github.com/ >> 三（右上） >> Sign in
+                    Sign in ページ:
+                        Username or email address: Takakiriy  #template: __GitHubCollaboratorAccount__
+                        Password: ____
+                        Sign in ボタン:
+                    ブラウザーを閉じます:
+                GitHub にリポジトリを新規作成します:
+                    リポジトリを作成します:
+                        メニュー: https://github.com/ >>（Repositories）New （左上）
+                        Repository name: react4  #template: __RepositoryName__
+                        Public or Private: Private
+                        Create repository ボタン:
+                        ブラウザーを閉じます:
+                    プライベート リポジトリに接続してダウンロード（クローン）します:
+                        #Git bash:
+                        - cd  "__ParentOfProject__"
+                        - git clone "https://github.com/Takakiriy/react4.git"  #template: https://github.com/__GitHubOwnerAccount__/__RepositoryName__.git
+                            #// ここでエラーになるときは Git をアンインストール＆インストールしてください
+                        - Sign in with your browser ボタン  #// プライベート リポジトリのときだけこのボタンが表示されます
+                        - 表示されたアカウント名を確認: wants to access your Takakiriy account
+                            #template: wants to access your __GitHubCollaboratorAccount__ account
+                        - Authorize GitCredentialManager ボタン
+                        - 成功したらブラウザーを閉じます:
+        React のプロジェクトを作成します:
+            React のプロジェクトを新規作成してコミットします（リポジトリの内容がまだないとき）:
+                #Git bash
+                - cd  "react4"  #template: "__AppName__"
+                - cd  ".."
+                - npx create-react-app  "react4"  #template: "__AppName__"
+                    #// npx create-react-app --template typescript  "react4"  #template: "__AppName__"
+                - cd  "react4"  #template: "__AppName__"
+                - npm start  #// 動作確認します
+                    #// Windows Defender によって警告されたときは、アクセス許可します
+                    #// ブラウザーが開いたら閉じます
+                - (Ctrl + C で Web サーバーを終了します)
+                - git add "."
+                - git commit -a -m "First commit"
+                - git push
+                - Git bash を閉じます
+        React のプロジェクトに Amplify を追加します:
+            aws のアカウントを作成します:
+            aws にサインインしてリージョンを選択します:
+                AWS マネジメント コンソールにサインインします:
+                    URL: https://console.aws.amazon.com/
+                    （ユーザー）: IAM ユーザー
+                    アカウントID: 123456789012  #template: __AWS_AccountID__
+                    次へ ボタン:
+                    ユーザー名: user1  #template: __AWS_UserName__
+                    パスワード: __AWS_UserPassword__
+                    サインイン ボタン:
+                リージョン: 東京 （右上） #template: __RegionName__
+                ブラウザーを閉じます:
+            Amplify CLI をインストールしてセットアップします:
+                参考:
+                    - Install the Amplify CLI
+                        https://docs.amplify.aws/cli/start/install#option-1-watch-the-video-guide
+                    - AMPLIFY SNS WORKSHOP >> INSTALL & CONFIGS
+                        https://amplify-sns.workshop.aws/ja/00_prerequisites/20_install_and_configs.html
+                Amplify CLI をインストールします:
+                    #Git bash
+                    #//任意のフォルダーで
+                    - npm install -g @aws-amplify/cli
+                    - amplify -v  #// 4.31.0
+                Amplify CLI をセットアップします:
+                    起動コマンド:
+                        #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
+                        - cd "react4"  #template: "__RepositoryName__"
+                        - amplify configure
+                    ブラウザーが開くので、サインインできていることを確認します:
+                    amplify configure の続きを表示します（Enter キーを押します）:
+                    region: ap-northeast-1  #template: __RegionID__
+                    user name: amplify-react4  #template: __AmplifyUser__
+                    (ブラウザーが開きます):
+                        メニュー: ユーザー >> ユーザーを追加
+                        ユーザー名: amplify-react4  #template: __AmplifyUser__
+                        アクセスの種類:
+                            チェック:
+                                プログラムによるアクセス
+                            チェックしない:
+                                AWS マネジメントコンソールへのアクセス:
+                            次のステップ ボタン:
+                        ユーザーをグループに追加:
+                            選択するグループ（にチェックを入れます）:
+                                - AdministratorGroup
+                            次のステップ ボタン:
+                        タグの追加:
+                            次のステップ ボタン:
+                        確認:
+                            ユーザーの作成 ボタン:
+                        アクセスキーをメモします:
+                            アクセスキー ID: AKIAZQ0A0A0A0A0A0A0A  #template: __AmplifyUserAccessKeyID__
+                            シークレットアクセスキー: kOn3A8FHo30F8qwofeAAAAJpoWpPwfOkaDSR_QFq  #template: __AmplifySecretAccessKey__
+                            閉じる ボタン（右下）:
+                        ブラウザーを閉じます:
+                    amplify configure の続きを表示します（Enter キーを押します）(2):
+                    accessKeyId: AKIAZQ0A0A0A0A0A0A0A  #template: __AmplifyUserAccessKeyID__
+                    secretAccessKey: kOn3A8FHo30F8qwofeAAAAJpoWpPwfOkaDSR_QFq  #template: __AmplifySecretAccessKey__
+                    Profile Name: amplify-react4  #template: __CLI_Profile__
+            React のプロジェクトに Amplify を追加します:
+                参考: AMPLIFY SNS WORKSHOP >> BOOTSTRAP
+                    https://amplify-sns.workshop.aws/ja/30_mock/00_bootstrap.html
+                起動コマンド:
+                    #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
+                    - cd  "react4"  #template: "__AppName__"
+                    - amplify init
+                Enter a name for the projec: react4  #// そのまま Enter  #template: __AppName__
+                Enter a name for the environment: production
+                Choose your default editor: Visual Studio Code  #// そのまま Enter
+                Choose the type of app that you're building: javascript  #// そのまま Enter
+                What javascript framework are you using: react  #// そのまま Enter
+                Source Directory Path: src  #// そのまま Enter
+                Distribution Directory Path: build  #// そのまま Enter
+                Build Command: npm.cmd run-script build  #// そのまま Enter
+                Start Command: npm.cmd run-script start  #// そのまま Enter
+                Do you want to use an AWS profile?: Y (Yes)  #// そのまま Enter
+                Please choose the profile you want to use: amplify-react4  #template: __CLI_Profile__
+        認証機能（Amplify auth）(authentication) のカテゴリーを追加します:
+            参考: AMPLIFY SNS WORKSHOP >> 認証機能
+                https://amplify-sns.workshop.aws/ja/30_mock/10_auth.html
+            Amplify auth のカテゴリーを追加します（amplify add auth コマンド）:
+                起動コマンド:
+                    #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
+                    - cd  "react4"  #template: "__AppName__"
+                    - amplify add auth
+                Do you want to use the default authentication and security configuration?: Default configuration  #// そのまま Enter
+                How do you want users to be able to sign in?: Username  #// そのまま Enter
+                Do you want to configure advanced settings?: No, I am done.  #// そのまま Enter
+                コマンド:
+                    - amplify status  #// Auth カテゴリーが追加されていることを確認します
+                    - amplify push  #// バックエンドをクラウドに反映させます
+            フロントエンドを作成します:
+                必要な Node パッケージをインストールします:
+                    - cd  "react4"  #template: "__AppName__"
+                    - npm install --save  "aws-amplify"  "aws-amplify-react"
+                (project)/src/App.js ファイルを置き換えます:
+                    - ./workshop/10_auth/App.js ファイルをコピーします
+            動作確認をします:
+                コマンド:
+                    - npm run start
+                (ブラウザーが開きます):
+                    「アカウントを作る」をクリック:
+                    サインアップ画面:
+                        ユーザー名: example1  #template: __AppUserName__
+                        パスワード: 12345a_A  #template: __AppUserPassword__
+                        メールアドレス: example@example.com  #template: __AppUserMail__
+                        アカウントを作る ボタン:
+                        確認コード: ____
+                        確定 ボタンをクリック:
+                    または、サインイン画面:
+                        ユーザー名: example1  #template: __AppUserName__
+                        パスワード: 12345a_A  #template: __AppUserPassword__
+                        サインイン ボタンをクリック:
+                    Hello World! と表示されることを確認します:
+                    ブラウザーを閉じます:
+                Ctrl + C キーで npm run start を終了します:
+            ユーザーが登録されていることを確認します:
+                メニュー: https://ap-northeast-1.console.aws.amazon.com/cognito/ >> ユーザープールの管理 >>
+                    react4dd050ff1_userpool_dd050ff1-production >> ユーザーとグループ（左上）
+                        #template: __AppName__dd050ff1_
+                ユーザー名: example1  #template: __AppUserName__
+        GitHub リポジトリへコミットします:
+            #Git bash
+            - cd  "react4"  #template: "__AppName__"
+            - git status  #// 変更されたファイルが表示されます
+            - git add "."
+            - git commit -a -m "Added auth (Cognito authentication)"
+            - git push
+        Amplify API (GraphQL) のカテゴリーを追加します:
+            Amplify API (GraphQL) のカテゴリーを追加します（amplify add api コマンド）:
+                参考: AMPLIFY SNS WORKSHOP >> POST機能 BACK-END(1)
+                    https://amplify-sns.workshop.aws/ja/30_mock/20_post_back_end.html
+                起動コマンド:
+                    #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
+                    - cd  "react4"  #template: "__AppName__"
+                    - amplify add api
+                Please select from one of the below mentioned services: GraphQL
+                Provide API name: api1
+                Choose the default authorization type for the API: Amazon Cognito User Pool
+                Do you want to configure advanced settings for the GraphQL API: No, I am done.
+                Do you have an annotated GraphQL schema?: No
+                Choose a schema template: Single object with fields
+                Do you want to edit the schema now?: No
+    プロジェクト フォルダーのバックアップをとります（コミットされないファイルがある可能性があるため）:
+        #Git bash
+        - cd  "react4"  #template: "__AppName__"
+        - rm -rf  "node_modules"
+        - tar cvzf  "../react4_back_up.tar.gz"  "."  #// tar.gz に圧縮します  #template: ../__BackupName__.tar.gz
+        - npm ci  #// node_modules を復活します
+    amplify/backend/api/api1/schema.graphql を下記の内容に置き換えます : |
+        type Post
+            @model (subscriptions: { level: public })
+            @auth(rules: [
+                {allow: owner, ownerField:"owner", provider: userPools, operations:[read, create]}
+                {allow: private, provider: userPools, operations:[read]}
+            ])
+        {
+            type: String!  #// always set to 'post'. used in the SortByTimestamp GSI
+            id: ID
+            content: String!
+        }
+
+        type Mutation
+        {
+            createExample(  #template: __FirstFunctionName__
+                content: String!
+            ): String
+                @function(name: "createExample-${env}")  #template: __FirstFunctionName__
+                @auth(rules: [
+                    {allow: private, provider: userPools},
+                ])
+        }
+    src/App.js を下記の内容に置き換えます : |
+        import React from 'react';
+        import Amplify from '@aws-amplify/core';
+        import awsmobile from './aws-exports';
+        import Auth from '@aws-amplify/auth';
+        import API, { graphqlOperation } from '@aws-amplify/api';
+        import { createExample } from './graphql/mutations';  //#template: __FirstFunctionName__
+        import { withAuthenticator } from 'aws-amplify-react';
+
+        Amplify.configure(awsmobile);
+
+        export class  App extends React.Component {
+            render() {
+                return (
+                    <div>
+                        <h1>
+                            Hello World!!
+                        </h1>
+                        <button onClick={this.handleChange.bind(this)}>Call</button>
+                    </div>
+                );
+            }
+
+            async componentDidMount() {
+                const currentUser = await Auth.currentAuthenticatedUser();
+                console.log(currentUser);
+            }
+
+            async handleChange(e) {
+                console.log('calling!');
+                const subscription = await API.graphql(graphqlOperation(
+                    createExample, {content: 'ABC'}  //#template: __FirstFunctionName__
+                )).catch( (e) => {
+                    console.log(e);
+                });
+                console.log(subscription);
+                console.log('called!');
+            }
+        }
+
+        export default withAuthenticator(App, {
+            signUpConfig: {
+                hiddenDefaults: ['phone_number']
+            }
+        });
+    Lambda 関数を追加します:
+        参考: AMPLIFY SNS WORKSHOP >> TIMELINE機能 ＠FUNCTION
+            https://amplify-sns.workshop.aws/50_follow_timeline/30_function_directive.html
+        関数カテゴリーを追加します:
+            起動コマンド:
+                #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
+                - cd  "react4"  #template: "__AppName__"
+                - amplify add function
+            Select which capability you want to add: Lambda function
+            Provide a friendly name for your resource to be used as ...: createExample  #template: __FirstFunctionName__
+            Provide the AWS Lambda function name: createExample  #template: __FirstFunctionName__
+            Choose the runtime that you want to use: NodeJS
+            Choose the function template that you want to use: Hello World
+            Do you want to access other resources created in this project from your Lambda function?: Yes
+            Select the category: [api]
+            Select the operations you want to permit ...: [create, read]
+            Do you want to invoke this function on a recurring schedule?: n
+            Do you want to configure Lambda layers for this function?: n
+            Do you want to edit the local lambda function now?: y
+            #// 以上で、amplify\backend\function\createExample が作られます  #template: __FirstFunctionName__
+            #// 最後のオプションで amplify/backend/function/createExample/src/index.js がエディターが開きます  #template: __FirstFunctionName__
+        開いたファイルの exports.handler の定義を下記の内容に置き換えます: |
+            exports.handler = async (event) => {
+                console.log('Lambda handler called.');
+                console.log(event);
+
+                return 'returnValue';
+            };
+    デプロイします:
+        起動コマンド:
+            #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
+            - cd  "react4"  #template: "__AppName__"
+            - amplify push
+        Are you sure you want to continue?: y  #// そのまま Enter
+        Do you want to generate code for your newly created GraphQL API: y  #// そのまま Enter
+        Choose the code generation language target: javascript  #// そのまま Enter
+        Enter the file name pattern of graphql queries, ...: src\graphql\**\*.js  #// そのまま Enter
+        Do you want to generate/update all possible GraphQL operations ...: y  #// そのまま Enter
+        Enter maximum statement depth: 2  #// そのまま Enter
+        #// これだけ多くオプションが表示されるのは amplify add api を実行した後の最初の amplify push のときだけです
+    Lambda 関数の動作確認をします:
+        ローカルのフロントエンドを実行してクラウドにあるバックエンドを動かします:
+            シェルでの操作:
+                #新しい Git bash
+                - cd "react4"  #template: "__RepositoryName__"
+                - npm ci  #// node_modules フォルダーが無いとき 
+                - npm start
+            (ブラウザーが開きます):
+                Hello World! と表示されることを確認します:
+                F12 キーを押して、コンソール タブを開きます:
+                Call ボタンを押して、バックエンドを動かします:
+        バックエンドのログを確認します:
+            - https://console.aws.amazon.com/lambda/ >> createExample  #template: __FirstFunctionName__
+            - モニタリング（タブ）>> CloudWatch のログを表示（上）
+        bash のウィンドウで Ctrl + C キーを押して npm start を終了します:
+    コミットします:
+        - git add "."
+        - git commit -a -m "Added GraphQL Lambda Function"
+        - git push
+
+Amplify CLI を使うプロジェクトに新しい人が参加する:
+    #// マスターはクラウドとGitHubの両方です
+    設定:
+        __AWS_AccountID__: 123456789012  #★秘密:仮
+        __AWS_UserName__: user2
+        __RegionName__: 東京  #// CodePipeline のパイプラインを作成するリージョンの名前
+        __RegionID__: ap-northeast-1  #// __RegionName__ の ID
+        __AmplifyUser__: amplify-react4  #// Amplify 用 IAM ユーザー、Amplify CLI で必要な権限を持つ
+        __AmplifyUserAccessKeyID__: AKIAZQ0A0A0A0A0A0A0A  #★秘密:仮  #// 手順内でメモする値
+        __AmplifySecretAccessKey__: kOn3A8FHo30F8qwofeAAAAJpoWpPwfOkaDSR_QFq  #★秘密:仮  #// 手順内でメモする値
+        __CLI_Profile__: amplify-react4  #// aws 関連の CLI のプロファイル名
+        __GitHubOwnerAccount__: Takakiriy  #// リポジトリのオーナーのアカウント名
+        __GitHubCollaboratorAccount__: Takakiri1  #// リポジトリにアクセスするユーザーのアカウント名
+        __GitCollaboratorName__: Collaborator Name  #// git log コマンドで表示されるユーザー名
+        __GitCollaboratorMail__: collaborator@example.com  #// git log コマンドで表示されるメールアドレス
+        __AppName__: react4
+        __RepositoryName__: react4  #// 基本的に __AppName__ と同じ
+        __AppUserName__: example1
+        __AppUserMail__: example@example.com  #★秘密:仮
+        __AppUserPassword__: 12345a_A
+        __FirstFunctionName__: createExample
+    準備:
+        GitHub のリポジトリの管理者に招待してもらいます（管理者の操作）:
+            参考: GitHub >> コラボレーターを個人リポジトリに招待する
+                https://docs.github.com/ja/free-pro-team@latest/github/setting-up-and-managing-your-github-user-account/inviting-collaborators-to-a-personal-repository
+            メニュー:
+                - https://github.com/Takakiriy/react4 >>  #template: https://github.com/__GitHubOwnerAccount__/__RepositoryName__
+                - Setting (タブ) >> Manage access（左）>> Invite a collaborator
+            招待する人: Takakiri1  #template: __GitHubCollaboratorAccount__
+            Add NAME to REPOSITORY ボタン:  #// 押すとリポジトリへの招待メールが発送されます
+            招待を受けた人は招待を受け入れます:
+                - 届いたメールにあるボタンを押します
+                - View invitation >> Accept invitation
+            管理者の Manage access のページに表示される招待したユーザーが Pending 状態の表示ではなくなります:
+        ローカルPCへ各種ソフトウェアをインストールします:
+            Node.js をインストールします:
+                - https://nodejs.org/ja/download/ >> Windows Installer (.msi) >> 64-bit
+                - node-v12.19.0-x64.exe をダブルクリックします
+                - インストール オプションはデフォルトを使用
+            Git for Windows をインストールします:
+                - https://git-scm.com/ >> Downloads >> Windows
+                - Git-2.29.0-64-bit.exe をダブルクリックします
+                - Next を8回押す
+                - Configuring the line ending conversions: Checkout as-is, commit as-is
+                - 他のインストール オプションはデフォルトを使用
+                - デスクトップを右クリック >> Git Bash Here
+                - git clone  "https://github.com/githubtraining/hellogitworld.git"
+                - 成功したら、デスクトップにある hellogitworld フォルダーを削除します ( rm -rf hellogitworld )
+                - Git のユーザー名を設定します:
+                    - git config --global user.email "collaborator@example.com"  #template: "__GitCollaboratorMail__"
+                    - git config --global user.name  "Collaborator Name"        #template: "__GitCollaboratorName__"
+                - Git bash を閉じます:
+            Visual Studio Code をインストールします:
+                - https://code.visualstudio.com/
+                - インストール オプションはデフォルトを使用
+                - 必要なら、Visual Studio Code をタスクバーにピン止めします
+    Amplify CLI をインストールします:
+        aws のアカウントを作成します:
+        aws にサインインしてリージョンを選択します:
+            AWS マネジメント コンソールにサインインします:
+                URL: https://console.aws.amazon.com/
+                （ユーザー）: IAM ユーザー
+                アカウントID: 123456789012  #template: __AWS_AccountID__
+                次へ ボタン:
+                ユーザー名: user2  #template: __AWS_UserName__
+                パスワード: __AWS_UserPassword__
+                サインイン ボタン:
+            リージョン: 東京 （右上） #template: __RegionName__
+            ブラウザーを閉じます:
+        Amplify CLI をインストールしてセットアップします:
+            参考:
+                - Install the Amplify CLI
+                    https://docs.amplify.aws/cli/start/install#option-1-watch-the-video-guide
+                - AMPLIFY SNS WORKSHOP >> INSTALL & CONFIGS
+                    https://amplify-sns.workshop.aws/ja/00_prerequisites/20_install_and_configs.html
+            Amplify CLI をインストールします:
+                #Git bash
+                #//任意のフォルダーで
+                - npm install -g @aws-amplify/cli
+                - amplify -v  #// 4.31.0
+            Amplify CLI をセットアップします:
+                起動コマンド:
+                    #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
+                    - amplify configure
+                ブラウザーが開いたら、すでにサインインできていることを確認し、ブラウザーを閉じます:
+                amplify configure の続きを表示します（Enter キーを押します）:
+                region: ap-northeast-1  #template: __RegionID__
+                user name: amplify-react4  #template: __AmplifyUser__
+                ブラウザーが開いたらアクセスキーを確認します:
+                    - ユーザー >> amplify-react4  #template: __AmplifyUser__
+                    - 認証情報 >> アクセスキー ID:
+                    - accessKeyId: AKIAZQ0A0A0A0A0A0A0A  #template: __AmplifyUserAccessKeyID__
+                    - ブラウザーを閉じます:
+                amplify configure の続きを表示します（Enter キーを押します）(2):
+                シークレットアクセスキーを教えてもらい、入力します:
+                    accessKeyId: AKIAZQ0A0A0A0A0A0A0A  #template: __AmplifyUserAccessKeyID__
+                    secretAccessKey: kOn3A8FHo30F8qwofeAAAAJpoWpPwfOkaDSR_QFq  #template: __AmplifySecretAccessKey__
+                Profile Name: amplify-react4  #template: __CLI_Profile__
+    プライベート リポジトリに接続してダウンロード（クローン）します:
+        #Git bash:
+        - cd  "__ParentOfProject__"
+        - git clone "https://github.com/Takakiriy/react4.git"  #template: https://github.com/__GitHubOwnerAccount__/__RepositoryName__.git
+            #// ここでエラーになるときは Git をアンインストール＆インストールしてください
+        - Sign in with your browser ボタン  #// プライベート リポジトリのときだけこのボタンが表示されます
+        - Username: Takakiri1  #template: __GitHubCollaboratorAccount__
+        - 認証に成功したらブラウザーを閉じます:
+    aws のリソースと接続します:
+        起動コマンド:
+            #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
+            - cd "react4"  #template: "__RepositoryName__"
+            - amplify pull
+        Do you want to use an AWS profile?: y
+        Please choose the profile you want to use: amplify-react4  #template: __CLI_Profile__
+        Which app are you working on?: react4  #template: __AppName__
+        Choose your default editor: Visual Studio Code  #// そのまま Enter
+        Choose the type of app that you're building: javascript  #// そのまま Enter
+        What javascript framework are you using: react  #// そのまま Enter
+        Source Directory Path: src  #// そのまま Enter
+        Distribution Directory Path: build  #// そのまま Enter
+        Build Command: npm.cmd run-script build  #// そのまま Enter
+        Start Command: npm.cmd run-script start  #// そのまま Enter
+        Do you plan on modifying this backend?: y
+    aws のリソースと接続しできたことを確認します:
+        #Git bash or Git CMD
+        - cd "react4"  #template: "__RepositoryName__"
+        - amplify push
+    デプロイできることを確認します（アプリケーションによって詳細は変わります）:
+        amplify/backend/function/createExample/src/index.js の exports.handler に追加: |  #template: __FirstFunctionName__
+            console.log('amplify push test.');
+        デプロイします:
+            #Git bash or Git CMD
+            - cd "react4"  #template: "__RepositoryName__"
+            - amplify push
+        ローカルのフロントエンドを実行してクラウドにあるバックエンドを動かします:
+            シェルでの操作:
+                #新しい Git bash
+                - cd "react4"  #template: "__RepositoryName__"
+                - npm ci  #// node_modules フォルダーが無いとき 
+                - npm start
+            (ブラウザーが開きます):
+                「アカウントを作る」をクリック:
+                サインアップ画面:
+                    ユーザー名: example1  #template: __AppUserName__
+                    パスワード: 12345a_A  #template: __AppUserPassword__
+                    メールアドレス: example@example.com  #template: __AppUserMail__
+                    アカウントを作る ボタン:
+                    確認コード: ____
+                    確定 ボタンをクリック:
+                または、サインイン画面:
+                    ユーザー名: example1  #template: __AppUserName__
+                    パスワード: 12345a_A  #template: __AppUserPassword__
+                    サインイン ボタンをクリック:
+                Hello World! と表示されることを確認します:
+                F12 キーを押して、コンソール タブを開きます:
+                Call ボタンを押して、バックエンドを動かします:
+        バックエンドのログを確認します:
+            - https://console.aws.amazon.com/lambda/ >> createExample  #template: __FirstFunctionName__
+            - モニタリング（タブ）>> CloudWatch のログを表示（上）
+        bash のウィンドウで Ctrl + C キーを押して npm start を終了します:
+
+AMPLIFY SNS WORKSHOP（途中まで）:
+    #// AWS Amplify、Amazon Cognito、GitHub を使用
+
+    設定:
+        __AWS_AccountID__: 123456789012  #★秘密:仮
+        __AWS_UserName__: user1
+        __RegionName__: 東京  #// CodePipeline のパイプラインを作成するリージョンの名前
+        __RegionID__: ap-northeast-1  #// __RegionName__ の ID
+        __AmplifyUser__: user-react3-amplify  #// Amplify 用 IAM ユーザー、Amplify CLI で必要な権限を持つ
+        __AmplifyUserAccessKeyID__: AKIAZQ0A0A0A0A0A0A0A  #★秘密:仮  #// 手順内でメモする値
+        __AmplifySecretAccessKey__: kOn3A8FHo30F8qwofeAAAAJpoWpPwfOkaDSR_QFq  #★秘密:仮  #// 手順内でメモする値
+        __CLI_Profile__: amplify-react3  #// aws 関連の CLI のプロファイル名
+        __AmplifyRole__: amplifyconsole-backend-react3
+        __GitHubOwnerAccount__: Takakiriy  #// リポジトリのオーナーのアカウント名
+        __GitHubCollaboratorAccount__: Takakiriy  #// リポジトリにアクセスするユーザーのアカウント名
+        __GitCollaboratorName__: Your Name        #// git log コマンドで表示されるユーザー名
+        __GitCollaboratorMail__: you@example.com  #// git log コマンドで表示されるメールアドレス
+        __AppName__: react3
+        __RepositoryName__: react3  #// 基本的に __AppName__ と同じ
+        __ProductBranchName__: master  #// 本番用のブランチ名
+        __AppUserName__: example1
+        __AppUserMail__: example@example.com  #★秘密:仮
+        __AppUserPassword__: 12345aA_
+        __StagingPassword__: 12345aA19FEpQninoAFE83e  #★秘密:仮
+
+    準備:
+        参考:
+            - AMPLIFY SNS WORKSHOP
+                https://amplify-sns.workshop.aws/ja/
+            - 継続的デプロイを使用した静的ウェブホスティング
+                https://aws.amazon.com/jp/getting-started/hands-on/build-serverless-web-app-lambda-apigateway-s3-dynamodb-cognito/module-1/
+            - AWS Amplify と Vue.js を使って、基本的な認証と CRUD 操作ができる Web アプリケーションを作る
+                https://aws.amazon.com/jp/builders-flash/202008/amplify-crud-app/
+        ローカルPCへ各種ソフトウェアをインストールします:
+            Node.js をインストールします:
+                - https://nodejs.org/ja/download/ >> Windows Installer (.msi) >> 64-bit
+                - node-v12.19.0-x64.exe をダブルクリックします
+                - インストール オプションはデフォルトを使用
+            Git for Windows をインストールします:
+                - https://git-scm.com/ >> Downloads >> Windows
+                - Git-2.29.0-64-bit.exe をダブルクリックします
+                - Next を8回押す
+                - Configuring the line ending conversions: Checkout as-is, commit as-is
+                - 他のインストール オプションはデフォルトを使用
+                - デスクトップを右クリック >> Git Bash Here
+                - git clone  "https://github.com/githubtraining/hellogitworld.git"
+                - 成功したら、デスクトップにある hellogitworld フォルダーを削除します ( rm -rf hellogitworld )
+                - Git のユーザー名を設定します:
+                    - git config --global user.email "you@example.com"  #template: "__GitCollaboratorMail__"
+                    - git config --global user.name  "Your Name"        #template: "__GitCollaboratorName__"
+                - Git bash を閉じます:
+            Visual Studio Code をインストールします:
+                - https://code.visualstudio.com/
+                - インストール オプションはデフォルトを使用
+                - 必要なら、Visual Studio Code をタスクバーにピン止めします
+        Git リポジトリを作成します:
+            参考: AMPLIFY SNS WORKSHOP >> GITHUBと連携してCI/CD環境を構築する(1)
+                https://amplify-sns.workshop.aws/ja/70_multi_env/10_amplify_console/connect_github.html
+            GitHub のアカウントを作成します:
+            GitHub にサインインします:
+                メニュー: https://github.com/ >> 三（右上） >> Sign in
+                Sign in ページ:
+                    Username or email address: Takakiriy  #template: __GitHubCollaboratorAccount__
+                    Password: ____
+                    Sign in ボタン:
+                ブラウザーを閉じます:
+            GitHub にリポジトリを新規作成します:
+                リポジトリを作成します:
+                    メニュー: https://github.com/ >>（Repositories）New （左上）
+                    Repository name: react3  #template: __RepositoryName__
+                    Public or Private: Private
+                    Create repository ボタン:
+                    ブラウザーを閉じます:
+                プライベート リポジトリに接続してダウンロード（クローン）します:
+                    #Git bash:
+                    - cd  "__ParentOfProject__"
+                    - git clone "https://github.com/Takakiriy/react3.git"  #template: https://github.com/__GitHubOwnerAccount__/__RepositoryName__.git
+                        #// ここでエラーになるときは Git をアンインストール＆インストールしてください
+                    - Sign in with your browser ボタン  #// プライベート リポジトリのときだけこのボタンが表示されます
+                    - 表示されたアカウント名を確認: wants to access your Takakiriy account
+                        #template: wants to access your __GitHubCollaboratorAccount__ account
+                    - Authorize GitCredentialManager ボタン
+                    - 成功したらブラウザーを閉じます:
+    React のプロジェクトを作成します:
+        React のプロジェクトを新規作成してコミットします（リポジトリの内容がまだないとき）:
+            #Git bash
+            - cd  "react3"  #template: "__AppName__"
+            - cd  ".."
+            - npx create-react-app  "react3"  #template: "__AppName__"
+                #// npx create-react-app --template typescript  "react3"  #template: "__AppName__"
+            - cd  "react3"  #template: "__AppName__"
+            - npm start  #// 動作確認します
+                #// Windows Defender によって警告されたときは、アクセス許可します
+                #// ブラウザーが開いたら閉じます
+            - (Ctrl + C で Web サーバーを終了します)
+            - git add "."
+            - git commit -a -m "First commit"
+            - git push
+            - Git bash を閉じます
+    React のプロジェクトに Amplify を追加します:
+        aws のアカウントを作成します:
+        aws にサインインしてリージョンを選択します:
+            AWS マネジメント コンソールにサインインします:
+                URL: https://console.aws.amazon.com/
+                （ユーザー）: IAM ユーザー
+                アカウントID: 123456789012  #template: __AWS_AccountID__
+                次へ ボタン:
+                ユーザー名: user1  #template: __AWS_UserName__
+                パスワード: __AWS_UserPassword__
+                サインイン ボタン:
+            リージョン: 東京 （右上） #template: __RegionName__
+            ブラウザーを閉じます:
+        Amplify CLI をインストールしてセットアップします:
+            参考:
+                - Install the Amplify CLI
+                    https://docs.amplify.aws/cli/start/install#option-1-watch-the-video-guide
+                - AMPLIFY SNS WORKSHOP >> INSTALL & CONFIGS
+                    https://amplify-sns.workshop.aws/ja/00_prerequisites/20_install_and_configs.html
+            Amplify CLI をインストールします:
+                #Git bash
+                #//任意のフォルダーで
+                - npm install -g @aws-amplify/cli
+                - amplify -v  #// 4.31.0
+            Amplify CLI をセットアップします:
+                起動コマンド:
+                    #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
+                    - amplify configure
+                ブラウザーが開くので、サインインできていることを確認します:
+                amplify configure の続きを表示します（Enter キーを押します）:
+                region: ap-northeast-1  #template: __RegionID__
+                user name: user-react3-amplify  #template: __AmplifyUser__
+                (ブラウザーが開きます):
+                    メニュー: ユーザー >> ユーザーを追加
+                    ユーザー名: user-react3-amplify  #template: __AmplifyUser__
+                    アクセスの種類:
+                        チェック:
+                            プログラムによるアクセス
+                        チェックしない:
+                            AWS マネジメントコンソールへのアクセス:
+                        次のステップ ボタン:
+                    ユーザーをグループに追加:
+                        選択するグループ（にチェックを入れます）:
+                            - AdministratorGroup
+                        次のステップ ボタン:
+                    タグの追加:
+                        次のステップ ボタン:
+                    確認:
+                        ユーザーの作成 ボタン:
+                    アクセスキーをメモします:
+                        アクセスキー ID: AKIAZQ0A0A0A0A0A0A0A  #template: __AmplifyUserAccessKeyID__
+                        シークレットアクセスキー: kOn3A8FHo30F8qwofeAAAAJpoWpPwfOkaDSR_QFq  #template: __AmplifySecretAccessKey__
+                        閉じる ボタン（右下）:
+                    ブラウザーを閉じます:
+                amplify configure の続きを表示します（Enter キーを押します）(2):
+                accessKeyId: AKIAZQ0A0A0A0A0A0A0A  #template: __AmplifyUserAccessKeyID__
+                secretAccessKey: kOn3A8FHo30F8qwofeAAAAJpoWpPwfOkaDSR_QFq  #template: __AmplifySecretAccessKey__
+                Profile Name: amplify-react3  #template: __CLI_Profile__
+        React のプロジェクトに Amplify を追加します:
+            参考: AMPLIFY SNS WORKSHOP >> BOOTSTRAP
+                https://amplify-sns.workshop.aws/ja/30_mock/00_bootstrap.html
+            起動コマンド:
+                #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
+                - cd  "react3"  #template: "__AppName__"
+                - amplify init
+            Enter a name for the projec: react3  #// そのまま Enter  #template: __AppName__
+            Enter a name for the environment: production
+            Choose your default editor: Visual Studio Code  #// そのまま Enter
+            Choose the type of app that you're building: javascript  #// そのまま Enter
+            What javascript framework are you using: react  #// そのまま Enter
+            Source Directory Path: src  #// そのまま Enter
+            Distribution Directory Path: build  #// そのまま Enter
+            Build Command: npm.cmd run-script build  #// そのまま Enter
+            Start Command: npm.cmd run-script start  #// そのまま Enter
+            Do you want to use an AWS profile?: Y (Yes)  #// そのまま Enter
+            Please choose the profile you want to use: amplify-react3  #template: __CLI_Profile__
+    認証機能（Amplify auth）(authentication) のカテゴリーを追加します:
+        参考: AMPLIFY SNS WORKSHOP >> 認証機能
+            https://amplify-sns.workshop.aws/ja/30_mock/10_auth.html
+        Amplify auth のカテゴリーを追加します（amplify add auth コマンド）:
+            起動コマンド:
+                #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
+                - cd  "react3"  #template: "__AppName__"
+                - amplify add auth
+            Do you want to use the default authentication and security configuration?: Default configuration  #// そのまま Enter
+            How do you want users to be able to sign in?: Username  #// そのまま Enter
+            Do you want to configure advanced settings?: No, I am done.  #// そのまま Enter
+            コマンド:
+                - amplify status  #// Auth カテゴリーが追加されていることを確認します
+                - amplify push  #// バックエンドをクラウドに反映させます
+        フロントエンドを作成します:
+            必要な Node パッケージをインストールします:
+                - cd  "react3"  #template: "__AppName__"
+                - npm install --save  "aws-amplify"  "aws-amplify-react"
+            (project)/src/App.js ファイルを置き換えます:
                 - ./workshop/10_auth/App.js ファイルをコピーします
         動作確認をします:
             コマンド:
@@ -200,28 +1064,38 @@
             (ブラウザーが開きます):
                 「アカウントを作る」をクリック:
                 サインアップ画面:
-                    ユーザー名: example1  #template: __UserName__
-                    パスワード: 12345aA!  #template: __UserPassword__
-                    メールアドレス: example@example.com  #template: __UserMail__
+                    ユーザー名: example1  #template: __AppUserName__
+                    パスワード: 12345aA_  #template: __AppUserPassword__
+                    メールアドレス: example@example.com  #template: __AppUserMail__
                     アカウントを作る ボタン:
                     確認コード: ____
                     確定 ボタンをクリック:
                 サインイン画面:
-                    ユーザー名: example1  #template: __UserName__
-                    パスワード: 12345aA!  #template: __UserPassword__
+                    ユーザー名: example1  #template: __AppUserName__
+                    パスワード: 12345aA_  #template: __AppUserPassword__
                     サインイン ボタンをクリック:
                 Hello World! と表示されることを確認します:
                 ブラウザーを閉じます:
+            Ctrl + C キーで npm run start を終了します:
         ユーザーが登録されていることを確認します:
             メニュー: https://ap-northeast-1.console.aws.amazon.com/cognito/ >> ユーザープールの管理 >>
-                react1dd050ff1_userpool_dd050ff1-production >> ユーザーとグループ（左上）
+                react3dd050ff1_userpool_dd050ff1-production >> ユーザーとグループ（左上）
+                    #template: __AppName__dd050ff1_
+            ユーザー名: example1  #template: __AppUserName__
+    GitHub リポジトリへコミットします:
+        #Git bash
+        - cd  "react3"  #template: "__AppName__"
+        - git status  #// 変更されたファイルが表示されます
+        - git add "."
+        - git commit -a -m "Added auth (Cognito authentication)"
+        - git push
     Amplify API (GraphQL) のカテゴリーを追加します:
         Amplify API (GraphQL) のカテゴリーを追加します（amplify add api コマンド）:
             参考: AMPLIFY SNS WORKSHOP >> POST機能 BACK-END(1)
                 https://amplify-sns.workshop.aws/ja/30_mock/20_post_back_end.html
             起動コマンド:
                 #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
-                - cd  "react1"  #template: "__AppName__"
+                - cd  "react3"  #template: "__AppName__"
                 - amplify add api
             Please select from one of the below mentioned services: GraphQL
             Provide API name: api1
@@ -233,7 +1107,7 @@
         （GraphQL を知りたいなら）ローカルでバックエンド（GraphQL によるデータベース）の動作確認をします:
             #// スキップするときは、下記「GraphQL のスキーマにセカンダリ インデックスを追加します」だけ行ってください
             GraphQL のスキーマを編集します:
-                react1/amplify/backend/api/api1/schema.graphql を下記に置き換えます: |  #template: __RepositoryName__/amplify/backend/api/api1/schema.graphql
+                react3/amplify/backend/api/api1/schema.graphql を下記に置き換えます: |  #template: __RepositoryName__/amplify/backend/api/api1/schema.graphql
                     type Post
                         @model (subscriptions: { level: public })
                         @auth(rules: [
@@ -250,6 +1124,7 @@
                 #// スキーマには DynamoDB に関する設定が @model に、Cognito に関連する設定が @auth に含まれています
                 #// 参考: https://amplify-sns.workshop.aws/ja/30_mock/20_post_back_end.html#post型の作成
             amplify mock api コマンドでビルドと、ローカルのデータベース操作アプリを実行します:
+                #// エンドポイントの１つとして GUI の GraphiQL を開くこともできます
                 準備:
                     Java をインストールします:
                         - https://aws.amazon.com/jp/corretto/ >> Amazon Corretto 11
@@ -257,7 +1132,7 @@
                         - インストール オプションはデフォルトを使用
                 起動コマンド:
                     #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
-                    - cd  "react1"  #template: "__AppName__"
+                    - cd  "react3"  #template: "__AppName__"
                     - del "amplify\mock-data\dynamodb\fake_us-fake-1.db"  #// （２回目以降）前回のキャッシュを削除
                     - amplify mock api
                 (以下は初回のみ入力が必要です):
@@ -268,7 +1143,7 @@
                 (起動に成功した時の表示): |
                     Generated GraphQL operations successfully and saved at src\graphql
                     AppSync Mock endpoint is running at http://192.168.2.110:20002
-                表示された URL をブラウザーで開きます:
+                表示された GraphiQL の URL をブラウザーで開きます:
                     Mutation(POST):
                         ADD NEW （左下）（の右のドロップダウンリスト）: Mutation
                         その右の＋ボタン:
@@ -277,7 +1152,7 @@
                                     content*: "test"
                                     timestamp*: 1585222654
                                     type*: "post"
-                            #// 中央列の timestamp: "1585222654" を timestamp: 1585222654 に置き換えます:
+                            #// 中央列の timestamp: "____" を timestamp: ____ に置き換えます:
                             #// Amplify GraphQL Explorer が AWSTimestamp型に対応していないため
                         Execute Query ボタン（中央上の▲）:
                         timestamp の値を 2000000000, 3000000000 に変えて、同様に Mutation を実行します:
@@ -299,7 +1174,7 @@
                         - ブラウザーを閉じます:
                         - amplify mock api を実行した bash で Ctrl + C を押します:
             GraphQL のスキーマにセカンダリ インデックスを追加します:
-                react1/amplify/backend/api/api1/schema.graphql を下記に置き換えます: |  #template: __RepositoryName__/amplify/backend/api/api1/schema.graphql
+                react3/amplify/backend/api/api1/schema.graphql を下記に置き換えます: |  #template: __RepositoryName__/amplify/backend/api/api1/schema.graphql
                     type Post
                         @model (subscriptions: { level: public })
                         @auth(rules: [
@@ -322,7 +1197,7 @@
             amplify mock api コマンドでローカルのデータベースを実行します(2回目):
                 起動コマンド:
                     #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
-                    - cd  "react1"  #template: "__AppName__"
+                    - cd  "react3"  #template: "__AppName__"
                     - del "amplify\mock-data\dynamodb\fake_us-fake-1.db"  #// （２回目以降）前回のキャッシュを削除
                     - amplify mock api
                 (起動に成功した時の表示): |
@@ -383,17 +1258,17 @@
             必要な Node パッケージをインストールします:
                 npm install --save "@material-ui/core" "@material-ui/icons" "moment" "react-router" "react-router-dom"
             ファイルを置き換えます:
-                - ./workshop/30_post_front_end/App.js ファイルを react1/src/App.js にコピーします:
+                - ./workshop/30_post_front_end/App.js ファイルを (project)/src/App.js にコピーします:
                     #// export default withAuthenticator(App ...) と function App() が全体のメインです
-                - ./workshop/30_post_front_end/Sidebar.js ファイルを react1/src/containers/Sidebar.js にコピーします:
+                - ./workshop/30_post_front_end/Sidebar.js ファイルを (project)/src/containers/Sidebar.js にコピーします:
                     #// export default function Sidebar(...) の return が全体のメインです
                     #// const [value, setValue] = React.useState(''); は React Hooks です
                     #// await API.graphql(graphqlOperation(...)) が GraphQL API 呼び出しです
                     #// Auth.signOut() でサインアウトします
-                - ./workshop/30_post_front_end/AllPosts.js ファイルを react1/src/containers/AllPosts.js にコピーします:
-                - ./workshop/30_post_front_end/PostsBySpecifiedUser.js ファイルを react1/src/containers/PostsBySpecifiedUser.js にコピーします:
-                - ./workshop/30_post_front_end/PostList.js ファイルを react1/src/components/PostList.js にコピーします:
-                #// useStateを使用して状態管理を行なっているものは react1/src/containers、そうでないものは react1/src/components に配置しています。
+                - ./workshop/30_post_front_end/AllPosts.js ファイルを (project)/src/containers/AllPosts.js にコピーします:
+                - ./workshop/30_post_front_end/PostsBySpecifiedUser.js ファイルを (project)/src/containers/PostsBySpecifiedUser.js にコピーします:
+                - ./workshop/30_post_front_end/PostList.js ファイルを (project)/src/components/PostList.js にコピーします:
+                #// useStateを使用して状態管理を行なっているものは (project)/src/containers、そうでないものは (project)/src/components に配置しています。
         動作確認をします（フロントエンドはローカル、バックエンドはクラウド）:
             #// バックエンド部分を Amplify Mockingで利用することができないのでフロントとバックをクラウドにデプロイします
             - amplify mock api が動いていたら終了させます:
@@ -406,7 +1281,7 @@
                 Enter maximum statement depth [...]: 3
             #// push（デプロイ）が完了するまで待ちます。約4分かかります
             - npm start
-    手動デプロイします:
+    手動デプロイできるようにしてデプロイします:
         参考: AMPLIFY SNS WORKSHOP >> 手動デプロイ
             https://amplify-sns.workshop.aws/ja/40_hosting/00_manual_deployment.html
         手動デプロイできるように Amplify hosting のカテゴリーを追加します:
@@ -424,6 +1299,7 @@
             - git add "."
             - git commit -a -m "First deploy"
             - git push
+
     ステージング環境を追加します:
         参考: AMPLIFY SNS WORKSHOP >> GITHUBと連携してCI/CD環境を構築する(2)
             https://amplify-sns.workshop.aws/ja/70_multi_env/10_amplify_console/create_cicd.html
@@ -435,7 +1311,7 @@
         Do you want to use an existing environment?: No
         Enter a name for the environment: staging
         Do you want to use an AWS profile?: Yes
-        Please choose the profile you want to use: amplify  #template: __CLI_Profile__
+        Please choose the profile you want to use: amplify-react3  #template: __CLI_Profile__
         コマンド(2):
             #Git bash
             - amplify env list  #// 環境を一覧表示します
@@ -456,7 +1332,7 @@
             - amplify env checkout production  #// 以上で hosting の設定が削除されたことになります
     Amplify Console + GitHub でフロントエンド＋バックエンドの CI/CD 環境を構築します:
         参考: AMPLIFY SNS WORKSHOP >> GITHUBと連携してCI/CD環境を構築する(2)
-            https://amplify-sns.workshop.aws/jp/70_multi_env/10_amplify_console/create_cicd.html
+            https://amplify-sns.workshop.aws/70_multi_env/10_amplify_console/create_cicd.html
         起動コマンド:
             #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
             - amplify add hosting
@@ -470,7 +1346,7 @@
                         #template: wants to access your __GitHubCollaboratorAccount__ account
                     Authorize GitCredentialManager ボタン:
             リポジトリブランチの追加:
-                リポジトリ: Takakiriy/react1  #template: __GitHubCollaboratorAccount__/__RepositoryName__
+                リポジトリ: Takakiriy/react3  #template: __GitHubOwnerAccount__/__RepositoryName__
                 ブランチ: master  #template: __ProductBranchName__
                 次へ ボタン:
             ビルド設定の構成:
@@ -484,10 +1360,10 @@
                     タグの追加 (オプション):
                         次のステップ ボタン:
                     確認:
-                        ロール名: amplifyconsole-backend-role1  #template: __AmplifyRole__
+                        ロール名: amplifyconsole-backend-react3  #template: __AmplifyRole__
                         ロールの作成 ボタン:
                     IAM が表示されているブラウザーのタブを閉じます:
-                Select an existing service role ...: amplifyconsole-backend-role1  #template: __AmplifyRole__
+                Select an existing service role ...: amplifyconsole-backend-react3  #template: __AmplifyRole__
                     #// ロール名を入力する右にある右回りボタンを押すと選べるようになります
                 次へ ボタン:
             確認:
@@ -503,13 +1379,13 @@
             │ master       │ https://master.d2oudfgbjw0ivu.amplifyapp.com │
             └──────────────┴──────────────────────────────────────────────┘
         コミットすると CI/CD パイプラインが動くことを確認します:
-            - たとえば react1/public/index.html の <titie> を変更します
+            - たとえば react2/public/index.html の <titie> を変更します
             - git add "."
             - git commit -a -m "Second commit"
             - git push
     staging 環境（＝develop ブランチ）を構築します:
         参考: AMPLIFY SNS WORKSHOP >> 複雑な開発環境の構築(1)
-            https://amplify-sns.workshop.aws/jp/70_multi_env/20_branch_autodetection.html
+            https://amplify-sns.workshop.aws/70_multi_env/20_branch_autodetection.html
         develop ブランチを新規作成します:
             - git status  #// clean 状態であること
             - git branch  #// 分岐元が master ブランチであること
@@ -530,7 +1406,7 @@
             ブランチ名: develop
             Access setting: 制限-パスワードが必須です
             username: staging  #// 例
-            password: 1234567_890123456789_0123456789 #template: __StagingPassword__
+            password: 12345aA19FEpQninoAFE83e #template: __StagingPassword__
             Save ボタン:
             #// Web アプリを起動して、Basic 認証してから表示できることをチェックします
     design 環境（バックエンドを他の環境でも共有する環境）（＝design-base ブランチなど）を構築します:
@@ -543,7 +1419,7 @@
             Do you want to use an existing environment?: No
             Enter a name for the environment: design
             Do you want to use an AWS profile?: Yes
-            Please choose the profile you want to use: amplify  #template: __CLI_Profile__
+            Please choose the profile you want to use: amplify-react3  #template: __CLI_Profile__
             コマンド(2):
                 #Git bash
                 - git branch  #// 分岐元が develop ブランチであること
@@ -573,7 +1449,7 @@
                 #// ブランチごとに個別のバックエンドを構築します
             Branch autodetection access control: Enabled
             username: design  #// 例
-            password: 1234567_890123456789_0123456789 #template: __StagingPassword__
+            password: 12345aA19FEpQninoAFE83e #template: __StagingPassword__
             保存 ボタン:
         design/alpha 環境/ブランチと design/beta 環境/ブランチを新規作成してコミット＆デプロイします:
             #Git bash
@@ -588,26 +1464,255 @@
         Amplify Console:
             https://console.aws.amazon.com/amplify/home
         aws リソースの ID 一覧:
-            - react1/amplify/backend/amplify-meta.json
+            - react2/amplify/backend/amplify-meta.json
         S3, DynamoDB, Lambda, CloudFormation:
             URL: https://ap-northeast-1.console.aws.amazon.com/resource-groups/
             Tag Editor:
                 リソースタイプ: サポートされるすべてのリソースタイプ
                 タグ - オプション: user:Application
-                オプションのタグ値: react1
+                オプションのタグ値: react2
         GraphQL:
-            https://ap-northeast-1.console.aws.amazon.com/appsync
+            https://ap-northeast-1.console.aws.amazon.com/appsync/
         Cognito:
             https://ap-northeast-1.console.aws.amazon.com/cognito/ >> ユーザープールの管理 >>
                 react1dd050ff1_userpool_dd050ff1-production >> ユーザーとグループ（左上）
+    GraphQL のスキーマに新しい型を追加します:
+        参考: AMPLIFY SNS WORKSHOP >> FOLLOW/TIMELINE機能の実装
+            https://amplify-sns.workshop.aws/50_follow_timeline.html
+        FollowRelationship 型を react3/amplify/backend/api/api1/schema.graphql の末尾に追加します: |  #template: __AppName__
+            type FollowRelationship
+                @model
+                @auth(rules: [
+                    {allow: owner, ownerField:"followerId", provider: userPools, operations:[read, create]},
+                    {allow: private, provider: userPools, operations:[read]}
+                ])
+                @key(fields: ["followeeId", "followerId"])
+            {
+                followeeId: ID!
+                followerId: ID!
+                timestamp: AWSTimestamp!
+            }
+        （必要なら）上記「amplify mock api」で FollowRelationship 型の内容を確認します:
+            Mutation(POST):
+                ADD NEW （左下）（の右のドロップダウンリスト）: Mutation
+                その右の＋ボタン:
+                    Update Auth ボタン:
+                        Username: test_follower
+                        Genereate Token ボタン:
+                    createFollowRelationship（左上）:
+                        input*:
+                            followeeId*: "test_followee"
+                            followerId*: "test_follower"
+                            timestamp*: 1585299648
+                        followeeId: チェック
+                        followerId: チェック
+                        timestamp: チェック
+                        # 中央列の timestamp: "1585222654" を timestamp: 1585222654 に置き換えます:
+                        #// Amplify GraphQL Explorer が AWSTimestamp型に対応していないため
+                        Execute Query ボタン（中央上の▲）:
+                        query MyMutation （左上）にマウスを合わせて[×]:
+        フロントエンドを作成します。バックエンドを呼び出すコードを追加します:
+            参考: AMPLIFY SNS WORKSHOP >> FOLLOW機能：FRONT-END
+                https://amplify-sns.workshop.aws/50_follow_timeline/10_follow_front_end.html
+            フロントエンドに API 呼び出しのコードを追加します:
+                - ./workshop/50_follow_timeline/PostsBySpecifiedUser.js ファイルを (project)/src/containers/PostsBySpecifiedUser.js にコピーします:
+                    #// ./workshop/50_follow_timeline/PostsBySpecifiedUser.js ファイルと
+                    #// ./workshop/30_post_front_end/PostsBySpecifiedUser.js ファイルを比較すると
+                    #// 追加に必要なコードが分かります
+                    #// useEffect()でログイン中のユーザー情報を取得しています
+            ローカルで動作確認をします:
+                - amplify mock api
+                - npm start  #// amplify mock を実行中のシェルとは別のシェルで実行します
+    IAM 認証を追加します（Lambda を実行するため）:
+        IAM 認証を追加します:
+            起動コマンド:
+                - amplify update api
+            Please select from one of the below mentioned services: GraphQL
+            Select from the options below: Update auth settings
+            Choose the default authorization type for the API: Amazon Cognito User Pool
+            Configure additional auth types?: Yes
+            Choose the additional authorization types you want to configure for the API: [IAM]
+        Timeline 型を react3/amplify/backend/api/api1/schema.graphql の末尾に追加します: |  #template: __AppName__
+            type Timeline 
+                @model
+                @auth(rules: [
+                {allow: owner, ownerField: "userId", provider: userPools, operations:[read, create]},
+                {allow: private, provider: iam ,operations:[create]},
+                ])
+                @key(fields: ["userId", "timestamp"])
+            {
+                userId: ID!
+                timestamp: AWSTimestamp!
+                postId: ID!
+                post: Post @connection(fields: ["postId"])
+            }
+        IAM 認証が必要な Mutation の動作確認をします:
+            #// 下記 createTimeline が User Pool 認証ではなく IAM 認証を必要とします
+            #// GraphiQL の右上にある Use：User Pool ボタンを Use：IAM に変更する必要があります
+            Git bash:
+                - amplify mock api
+                - npm start  #// amplify mock を実行中のシェルとは別のシェルで実行します
+            表示された GraphiQL の URL をブラウザーで開きます:
+                Query(GET):
+                    ADD NEW （左下）（の右のドロップダウンリスト）: Query
+                    その右の＋ボタン:
+                        listPosts（左上）:
+                            items:
+                                id: チェック
+                                owner: チェック
+                                timestamp: チェック
+                    Use：～（右上）が Use：User Pool でなかったらそれに変更します:
+                    Execute Query ボタン（中央上の▲）:
+                    query MyQuery （左上）にマウスを合わせて[×]:
+                Mutation(POST):
+                    ADD NEW （左下）（の右のドロップダウンリスト）: Mutation
+                    その右の＋ボタン:
+                        createTimeline（左上）:
+                            input*:
+                                postId*: "____"   #// 上記 items.id
+                                timestamp*: ____  #// 上記 items.timestamp
+                                userId*: "test_follower"
+                            postId: チェック
+                            timestamp: チェック
+                            userId: チェック
+                    #// 中央列の timestamp: "____" を timestamp: ____ に置き換えます:
+                    #// Amplify GraphQL Explorer が AWSTimestamp型に対応していないため
+                    Use：～（右上）が Use：IAM でなかったらそれに変更します:
+                    Execute Query ボタン（中央上の▲）:
+                    query MyMutation （左上）にマウスを合わせて[×]:
+                終了:
+                    #// 終了するとローカル DB の内容が消えます
+                    - ブラウザーを閉じます:
+                    - amplify mock api を実行した bash で Ctrl + C を押します:
+    関数を追加します:
+        参考: AMPLIFY SNS WORKSHOP >> TIMELINE機能 ＠FUNCTION
+            https://amplify-sns.workshop.aws/50_follow_timeline/30_function_directive.html
+        関数カテゴリーを追加します:
+            起動コマンド:
+                - amplify add function
+            Select which capability you want to add: Lambda function
+            Provide a friendly name for your resource to be used as ...: createPostAndTimeline
+            Provide the AWS Lambda function name: createPostAndTimeline
+            Choose the runtime that you want to use: NodeJS
+            Choose the function template that you want to use: Hello World
+            Do you want to access other resources created in this project from your Lambda function?: Yes
+            Select the category: [api]
+            Select the operations you want to permit ...: [create, read]
+            Do you want to invoke this function on a recurring schedule?: n
+            Do you want to configure Lambda layers for this function?: n
+            Do you want to edit the local lambda function now?: n
+        Mutation 型を react3/amplify/backend/api/api1/schema.graphql の末尾に追加します: |  #template: __AppName__
+            type Mutation
+            {
+                createPostAndTimeline(
+                        content: String!
+                    ): Post
+                    @function(name: "createPostAndTimeline-${env}")
+                    @auth(rules: [
+                        {allow: private, provider: userPools},
+                    ])
+            }
+        #// @function が Lambda リゾルバーです
+        UserPools 認証の他に IAM 認証も必要とする type の @auth に provider：iam の行を追加します:
+            修正前: |
+                {allow: private, provider: userPools, operations:[read]},
+            修正後: |
+                {allow: private, provider: userPools, operations:[read]},
+                {allow: private, provider: iam ,operations:[create]},
+        関数の定義が入ったファイルをコピーします:
+            - /workshop/50_follow_timeline/index.js ファイルを
+                react2/amplify/backend/function/createPostAndTimeline/src/index.js にコピーします
+        関数が使うライブラリをインストールします:
+            #Git bash
+            - cd react2/amplify/backend/function/createPostAndTimeline/src
+            - npm install --save "aws-appsync" "graphql-tag" "node-fetch"
+            #// 現時点でAmplifyのJavaScriptライブラリはNode.jsランタイムで動作しないため、AWS Lambda関数からAWS AppSyncを呼び出す際にはAWS AppSync SDKを利用します
+        Amplify Mocking を実行するためにファイルを修正します:
+            amplify\backend\function\createPostAndTimeline\function-parameters.json : |
+                {
+                        :
+                    "apiBoyakiGqlGraphQLAPIIdOutput": "",
+                    "apiBoyakiGqlGraphQLAPIEndpointOutput": ""
+                }
+        amplify mock api を再起動します:
+            - (Ctrl + C)
+            - amplify mock api
+        GraphiQL のタブをリロードします:
+            Mutation(POST):
+                ADD NEW （左下）（の右のドロップダウンリスト）: Mutation
+                その右の＋ボタン:
+                    createPostAndTimeline（左上）:
+
+
+
+
+                        input*:
+                            postId*: "____"   #// 上記 items.id
+                            timestamp*: ____  #// 上記 items.timestamp
+                            userId*: "test_follower"
+                        postId: チェック
+                        timestamp: チェック
+                        userId: チェック
+                #// 中央列の timestamp: "____" を timestamp: ____ に置き換えます:
+                #// Amplify GraphQL Explorer が AWSTimestamp型に対応していないため
+                Use：～（右上）が Use：IAM でなかったらそれに変更します:
+                Execute Query ボタン（中央上の▲）:
+                query MyMutation （左上）にマウスを合わせて[×]:
+            Query(GET):
+                ADD NEW （左下）（の右のドロップダウンリスト）: Query
+                その右の＋ボタン:
+                    listPosts（左上）:
+                        items:
+                            id: チェック
+                            owner: チェック
+                            timestamp: チェック
+                Use：～（右上）が Use：User Pool でなかったらそれに変更します:
+                Execute Query ボタン（中央上の▲）:
+                query MyQuery （左上）にマウスを合わせて[×]:
+            終了:
+                #// 終了するとローカル DB の内容が消えます
+                - ブラウザーを閉じます:
+                - amplify mock api を実行した bash で Ctrl + C を押します:
+
+
+
+    トラブルシューティング:
+        メモ: |
+            https://ap-northeast-1.console.aws.amazon.com/appsync/
+            https://ap-northeast-1.console.aws.amazon.com/cloudwatch/home
+            amplify mock api
+
+            AppSync の ログ を有効化した
+            https://docs.aws.amazon.com/ja_jp/appsync/latest/devguide/monitoring.html
+        プロジェクトを git clone したあと、npm コマンドが使えなくなる:
+            対策:
+                #Git bash  (Git CMD では git clone ができません)
+                - git clone ....
+                - npm ci
+        プロジェクトを git clone したあと、Amplify CLI が使えなくなる:
+            対策:
+                #Git bash  (Git CMD では git clone ができません)
+                - git clone ....
+                #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
+                - amplify pull
+        プロジェクトを git clone したあと、バックエンドが呼び出せなくなる:
+            メッセージ: |
+                Unhandled Rejection (Error): Connection handshake error
+            解説:
+                バックエンドとの通信をクラウドからローカルに変更した設定において（amplify mock ... を呼び出した後で）、
+                ローカルのバックエンドが動作していないときに発生します
+            対策:
+                - amplify push または amplify publish
+
+
     リソースのクリーンアップ:
         aws のリージョンを選択します:
             AWS マネジメント コンソールにサインインします:
                 URL: https://console.aws.amazon.com/
                 （ユーザー）: IAM ユーザー
-                アカウントID: __AWS_AccountID__
+                アカウントID: 123456789012  #template: __AWS_AccountID__
                 次へ ボタン:
-                ユーザー名: __AWS_UserName__
+                ユーザー名: user1  #template: __AWS_UserName__
                 パスワード: __AWS_UserPassword__
                 サインイン ボタン:
             リージョン: 東京 （右上） #template: __RegionName__
@@ -616,13 +1721,27 @@
             #Git bash
             - amplify delete
                 #// メモ: amplify remove hosting コマンドを実行すると hosting 機能だけが削除されます
+            - bash を閉じます:
+        CloudFormation の stack の削除:
+            - https://ap-northeast-1.console.aws.amazon.com/cloudformation/home >> ネストの表示をオフ >>
+                amplify-react3-design-...
+                    #template: amplify-__AppName__-design-...
+        Cognito ユーザープールの削除:
+            - https://ap-northeast-1.console.aws.amazon.com/cognito/ >> ユーザープールの管理 >>
+                react312345678_userpool_12345678-design
+                    #template: __AppName__12345678_userpool_12345678-design
+                    #// 12345678 はハッシュ値です。末尾の design は環境名です
+            - プールの削除（右上）
         IAM の削除:
-            - https://console.aws.amazon.com/iam/ >> ロール:
-                - amplifyconsole-backend-role1 の左にチェック >> ロールの削除
-                    #template: __AmplifyRole__
             - https://console.aws.amazon.com/iam/ >> ユーザー:
-                - user-dev1-amplify の左にチェック >> ユーザーの削除
+                - user-react3-amplify の左にチェック >> ユーザーの削除
                     #template: __AmplifyUser__
+            - https://console.aws.amazon.com/iam/ >> ロール:
+                - 作成時刻でソート
+                - amplifyconsole-backend-role の左にチェック >> ロールの削除
+                - 環境名で検索すると6つぐらい見つかります。作成日時を見ながら削除してください
+            - https://console.aws.amazon.com/iam/ >> グループ:
+                - Developers の左にチェック >> グループのアクション >> （必要なら）グループの削除
         Amplify との接続を解除するように GitHub を設定します:
             メニュー: https://github.com/ >> （ Takakiriy のプロフィール写真） >> Settings >> Applications（左下）
                 #template: （ __GitHubOwnerAccount__ のプロフィール写真）
@@ -633,55 +1752,54 @@
                 - (Git Credential Manager) >> … >> Revoke >> I understand, revoke access
             ブラウザーを閉じます:
         （必要なら）GitHub のリポジトリを削除します:
-            - https://github.com/ >> （左上の GitHub アイコン） >> Takakiriy/react1
+            - https://github.com/ >> （左上の GitHub アイコン） >> Takakiriy/react3
                 #template: __GitHubOwnerAccount__/__RepositoryName__
             - Settings（タブ。ウィンドウ幅が狭いときは … の中にある） >> （いちばん下へスクロール） >>
-                Delete this repository >> Takakiriy/react1
+                Delete this repository >> Takakiriy/react3
                     #template: __GitHubOwnerAccount__/__RepositoryName__
-
-メモ:
-    デプロイの状況:
-    AWS CLI をインストールしてセットアップします:
-        参考: Windows での AWS CLI バージョン 2 のインストール、更新、アンインストール
-            https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/install-cliv2-windows.html
-        AWS CLI をインストールします:
-            - https://awscli.amazonaws.com/AWSCLIV2.msi
-            - インストール オプションはデフォルトを使用
-            #Git bash
-            - aws --version  #// aws-cli/2.0.59 Python/3.7.7 Windows/10 exe/AMD64
-    REST API（Amplify API）を追加します:
-        #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
-        - cd  "react1"  #template: "__AppName__"
-        - amplify add api
-        - (Amplify の設定内容):
-            Please select from one of the below mentioned services: REST
-            Provide a friendly name for your resource to be used as a label for this category in the project: api1
-                #// API ゲートウェイのリソース名になります（★未確認）
-            Provide a path (e.g., /book/{isbn}): /items  #// そのまま Enter
-            Choose a Lambda source: Create a new Lambda function
-            Provide a friendly name for your resource to be used as a label for this category in the project(2): ItemsGet
-                #// path に対応する関数の名前
-            Provide the AWS Lambda function name: ItemsGet  #// そのまま Enter
-            Choose the runtime that you want to use: NodeJS  #// そのまま Enter
-            Choose the function template that you want to use: CRUD function for DynamoDB
-            Choose a DynamoDB data source option: Create a new DynamoDB table
-            Provide a friendly name for your resource to be used as a label for this category in the project(3): items1
-            Please provide table name: items1  #// そのまま Enter
-            What would you like to name this column: id
-            Please choose the data type: string  #// そのまま Enter
-            Would you like to add another column?: n (No)
-            Please choose partition key for the table: id  #// そのまま Enter
-            Do you want to add a sort key to your table?: n (No)
-            Do you want to add global secondary indexes to your table?: n (No)
-            Do you want to add a Lambda Trigger for your Table?: N (no)
-            Do you want to access other resources in this project from your Lambda function?: n (No)
-            Do you want to invoke this function on a recurring schedule?: N (No)
-            Do you want to configure Lambda layers for this function?: N (No)
-            Do you want to edit the local lambda function now?: n (No)
-            Restrict API access: Y (Yes)
-            Who should have access?: Authenticated users only
-            What kind of access do you want for Authenticated users?: [create, read, upate, delete]
-            Do you want to add another path?: N (No)
+    メモ:
+        デプロイの状況:
+        AWS CLI をインストールしてセットアップします:
+            参考: Windows での AWS CLI バージョン 2 のインストール、更新、アンインストール
+                https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/install-cliv2-windows.html
+            AWS CLI をインストールします:
+                - https://awscli.amazonaws.com/AWSCLIV2.msi
+                - インストール オプションはデフォルトを使用
+                #Git bash
+                - aws --version  #// aws-cli/2.0.59 Python/3.7.7 Windows/10 exe/AMD64
+        REST API（Amplify API）を追加します:
+            #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
+            - cd  "react3"  #template: "__AppName__"
+            - amplify add api
+            - (Amplify の設定内容):
+                Please select from one of the below mentioned services: REST
+                Provide a friendly name for your resource to be used as a label for this category in the project: api1
+                    #// API ゲートウェイのリソース名になります（★未確認）
+                Provide a path (e.g., /book/{isbn}): /items  #// そのまま Enter
+                Choose a Lambda source: Create a new Lambda function
+                Provide a friendly name for your resource to be used as a label for this category in the project(2): ItemsGet
+                    #// path に対応する関数の名前
+                Provide the AWS Lambda function name: ItemsGet  #// そのまま Enter
+                Choose the runtime that you want to use: NodeJS  #// そのまま Enter
+                Choose the function template that you want to use: CRUD function for DynamoDB
+                Choose a DynamoDB data source option: Create a new DynamoDB table
+                Provide a friendly name for your resource to be used as a label for this category in the project(3): items1
+                Please provide table name: items1  #// そのまま Enter
+                What would you like to name this column: id
+                Please choose the data type: string  #// そのまま Enter
+                Would you like to add another column?: n (No)
+                Please choose partition key for the table: id  #// そのまま Enter
+                Do you want to add a sort key to your table?: n (No)
+                Do you want to add global secondary indexes to your table?: n (No)
+                Do you want to add a Lambda Trigger for your Table?: N (no)
+                Do you want to access other resources in this project from your Lambda function?: n (No)
+                Do you want to invoke this function on a recurring schedule?: N (No)
+                Do you want to configure Lambda layers for this function?: N (No)
+                Do you want to edit the local lambda function now?: n (No)
+                Restrict API access: Y (Yes)
+                Who should have access?: Authenticated users only
+                What kind of access do you want for Authenticated users?: [create, read, upate, delete]
+                Do you want to add another path?: N (No)
 
 aws 公式：サーバーレスのウェブアプリケーションを構築します:
     #// AWS Lambda、Amazon API Gateway、AWS Amplify、Amazon DynamoDB、Amazon Cognito、GitHub を使用
@@ -689,11 +1807,12 @@ aws 公式：サーバーレスのウェブアプリケーションを構築し�
 
     設定:
         __AWS_AccountID__: 123456789012  #★秘密:仮
+        __AWS_UserName__: user1
         __RegionName__: 東京  #// CodePipeline のパイプラインを作成するリージョンの名前
         __RegionID__: ap-northeast-1  #// __RegionName__ の ID
         __IAM_UserName__: user-dev1  #// IAM ユーザー（開発者用）、AWS CLI で必要な権限を持つ
         __IAM_UserAccessKeyID__: AKIAZQ2CH423P67RPDNA  #// 手順内でメモする値
-        __SecretAccessKey__: AhiRlFd10ZYJClp4FDTlkIl2ZTiLnLJI3jFLhaFf  #★秘密:仮  #// 手順内でメモする値
+        __SecretAccessKey__: kOn3A8FHo30F8qwofeAAAAJpoWpPwfOkaDSR_QFq  #★秘密:仮  #// 手順内でメモする値
         __GitHubOwnerAccount__: Takakiriy  #// リポジトリのオーナーのアカウント名
         __GitHubCollaboratorAccount__: Takakiriy  #// リポジトリにアクセスするユーザーのアカウント名
         __GitCollaboratorName__: Your Name        #// git log コマンドで表示されるユーザー名
@@ -706,9 +1825,9 @@ aws 公式：サーバーレスのウェブアプリケーションを構築し�
         __Stage__: prod
         __CognitoPoolID__: ap-northeast-1_kCQxkqzUf  #// 手順内でメモする値
         __AppClientID__: 53cldntes2imnc2ohb6n86m77q
-        __UserMail__: example@example.com  #★秘密:仮
-        __UserPassword__: 12345aA!
-        __API_GatewayURL__: https://aafaaaaaua.execute-api.ap-northeast-1.amazonaws.com/prod  #★秘密:仮
+        __AppUserMail__: example@example.com  #★秘密:仮
+        __AppUserPassword__: 12345aA!
+        __API_GatewayURL__: https://abcdrsnmud.execute-api.ap-northeast-1.amazonaws.com/prod  #★秘密:仮
 
     Amplify Console + GitHub でフロントエンドの CI/CD 環境を構築します:
         参考: 継続的デプロイを使用した静的ウェブホスティング
@@ -732,9 +1851,9 @@ aws 公式：サーバーレスのウェブアプリケーションを構築し�
             AWS マネジメント コンソールにサインインします:
                 URL: https://console.aws.amazon.com/
                 （ユーザー）: IAM ユーザー
-                アカウントID: __AWS_AccountID__
+                アカウントID: 123456789012  #template: __AWS_AccountID__
                 次へ ボタン:
-                ユーザー名: __AWS_UserName__
+                ユーザー名: user1  #template: __AWS_UserName__
                 パスワード: __AWS_UserPassword__
                 サインイン ボタン:
             リージョン: 東京 （右上） #template: __RegionName__
@@ -781,8 +1900,8 @@ aws 公式：サーバーレスのウェブアプリケーションを構築し�
                         ユーザーの作成 ボタン:
                     アクセスキーをメモします:
                         アクセスキー ID: AKIAZQ2CH423P67RPDNA  #template: __IAM_UserAccessKeyID__
-                        シークレットアクセスキー: AhiRlFd10ZYJClp4FDTlkIl2ZTiLnLJI3jFLhaFf  #template: __SecretAccessKey__
-                        閉じる ボタン:
+                        シークレットアクセスキー: kOn3A8FHo30F8qwofeAAAAJpoWpPwfOkaDSR_QFq  #template: __SecretAccessKey__
+                        閉じる ボタン（右下）:
             定期的にアクセスキーを更新します:
                 https://console.aws.amazon.com/iam/ >> ユーザー >> (ユーザー名) >> 認証情報（タブ） >>
                     アクセスキーの作成 ボタン
@@ -790,7 +1909,7 @@ aws 公式：サーバーレスのウェブアプリケーションを構築し�
                 #Git bash
                 - aws configure:
                     AWS Access Key ID [None]: AKIAZQ2CH423P67RPDNA  #template: __IAM_UserAccessKeyID__
-                    AWS Secret Access Key [None]: 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  #template: __SecretAccessKey__
+                    AWS Secret Access Key [None]: kOn3A8FHo30F8qwofeAAAAJpoWpPwfOkaDSR_QFq  #template: __SecretAccessKey__
                     Default region name [None]: ap-northeast-1   #template: __RegionID__
                     Default output format [None]: （なし）
                 #// この設定によって、~/.aws/config と ~/.aws/credentials ファイルが作られます
@@ -805,7 +1924,7 @@ aws 公式：サーバーレスのウェブアプリケーションを構築し�
             GitHub のアカウントを作成します:
             GitHub にサインインします:
                 メニュー: https://github.com/ >> 三（右上） >> Sign in
-                Username or email address: Takakiriy  #template: __GitHubOwnerAccount__
+                Username or email address: Takakiriy  #template: __GitHubCollaboratorAccount__
                 Password: ____
                 Sign in ボタン:
                 ブラウザーを閉じます:
@@ -840,7 +1959,7 @@ aws 公式：サーバーレスのウェブアプリケーションを構築し�
             表示されたアカウント名を確認: wants to access your Takakiriy account
                 #template: wants to access your __GitHubCollaboratorAccount__ account
             Authorize GitCredentialManager ボタン:
-            リポジトリ: Takakiriy/wildrydes-site  #template: __GitHubCollaboratorAccount__/__RepositoryName__
+            リポジトリ: Takakiriy/wildrydes-site  #template: __GitHubOwnerAccount__/__RepositoryName__
             ブランチ: master  #template: __ProductBranchName__
             次へ ボタン:
             次へ ボタン(2):  #// ビルドの設定はそのまま
@@ -896,14 +2015,14 @@ aws 公式：サーバーレスのウェブアプリケーションを構築し�
         デプロイされた結果を確認します（実装を検証する）:
             起動: https://..（左下）をクリック（Webアプリが開きます）
             GIDDY UP!（サイン アップ ボタン）:
-                Email: example@example.com  #template: __UserMail__
-                Password: 12345aA!          #template: __UserPassword__
-                Confirm Password: 12345aA!  #template: __UserPassword__
+                Email: example@example.com  #template: __AppUserMail__
+                Password: 12345aA!          #template: __AppUserPassword__
+                Confirm Password: 12345aA!  #template: __AppUserPassword__
                 LET'S RYDE ボタン:
             #// ★注意: 本番はユーザープールを設定して Amazon SES で自分が所有するドメインから E メールを送信すること
             #// http://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-message-customizations.html#cognito-user-pool-settings-ses-authorization-to-send-email
             登録したメールアドレスに届いた確認コード（6桁の数字）をユーザーが入力する場合:
-                Email: example@example.com  #template: __UserMail__
+                Email: example@example.com  #template: __AppUserMail__
                 Verification Code: ____  #// 6桁の数字
                 VERIFY ボタン:
                 #// Successfully Authenticated! と表示されたらサインイン成功です
@@ -1173,11 +2292,11 @@ aws 公式：サーバーレスのウェブアプリケーションを構築し�
             ステージ名: prod
             デプロイ ボタン:
             URL の呼び出しの右の URL をメモします:
-                https://aafaaaaaua.execute-api.ap-northeast-1.amazonaws.com/prod
+                https://abcdrsnmud.execute-api.ap-northeast-1.amazonaws.com/prod
                     #template: __API_GatewayURL__
         アプリケーションに API の URL を設定します（ウェブサイトの設定を更新する）:
             wildrydes-site/js/config.js を編集します: |  #template: __RepositoryName__/js/config.js
-                invokeUrl: 'https://aafaaaaaua.execute-api.ap-northeast-1.amazonaws.com/prod',
+                invokeUrl: 'https://abcdrsnmud.execute-api.ap-northeast-1.amazonaws.com/prod',
                     #template: __API_GatewayURL__
             コミットします:
                 #Git bash
@@ -1299,9 +2418,9 @@ aws 公式：サーバーレスのウェブアプリケーションを構築し�
             AWS マネジメント コンソールにサインインします:
                 URL: https://console.aws.amazon.com/
                 （ユーザー）: IAM ユーザー
-                アカウントID: __AWS_AccountID__
+                アカウントID: 123456789012  #template: __AWS_AccountID__
                 次へ ボタン:
-                ユーザー名: __AWS_UserName__
+                ユーザー名: user1  #template: __AWS_UserName__
                 パスワード: __AWS_UserPassword__
                 サインイン ボタン:
             リージョン: 東京 （右上） #template: __RegionName__
@@ -1321,6 +2440,10 @@ aws 公式：サーバーレスのウェブアプリケーションを構築し�
                 - ドメイン名 = sage-p.tk （の行の左にチェック） >> 削除（上）  #template: __Domain__
         ACM（AWS Certificate Manage）の削除:
             - https://console.aws.amazon.com/acm/home >> sage-p.tk（の左にチェック） >> アクション >> 削除
+        CloudFormation の stack の削除:
+            - https://ap-northeast-1.console.aws.amazon.com/cloudformation/home >> ネストの表示をオフ >>
+                amplify-wildrydes-site-design-...
+                    #template: amplify-__AppName__-design-...
         Cognito ユーザープールの削除:
             - https://ap-northeast-1.console.aws.amazon.com/cognito/ >> ユーザープールの管理 >>
                 prod-wildrydes-site
@@ -1329,12 +2452,13 @@ aws 公式：サーバーレスのウェブアプリケーションを構築し�
             - https://console.aws.amazon.com/lambda/ >> RequestUnicorn （の左をチェック）
             - アクション >> 削除
         IAM の削除:
-            - https://console.aws.amazon.com/iam/ >> ロール:
-                - WildRydesLambda の左にチェック >> ロールの削除
-                    #template: __AppNamePascalCase__Lambda
             - https://console.aws.amazon.com/iam/ >> ユーザー:
                 - user-dev1 の左にチェック >> （必要なら）ユーザーの削除
                     #template: __IAM_UserName__
+            - https://console.aws.amazon.com/iam/ >> ロール:
+                - 作成時刻でソート
+                - WildRydesLambda の左にチェック >> ロールの削除
+                    #template: __AppNamePascalCase__Lambda
             - https://console.aws.amazon.com/iam/ >> グループ:
                 - Developers の左にチェック >> グループのアクション >> （必要なら）グループの削除
         DynamoDB >> テーブル の削除:
@@ -1346,7 +2470,7 @@ aws 公式：サーバーレスのウェブアプリケーションを構築し�
         CloudWatch >> ログ の削除:
             - https://ap-northeast-1.console.aws.amazon.com/cloudwatch/ >> ロググループ
             - /aws/lambda/RequestUnicorn >> アクション >> ロググループの削除
-        Amplify との接続を解除するように GitHub を設定します:
+        Amplify との接続を解除するように GitHub を設定します（管理者）:
             メニュー: https://github.com/ >> （ Takakiriy のプロフィール写真） >> Settings >> Applications（左下）
                 #template: （ __GitHubOwnerAccount__ のプロフィール写真）
             Installed GitHub Apps （タブ）:
@@ -1361,4 +2485,4 @@ aws 公式：サーバーレスのウェブアプリケーションを構築し�
             - Settings（タブ。ウィンドウ幅が狭いときは … の中にある） >> （いちばん下へスクロール） >>
                 Delete this repository >> Takakiriy/wildrydes-site
                     #template: __GitHubOwnerAccount__/__RepositoryName__
-            
+

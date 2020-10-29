@@ -1,0 +1,22 @@
+type Post
+    @model (subscriptions: { level: public })
+    @auth(rules: [
+        {allow: owner, ownerField:"owner", provider: userPools, operations:[read, create]}
+        {allow: private, provider: userPools, operations:[read]}
+    ])
+{
+    type: String!  #// always set to 'post'. used in the SortByTimestamp GSI
+    id: ID
+    content: String!
+}
+
+type Mutation
+{
+    createExample(  #template: __FirstFunctionName__
+        content: String!
+    ): String
+        @function(name: "createExample-${env}")  #template: __FirstFunctionName__
+        @auth(rules: [
+            {allow: private, provider: userPools},
+        ])
+}

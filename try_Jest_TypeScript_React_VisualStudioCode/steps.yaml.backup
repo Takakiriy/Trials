@@ -5,7 +5,7 @@
         React × TypeScript環境にJestを導入してみて:
             https://tech.willgate.co.jp/entry/2019/12/12/130000
     設定:
-        __RepositoryName__: react1_jest
+        __RepositoryName__: own
         __GitCollaboratorName__: Your Name
         __GitCollaboratorMail__: you@example.com
     準備:
@@ -31,88 +31,89 @@
             - 必要なら、Visual Studio Code をタスクバーにピン止めします
             - 下記の拡張機能をインストールします :
                 - Jest Runner
-    React のプロジェクトを生成します:
-        #Git bash
-        - cd  "__ParentOfProject__"
-        - （TypeScript を使う場合）:
-            - npx create-react-app --template typescript  "react1_jest"  #template: "__RepositoryName__"
-        - （JavaScript を使う場合）:
-            - npx create-react-app  "react1_jest"  #template: "__RepositoryName__"
-    Visual Studio Code でデバッグできるようにします:
-        Visual Studio Code で __Project__ フォルダーを開きます（エディターとして使うため）:
-            メニュー: File >> Open Folder >> react1_jest  #template: __RepositoryName__
-        必要な Node パッケージをインストールします:
-            #VSCode >> Terminal >> New Terminal
-            - npm install  "ts-jest" --save-dev
-        __Project__/package.json に下記の jest キーを追加します: |
-            "jest": {
-                "transform": {
-                    "^.+\\.tsx?$": "ts-jest",
-                    "^.+\\.jsx?$": "babel-jest"
+    React + Jest のプロジェクトを生成します:
+        React のプロジェクトを生成します:
+            #Git bash
+            - cd  "__ParentOfProject__"
+            - （TypeScript を使う場合）:
+                - npx create-react-app --template typescript  "react1_jest"  #template: "__RepositoryName__"
+            - （JavaScript を使う場合）:
+                - npx create-react-app  "react1_jest"  #template: "__RepositoryName__"
+        Visual Studio Code でデバッグできるようにします:
+            Visual Studio Code で __Project__ フォルダーを開きます（エディターとして使うため）:
+                メニュー: File >> Open Folder >> own  #template: __RepositoryName__
+            必要な Node パッケージをインストールします:
+                #VSCode >> Terminal >> New Terminal
+                - npm install  "ts-jest" --save-dev
+            __Project__/package.json に下記の jest キーを追加します: |
+                "jest": {
+                    "transform": {
+                        "^.+\\.tsx?$": "ts-jest",
+                        "^.+\\.jsx?$": "babel-jest"
+                    }
                 }
-            }
-    テスト対象のコードを作成します:
-        （TypeScript を使う場合）:
-            __Project__/src/foo.ts: |
-                export const sum = (...a: number[]) =>
-                    a.reduce(
-                        (acc, val) => acc + val,
-                        0);
-        （JavaScript を使う場合）:
-            __Project__/src/foo.js: |
-                export const sum = (...a) =>
-                    a.reduce(
-                        (acc, val) => acc + val,
-                        0);
-    テスト コードを作成します:
-        __Project__/src/foo.test.ts (または .js) : |
-            import { sum } from './foo';
+        テスト対象のコードを作成します:
+            （TypeScript を使う場合）:
+                __Project__/src/foo.ts: |
+                    export const sum = (...a: number[]) =>
+                        a.reduce(
+                            (acc, val) => acc + val,
+                            0);
+            （JavaScript を使う場合）:
+                __Project__/src/foo.js: |
+                    export const sum = (...a) =>
+                        a.reduce(
+                            (acc, val) => acc + val,
+                            0);
+        テスト コードを作成します:
+            __Project__/src/foo.test.ts (または .js) : |
+                import { sum } from './foo';
 
-            test('basic', () => {
-                expect(sum()).toBe(0);
-            });
+                test('basic', () => {
+                    expect(sum()).toBe(0);
+                });
 
-            test('basic again', () => {
-                expect(sum(1, 2)).toBe(3);
-            });
-    デバッグできることを確認します:
-        Visual Studio Code で __Project__ フォルダーを開きます:
-            メニュー: File >> Open Folder >> react1_jest  #template: __RepositoryName__
-        __Project__/src/foo.test.ts (または .js) ファイルを開きます:
-        test 関数の中にブレークポイントを張ります:
-            行番号の左をクリックします:
-        デバッグを開始します:
-            test 関数の上に表示されている Debug をクリックします:
-        ブレークできることを確認します:
-    すべてのテストを実行できることを確認します:
-        #VSCode Node Debug Console など
-        - cd  "__Project__"
-        - npm test
-    Web アプリケーションのサーバーが動くことを確認します:
-        #VSCode Node Debug Console など
-        - cd  "react1_jest"  #template: "__RepositoryName__"
-        - npm start
-    トラブルシューティング:
-        - ケース:
-            エラー: |
-                The react-scripts package provided by Create React App requires a dependency:
-                "jest": "26.6.0"
-                Don't try to install it manually: your package manager does it automatically.
-                However, a different version of jest was detected higher up in the tree:
-                C:\Users\ts-ne\Desktop\own\node_modules\jest (version: 26.6.1)
-            対策:
-                React が要求している Jest のバージョンに合わせます:
-                    npm install --global  "jest@26.6.0"
-                    npm install  "jest@26.6.0" --save-dev
-        - ケース:
-            エラー: |
-                We detected setupFilesAfterEnv in your package.json.
-                Remove it from Jest configuration, and put the initialization code in src/setupTests.js.
-                This file will be loaded automatically.
-            対策:
-                __Project__/package.json の json キーの中から下記のキーを削除します:
-                    roots, preset, testEnvironment, setupFilesAfterEnv
-                        #// エラーメッセージに削除すべきキーが一覧されます
+                test('basic again', () => {
+                    expect(sum(1, 2)).toBe(3);
+                });
+        デバッグできることを確認します:
+            Visual Studio Code で __Project__ フォルダーを開きます:
+                メニュー: File >> Open Folder >> own  #template: __RepositoryName__
+            __Project__/src/foo.test.ts (または .js) ファイルを開きます:
+            test 関数の中にブレークポイントを張ります:
+                行番号の左をクリックします:
+            デバッグを開始します:
+                test 関数の上に表示されている Debug をクリックします:
+            ブレークできることを確認します:
+        すべてのテストを実行できることを確認します:
+            #VSCode Node Debug Console など
+            - cd  "own"  #template: "__RepositoryName__"
+            - npm test
+        Web アプリケーションのサーバーが動くことを確認します:
+            #VSCode Node Debug Console など
+            - cd  "own"  #template: "__RepositoryName__"
+            - npm start
+        トラブルシューティング:
+            - ケース:
+                エラー: |
+                    The react-scripts package provided by Create React App requires a dependency:
+                    "jest": "26.6.0"
+                    Don't try to install it manually: your package manager does it automatically.
+                    However, a different version of jest was detected higher up in the tree:
+                    C:\Users\ts-ne\Desktop\own\node_modules\jest (version: 26.6.1)
+                対策:
+                    React が要求している Jest のバージョンに合わせます:
+                        npm install --global  "jest@26.6.0"
+                        npm install  "jest@26.6.0" --save-dev
+            - ケース:
+                エラー: |
+                    We detected setupFilesAfterEnv in your package.json.
+                    Remove it from Jest configuration, and put the initialization code in src/setupTests.js.
+                    This file will be loaded automatically.
+                対策:
+                    __Project__/package.json の json キーの中から下記のキーを削除します:
+                        roots, preset, testEnvironment, setupFilesAfterEnv
+                            #// エラーメッセージに削除すべきキーが一覧されます
 
 Jest + TypeScript + React + Visual Studio Code の開発環境を構築します:
     参考:

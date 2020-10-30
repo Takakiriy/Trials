@@ -6,11 +6,11 @@
         __RegionName__: 東京  #// CodePipeline のパイプラインを作成するリージョンの名前
         __RegionID__: ap-northeast-1  #// __RegionName__ の ID
         __AWS_AdministratorGroup__: AdministratorGroup
-        __AmplifyUser__: amplify-own  #// Amplify 用 IAM ユーザー、Amplify CLI で必要な権限を持つ
-        __AmplifyRole__: amplifyconsole-backend-role-own
+        __AmplifyUser__: own-amplify  #// Amplify 用 IAM ユーザー、Amplify CLI で必要な権限を持つ
+        __AmplifyRole__: own-amplifyconsole-backend-role
         __AmplifyUserAccessKeyID__: AKIAZQ0A0A0A0A0A0A0A  #★秘密:仮  #// 手順内でメモする値
         __AmplifySecretAccessKey__: kOn3A8FHo30F8qwofeAAAAJpoWpPwfOkaDSR_QFq  #★秘密:仮  #// 手順内でメモする値
-        __CLI_Profile__: amplify-own  #// aws 関連の CLI のプロファイル名
+        __CLI_Profile__: own-amplify  #// aws 関連の CLI のプロファイル名
         __GitHubOwnerAccount__: Takakiriy  #// リポジトリのオーナーのアカウント名
         __GitHubCollaboratorAccount__: Takakiriy  #// リポジトリにアクセスするユーザーのアカウント名
         __GitCollaboratorName__: Your Name        #// git log コマンドで表示されるユーザー名
@@ -23,6 +23,7 @@
         __AppUserPassword__: 12345a_A
         __FirstFunctionName__: createExample
         __Template__: /c/template/  #★秘密:仮
+        __UserProfile__: C:\Users\ts-ne
     準備:
         参考:
             - AMPLIFY SNS WORKSHOP
@@ -98,7 +99,7 @@
             - git commit -a -m "Create new React application"
             - git push
         - Git bash を閉じます
-    Visual Studio Code でデバッグできるようにします:
+    Jest を使ったテストを Visual Studio Code でデバッグできるようにします:
         参考:
             Jest + TypeScript + React + Visual Studio Code の開発環境を構築します:
                 https://github.com/Takakiriy/Trials/blob/master/try_Jest_TypeScript_React_VisualStudioCode/steps.yaml
@@ -205,10 +206,10 @@
                 ブラウザーが開いたら、すでにサインインできていることを確認し、ブラウザーを閉じます:
                 amplify configure の続きを表示します（Enter キーを押します）:
                 region: ap-northeast-1  #template: __RegionID__
-                user name: amplify-own  #template: __AmplifyUser__
+                user name: own-amplify  #template: __AmplifyUser__
                 (ブラウザーが開きます):
                     メニュー: ユーザー >> ユーザーを追加
-                    ユーザー名: amplify-own  #template: __AmplifyUser__
+                    ユーザー名: own-amplify  #template: __AmplifyUser__
                     アクセスの種類:
                         チェック:
                             プログラムによるアクセス
@@ -231,7 +232,7 @@
                 amplify configure の続きを表示します（Enter キーを押します）(2):
                 accessKeyId: AKIAZQ0A0A0A0A0A0A0A  #template: __AmplifyUserAccessKeyID__
                 secretAccessKey: kOn3A8FHo30F8qwofeAAAAJpoWpPwfOkaDSR_QFq  #template: __AmplifySecretAccessKey__
-                Profile Name: amplify-own  #template: __CLI_Profile__
+                Profile Name: own-amplify  #template: __CLI_Profile__
         React のプロジェクトに Amplify を追加します:
             参考: AMPLIFY SNS WORKSHOP >> BOOTSTRAP
                 https://amplify-sns.workshop.aws/ja/30_mock/00_bootstrap.html
@@ -249,7 +250,7 @@
             Build Command: npm.cmd run-script build  #// そのまま Enter
             Start Command: npm.cmd run-script start  #// そのまま Enter
             Do you want to use an AWS profile?: Y (Yes)  #// そのまま Enter
-            Please choose the profile you want to use: amplify-own  #// そのまま Enter  #template: __CLI_Profile__
+            Please choose the profile you want to use: own-amplify  #// そのまま Enter  #template: __CLI_Profile__
     認証機能（Amplify auth）(authentication) のカテゴリーを追加します:
         参考: AMPLIFY SNS WORKSHOP >> 認証機能
             https://amplify-sns.workshop.aws/ja/30_mock/10_auth.html
@@ -312,19 +313,266 @@
         - git add "."
         - git commit -a -m "Added auth (Cognito authentication)"
         - git push
-    プロジェクト フォルダーのバックアップをとります（コミットされないファイルがある可能性があるため）:
+    プロジェクト フォルダーのバックアップをとります（コミットされないファイルがある可能性があるため、念のため）:
         #Git bash
         - cd  "own"  #template: "__RepositoryName__"
         - rm -rf  "node_modules"
         - tar cvzf  "../own_back_up.tar.gz"  "."  #// tar.gz に圧縮します  #template: ../__BackupName__.tar.gz
         - npm ci  #// node_modules を復活します
+    結合テスト環境（cypress）をインストールします:
+        参考:
+            - aws >> Running end-to-end Cypress tests for your fullstack CI/CD deployment with Amplify Console
+                https://aws.amazon.com/jp/blogs/mobile/run-end-to-end-cypress-tests-for-your-fullstack-ci-cd-deployment-with-amplify-console/
+            - cypress >> Installing Cypress
+                https://docs.cypress.io/guides/getting-started/installing-cypress.html#Continuous-integration
+        cypress をインストールします:
+            #Git bash
+            - npm install cypress --save-dev
+        cypress の動作確認をします:
+            - ./node_modules/.bin/cypress open
+            - OK, got it! ボタンを押します:
+            - テストのファイル名をクリックするとテストが動きます:
+        cypress が Visual Studio Code と連携するように設定します:
+            参考: https://docs.cypress.io/guides/tooling/IDE-integration.html#File-Opener-Preference
+            メニュー: cypress ウィンドウ >> Settings（上）>> File Opener Preference
+            Other: C:\Users\ts-ne\AppData\Local\Programs\Microsoft VS Code\Code.exe
+                #template: __UserProfile__\AppData
+            メニュー: Tests（左上） >> ～.js を右クリック >> Open IDE（右）
+        テストコードを新規作成します:
+            __Project__/cypress/integration/authenticator_spec.js を作成します:
+                bash: |
+                    #// cd "__Project__"
+                    export  res_="/c/template/"  #template: "__Template__"
+                    cp "${res_}cypress/authenticator_spec.js" "cypress/integration/authenticator_spec.js"
+                    unset  res_
+            __Project__/cypress.json の baseURL フィールドを設定します: |
+                {
+                    "baseUrl": "http://localhost:3000"
+                }
+            #   // デプロイした URL が決まったら baseURL の設定を変更してください
+        ローカル Web サーバーでテストします:
+            Web サーバーを起動します:
+                #新しい bash など
+                - cd "__Project__"
+                - npm start
+                - ページが表示されることを確認したら、ブラウザーを閉じます:
+            cypress を起動します:
+                #新しい bash など
+                - cd "__Project__"
+                - ./node_modules/.bin/cypress open
+            cypress のウィンドウに表示された新規作成したテストをクリックします:
+                - authenticator_spec.js
+                - サインインできることを確認します:
+            （CI/CDを組むので不要）すべてのテストを実行します:
+                - cypress の Run all specs（右上）を押します
+                #// Amplify Console のテストのフェースで実行されます
+            テストの終了:
+                ブラウザー、cypress のウィンドウを閉じます:
+                npm start を実行したシェルで Ctrl + C を押します:
+        コミットしてリポジトリにプッシュします（Amplify Console が自動検出するため）:
+            #bash など
+            - git add "."
+            - git commit -a -m "Added cypress"
+            - git push
+    S3 (Amplify storage) のカテゴリーを追加します:
+        起動コマンド:
+            #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
+            - cd  "__Project__"
+            - amplify add storage
+        Please select from one of the below mentioned services: Content
+        Please provide a friendly name for your resource ...: s3
+        Please provide bucket name: own-amplify-storage  #template: __RepositoryName__-amplify-storage
+        Who should have access: Auth users only
+        What kind of access do you want for Authenticated users?: [create/update, read, delete]
+        Do you want to add a Lambda Trigger for your S3 Bucket?: y
+        Select from the following options: Create a new function
+        Do you want to edit the local S3Trigger9e312aaf lambda function now?: y
+            #// __Project__/amplify/backend/function/S3Trigger00000000/src/index.js が開きます
+            #// 00000000 は Lambda を作るたびに異なる値です
+        Press enter to continue:
+        コマンド:
+            #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
+            - cd  "__Project__"
+            - amplify status  #// Storage の Operation が Create になっているので push が必要です
+            - amplify push
+        S3 の Lambda Trigger の動作確認をします:
+            - https://console.aws.amazon.com/s3/ >> （作成日でソート） >>
+            - own-amplify-storage000000-production  #template: __RepositoryName__-amplify-storage000000-production
+                    #// 000000 は storage を作るたびに異なる値です
+            - 任意のファイルをアップロードします
+            - https://console.aws.amazon.com/lambda/ >> （最終更新日時でソート） >>
+            - S3Trigger00000000-production  #// 00000000 は Lambda を作るたびに異なる値です
+            - モニタリング（タブ）>> CloudWatch のログを表示（上）
+        コミットしてリポジトリにプッシュします:
+            #bash など
+            - git add "."
+            - git commit -a -m "Added S3 storage"
+            - git push
+        トラブルシューティング:
+            - ケース:
+                警告されたメッセージ:
+                    If a user is part of a user pool group,
+                    run "amplify update storage" to enable IAM group policies for CRUD operations
+                （メモ）以下を行うと Lambda がもう１つ作られてしまうため非推奨:
+                    S3 にアクセスできる IAM グループを作成します:
+                        #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
+                        - amplify update storage
+                    Please select from one of the below mentioned services: Content
+                    Who should have access: Auth users only
+            - ケース:
+                警告されたメッセージ: |
+                    Amazon S3 storage was already added to your project.
+                    undefined is present in amplify-meta.json
+                    An error occurred when adding the storage resource
+                対策:
+                    #bash
+                    - amplify remove storage
+    バックエンドの計算機能 (GraphQL, Lambda) の各種カテゴリーを追加します:
+        Amplify API (GraphQL) のカテゴリーを追加します:
+            #// これは下記「Amplify API (GraphQL) のカテゴリーを追加します」のコピーです
+            参考: AMPLIFY SNS WORKSHOP >> POST機能 BACK-END(1)
+                https://amplify-sns.workshop.aws/ja/30_mock/20_post_back_end.html
+            起動コマンド:
+                #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
+                - cd  "__Project__"
+                - amplify add api
+            Please select from one of the below mentioned services: GraphQL
+            Provide API name: own  #template: __RepositoryName__
+            Choose the default authorization type for the API: Amazon Cognito User Pool
+            Do you want to configure advanced settings for the GraphQL API: No, I am done.
+            Do you have an annotated GraphQL schema?: No
+            Choose a schema template: Single object with fields
+            Do you want to edit the schema now?: y
+            #// 最後の質問を y と答えると、下記のファイルがテキスト エディターで開きます
+        amplify/backend/api/own/schema.graphql を下記の内容に置き換えます : #// 下記「schema.graphql を下記の内容に置き換え」のコピー
+                #template: api/__RepositoryName__/schema
+            bash: |
+                export  res_="/c/template/"  #template: "__Template__"
+                cp "${res_}GraphQL/schema.graphql" "amplify/backend/api/own/schema.graphql"  #template: __RepositoryName__
+                unset  res_
+            @function の内容を下記に置き換えます: |
+                @function(name: "own-createExample-${env}")  #template: __RepositoryName__-__FirstFunctionName__-
+        プッシュします:
+            起動コマンド:
+                #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
+                - cd  "__Project__"
+                - amplify push
+            Do you want to generate code for your newly created GraphQL API: y  #// そのまま Enter
+            Choose the code generation language target: typescript
+            Enter the file name pattern of graphql queries, ...: src\graphql\**\*.ts  #// そのまま Enter
+            Do you want to generate/update all possible GraphQL operations ...: y  #// そのまま Enter
+            Enter maximum statement depth: 2  #// そのまま Enter
+            Enter the file name for the generated code: src\API.ts  #// そのまま Enter
+        src/App.js などを置き換えます:
+            bash: |
+                #// cd "__Project__"
+                export  res_="/c/template/"  #template: "__Template__"
+                cp "${res_}GraphQL/App.tsx"        "src/App.tsx"
+                cp "${res_}GraphQL/App.test.tsx"   "src/App.test.tsx"
+                cp "${res_}GraphQL/App1.tsx"       "src/App1.tsx"
+                cp "${res_}GraphQL/App1.test.tsx"  "src/App1.test.tsx"
+                unset  res_
+            #// 参考: API.graphql https://qiita.com/keito1024/items/851e5cb17895f867d216
+        （メモ）もし、Jest を使うときは src/App.js などを置き換えます:
+            bash: |
+                #// cd "__Project__"
+                sed -e 's/true;  \/\/export default App/false;  export default App/'  "src/App.tsx" > "src/App.tsx.updating"
+                sed -e "s/export default withAuthenticator/withAuthenticator/"  "src/App.tsx.updating" > "src/App.tsx"
+                rm  "src/App__.tsx"
+                unset  res_
+            #// Jest (npm test) は、デフォルトの Amplify Console では実行されません（テストされません）
+        AppSync (GraphQL) をデプロイします:
+            コマンド:
+                #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
+                - cd  "__Project__"
+                - amplify push
+            AppSync のデプロイ状況を確認します:
+                - https://ap-northeast-1.console.aws.amazon.com/appsync/home >>
+                - own-production  #template: __RepositoryName__-production
+                - データソース（左）>> createExample (で検索) >>  #template: __FirstFunctionName__
+                #// まだ Lambda リソースは作られていませんが ARN は表示されます
+        Lambda 関数を追加します:  #// 下記「Lambda 関数を追加します」のコピー
+            参考: AMPLIFY SNS WORKSHOP >> TIMELINE機能 ＠FUNCTION
+                https://amplify-sns.workshop.aws/50_follow_timeline/30_function_directive.html
+            関数カテゴリーを追加します:
+                起動コマンド:
+                    #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
+                    - cd  "__Project__"
+                    - amplify add function
+                Select which capability you want to add: Lambda function
+                Provide a friendly name for your resource to be used as ...: createExample  #template: __FirstFunctionName__
+                Provide the AWS Lambda function name: own-createExample
+                    #template: __RepositoryName__-__FirstFunctionName__
+                Choose the runtime that you want to use: NodeJS
+                Choose the function template that you want to use: Hello World
+                Do you want to access other resources created in this project ...?: Yes
+                Select the category: [api]
+                Select the operations you want to permit ...: (すべて選択)  #// Lambda 関数によって権限を調整してください
+                Do you want to invoke this function on a recurring schedule?: n
+                Do you want to configure Lambda layers for this function?: n
+                Do you want to edit the local lambda function now?: y
+                Press enter to continue:
+                #// 以上で、amplify\backend\function\createExample が作られます  #template: __FirstFunctionName__
+                #// 最後のオプションで amplify/backend/function/createExample/src/index.js がエディターが開きます  #template: __FirstFunctionName__
+            開いたファイルの exports.handler の定義を下記の内容に置き換えます: |
+                exports.handler = async (event) => {
+                    console.log('Lambda handler called.');
+                    console.log(event);
+
+                    return 'returnValue';
+                };
+        Lambda 関数をデプロイします:
+            コマンド:
+                #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
+                - cd  "__Project__"
+                - amplify push
+            AppSync と Lambda のデプロイ状況を確認します:
+                - https://ap-northeast-1.console.aws.amazon.com/appsync/home >> own-production  #template: __RepositoryName__-
+                    データソース（左）>> createExample （を検索） >> (リソース) >>  #template: __FirstFunctionName__
+                    モニタリング（タブ）>> CloudWatch のログを表示（上）
+                - https://ap-northeast-1.console.aws.amazon.com/lambda/home >>
+                    amplify-own- >> モニタリング（タブ）>> CloudWatch のログを表示（上） #template: amplify-__RepositoryName__-
+        ローカルのフロントエンドを実行してクラウドにあるバックエンドを動かします:
+            シェルでの操作:
+                #新しい Git bash
+                - cd "__Project__"
+                - npm start
+            (ブラウザーが開きます):
+                （もしサインイン画面が表示されたら）:
+                    ユーザー名: example1  #template: __AppUserName__
+                    パスワード: 12345a_A  #template: __AppUserPassword__
+                    サインイン ボタンをクリック:
+                Hello, example1 ! と表示されることを確認します:  #template: Hello, __AppUserName__ !
+                F12 キーを押して、コンソール タブを開きます:
+                Call ボタンを押して、バックエンドを動かします:
+                コンソールに {data {...}} が表示されることを確認します:
+            バックエンドのログを確認します:
+                - https://console.aws.amazon.com/lambda/ >> createExample  #template: __FirstFunctionName__
+                - モニタリング（タブ）>> CloudWatch のログを表示（上）
+            ブラウザーを閉じます:
+            bash のウィンドウで Ctrl + C キーを押して npm start を終了します:
+        （もし使わなくなったら）Lambda 関数を削除します:
+            - __Project__ フォルダーのバックアップを取ります
+            - amplify add function コマンドでダミーの Lambda 関数を追加します
+            - __Project__ フォルダーの変化を参考に使わなくなった Lambda に関するファイルを削除・編集します
+            - https://ap-northeast-1.console.aws.amazon.com/lambda/home >>
+                amplify-own- (で検索) >> 使わなくなった Lambda を削除します  #template: amplify-__RepositoryName__-
+            - https://ap-northeast-1.console.aws.amazon.com/cloudwatch/ >> ロググループ
+                /aws/lambda/amplify-own-RequestUnicorn >> アクション >> ロググループの削除
+        コミットしてリポジトリにプッシュします:
+            #bash など
+            - git add "."
+            - git commit -a -m "Added AppSync(api) and Lambda(function)"
+            - git push
     Amplify Console に CI/CD環境を構築します（hosting）:
+        #// 注意 cypress を使うときは先に cypress をインストールしないと自動検出による自動設定が行われません
+        #// hosting を入れなおすことで自動設定が行われるかもしれません（★未確認）
         参考: AMPLIFY SNS WORKSHOP >> 手動デプロイ
             https://amplify-sns.workshop.aws/ja/40_hosting/00_manual_deployment.html
         Amplify hosting のカテゴリーを追加します:
             コマンド:
                 #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
-                - cd "own"  #template: "__RepositoryName__"
+                - cd "__Project__"
                 - amplify add hosting
             Select the plugin module to execute: Hosting with Amplify Console (...)
             Choose a type Manual deployment: Continuous deployment
@@ -350,10 +598,10 @@
                         タグの追加 (オプション):
                             次のステップ ボタン:
                         確認:
-                            ロール名: amplifyconsole-backend-role-own  #template: __AmplifyRole__
+                            ロール名: own-amplifyconsole-backend-role  #template: __AmplifyRole__
                             ロールの作成 ボタン:
                         IAM が表示されているブラウザーのタブを閉じます:
-                    Select an existing service role ...: amplifyconsole-backend-role-own  #template: __AmplifyRole__
+                    Select an existing service role ...: own-amplifyconsole-backend-role  #template: __AmplifyRole__
                         #// ロール名を入力する右にある右回りボタンを押すと選べるようになります
                     次へ ボタン:
                 確認:
@@ -364,6 +612,7 @@
                 #//     https://ap-northeast-1.console.aws.amazon.com/cognito/home >>
                 #//     ユーザープールの管理 >> own... >> ユーザーとグループ  #template: __RepositoryName__
                 #// master（右半分の左上）をクリックするとデプロイのログが表示されます
+                #// Amplify Console URL: https://console.aws.amazon.com/amplify/
             Continuous deployment is configured in the Amplify Console...:  #// Enter キーを押します
             (下記のように表示されます。Domaiin 列はバックエンドのURLです): |
                 ┌──────────────┬──────────────────────────────────────────────┐
@@ -372,125 +621,23 @@
                 │ master       │ https://master.d2oudfgbjw0ivu.amplifyapp.com │
                 └──────────────┴──────────────────────────────────────────────┘
             コミットすると CI/CD パイプラインが動くことを確認します:
-                - たとえば react2/public/index.html の <titie> を変更します
+                - たとえば __Project__/public/index.html の <titie> を変更します
                 - git add "."
-                - git commit -a -m "Second commit"
+                - git commit -a -m "added Amplify hosting"
                 - git push
-                #// この段階では、まだパイプライン内でテストは行われません
-    バックエンドの計算機能 (GraphQL, Lambda) の各種カテゴリーを追加します:
-        Amplify API (GraphQL) のカテゴリーを追加します:
-            #// これは下記「Amplify API (GraphQL) のカテゴリーを追加します」のコピーです
-            参考: AMPLIFY SNS WORKSHOP >> POST機能 BACK-END(1)
-                https://amplify-sns.workshop.aws/ja/30_mock/20_post_back_end.html
-            起動コマンド:
-                #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
-                - cd  "__Project__"
-                - amplify add api
-            Please select from one of the below mentioned services: GraphQL
-            Provide API name: own  #template: __RepositoryName__
-            Choose the default authorization type for the API: Amazon Cognito User Pool
-            Do you want to configure advanced settings for the GraphQL API: No, I am done.
-            Do you have an annotated GraphQL schema?: No
-            Choose a schema template: Single object with fields
-            Do you want to edit the schema now?: y
-            #// 最後の質問を y と答えると、下記のファイルがテキスト エディターで開きます
-        amplify/backend/api/api1/schema.graphql を下記の内容に置き換えます : #// 下記「schema.graphql を下記の内容に置き換え」のコピー
-            bash: |
-                export  res_="/c/template/"  #template: "__Template__"
-                cp "${res_}GraphQL/schema.graphql" "amplify/backend/api/own/schema.graphql"
-                unset  res_
-        プッシュします:
-            起動コマンド:
-                #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
-                - cd  "__Project__"
-                - amplify push
-            Do you want to generate code for your newly created GraphQL API: y  #// そのまま Enter
-            Choose the code generation language target: typescript
-            Enter the file name pattern of graphql queries, ...: src\graphql\**\*.ts  #// そのまま Enter
-            Do you want to generate/update all possible GraphQL operations ...: y  #// そのまま Enter
-            Enter maximum statement depth: 2  #// そのまま Enter
-            Enter the file name for the generated code: src\API.ts  #// そのまま Enter
-        src/App.js などを置き換えます:
-            bash: |
-                #// cd "__Project__"
-                export  res_="/c/template/"  #template: "__Template__"
-                cp "${res_}GraphQL/App.tsx"        "src/App.tsx"
-                cp "${res_}GraphQL/App.test.tsx"   "src/App.test.tsx"
-                cp "${res_}GraphQL/App1.tsx"       "src/App1.tsx"
-                cp "${res_}GraphQL/App1.test.tsx"  "src/App1.test.tsx"
-                unset  res_
-            #// 参考: API.graphql https://qiita.com/keito1024/items/851e5cb17895f867d216
-            @function の内容を下記に置き換えます: |
-                @function(name: "own-createExample-${env}")  #template: __RepositoryName__-__FirstFunctionName__-
-        Jest を使うときは src/App.js などを置き換えます:
-            bash: |
-                #// cd "__Project__"
-                sed -e 's/true;  \/\/export default App/false;  export default App/'  "src/App.tsx" > "src/App.tsx.updating"
-                sed -e "s/export default withAuthenticator/withAuthenticator/"  "src/App.tsx.updating" > "src/App.tsx"
-                rm  "src/App__.tsx"
-                unset  res_
-        AppSync (GraphQL) をデプロイします:
-            コマンド:
-                #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
-                - cd  "__Project__"
-                - amplify push
-            AppSync のデプロイ状況を確認します:
-                - https://ap-northeast-1.console.aws.amazon.com/appsync/home >>
-                    データソース（左）>> createExample >>  #template: __FirstFunctionName__
-                #// まだ Lambda リソースは作られていませんが ARN は表示されます
-        Lambda 関数を追加します:  #// 下記「Lambda 関数を追加します」のコピー
-            参考: AMPLIFY SNS WORKSHOP >> TIMELINE機能 ＠FUNCTION
-                https://amplify-sns.workshop.aws/50_follow_timeline/30_function_directive.html
-            関数カテゴリーを追加します:
-                起動コマンド:
-                    #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
-                    - cd  "__Project__"
-                    - amplify add function
-                Select which capability you want to add: Lambda function
-                Provide a friendly name for your resource to be used as ...: createExample  #template: __FirstFunctionName__
-                Provide the AWS Lambda function name: own-createExample
-                    #template: __RepositoryName__-__FirstFunctionName__
-                Choose the runtime that you want to use: NodeJS
-                Choose the function template that you want to use: Hello World
-                Do you want to access other resources created in this project ...?: Yes
-                Select the category: [api]
-                Select the operations you want to permit ...: [create, read]
-                Do you want to invoke this function on a recurring schedule?: n
-                Do you want to configure Lambda layers for this function?: n
-                Do you want to edit the local lambda function now?: y
-                Press enter to continue:
-                #// 以上で、amplify\backend\function\createExample が作られます  #template: __FirstFunctionName__
-                #// 最後のオプションで amplify/backend/function/createExample/src/index.js がエディターが開きます  #template: __FirstFunctionName__
-            開いたファイルの exports.handler の定義を下記の内容に置き換えます: |
-                exports.handler = async (event) => {
-                    console.log('Lambda handler called.');
-                    console.log(event);
-
-                    return 'returnValue';
-                };
-        Lambda 関数をデプロイします:
-            コマンド:
-                #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
-                - cd  "__Project__"
-                - amplify push
-            AppSync のデプロイ状況を確認します:
-                - https://ap-northeast-1.console.aws.amazon.com/appsync/home >> own-production  #template: __RepositoryName__-
-                    データソース（左）>> createExample （を検索） >> (リソース) >>  #template: __FirstFunctionName__
-                    モニタリング（タブ）>> CloudWatch のログを表示（上）
-                - https://ap-northeast-1.console.aws.amazon.com/lambda/home >>
-                    amplify-own- >> モニタリング（タブ）>> CloudWatch のログを表示（上） #template: amplify-__RepositoryName__-
-        （もし使わなくなったら）Lambda 関数を削除します:
-            - __Project__ フォルダーのバックアップを取ります
-            - amplify add function コマンドでダミーの Lambda 関数を追加します
-            - __Project__ フォルダーの変化を参考に使わなくなった Lambda に関するファイルを削除・編集します
-            - https://ap-northeast-1.console.aws.amazon.com/lambda/home >>
-                amplify-own- (で検索) >> 使わなくなった Lambda を削除します  #template: amplify-__RepositoryName__-
-            - https://ap-northeast-1.console.aws.amazon.com/cloudwatch/ >> ロググループ
-                /aws/lambda/amplify-own-RequestUnicorn >> アクション >> ロググループの削除
-
-    (Jest (front and back), cypress(front)):    
-
-
+#★now:
+    （書きかけ）アプリケーションの URL を調べてメモします:
+        設定:
+            __AppURL__: https://master.d32anw0j12k1z4.amplifyapp.com/
+        コマンド:
+            #bash など
+            - amplify status
+            #// Amplify hosting urls: をメモします
+        URL: https://master.d32anw0j12k1z4.amplifyapp.com/  #template: __AppURL__
+        __Project__/cypress.json の baseURL フィールドを設定します: |
+            {
+                "baseUrl": "https://master.d32anw0j12k1z4.amplifyapp.com/",  "comment": "#template: __AppURL__"
+            }
 
     （書きかけ）CI/CD パイプラインで Jest によるテストが失敗したときに警告されるようにします:
         amplify.yaml (amplify.yml) を編集します:
@@ -885,18 +1032,18 @@ Amplify CLI を使うプロジェクトに新しい人が参加する:
     #// マスターはクラウドとGitHubの両方です
     設定:
         __AWS_AccountID__: 123456789012  #★秘密:仮
-        __AWS_UserName__: user2
+        __AWS_UserName__: user1
         __RegionName__: 東京  #// CodePipeline のパイプラインを作成するリージョンの名前
         __RegionID__: ap-northeast-1  #// __RegionName__ の ID
-        __AmplifyUser__: amplify-react4  #// Amplify 用 IAM ユーザー、Amplify CLI で必要な権限を持つ
+        __AmplifyUser__: own-amplify  #// Amplify 用 IAM ユーザー、Amplify CLI で必要な権限を持つ
         __AmplifyUserAccessKeyID__: AKIAZQ0A0A0A0A0A0A0A  #★秘密:仮  #// 手順内でメモする値
         __AmplifySecretAccessKey__: kOn3A8FHo30F8qwofeAAAAJpoWpPwfOkaDSR_QFq  #★秘密:仮  #// 手順内でメモする値
-        __CLI_Profile__: amplify-react4  #// aws 関連の CLI のプロファイル名
+        __CLI_Profile__: own-amplify  #// aws 関連の CLI のプロファイル名
         __GitHubOwnerAccount__: Takakiriy  #// リポジトリのオーナーのアカウント名
-        __GitHubCollaboratorAccount__: Takakiri1  #// リポジトリにアクセスするユーザーのアカウント名
-        __GitCollaboratorName__: Collaborator Name  #// git log コマンドで表示されるユーザー名
-        __GitCollaboratorMail__: collaborator@example.com  #// git log コマンドで表示されるメールアドレス
-        __RepositoryName__: react4  #// アプリケーション名
+        __GitHubCollaboratorAccount__: Takakiriy  #// リポジトリにアクセスするユーザーのアカウント名
+        __GitCollaboratorName__: Your Name  #// git log コマンドで表示されるユーザー名
+        __GitCollaboratorMail__: you@example.com  #// git log コマンドで表示されるメールアドレス
+        __RepositoryName__: own  #// アプリケーション名
         __AppUserName__: example1
         __AppUserMail__: example@example.com  #★秘密:仮
         __AppUserPassword__: 12345a_A
@@ -906,9 +1053,9 @@ Amplify CLI を使うプロジェクトに新しい人が参加する:
             参考: GitHub >> コラボレーターを個人リポジトリに招待する
                 https://docs.github.com/ja/free-pro-team@latest/github/setting-up-and-managing-your-github-user-account/inviting-collaborators-to-a-personal-repository
             メニュー:
-                - https://github.com/Takakiriy/react4 >>  #template: https://github.com/__GitHubOwnerAccount__/__RepositoryName__
+                - https://github.com/Takakiriy/own >>  #template: https://github.com/__GitHubOwnerAccount__/__RepositoryName__
                 - Setting (タブ) >> Manage access（左）>> Invite a collaborator
-            招待する人: Takakiri1  #template: __GitHubCollaboratorAccount__
+            招待する人: Takakiriy  #template: __GitHubCollaboratorAccount__
             Add NAME to REPOSITORY ボタン:  #// 押すとリポジトリへの招待メールが発送されます
             招待を受けた人は招待を受け入れます:
                 - 届いたメールにあるボタンを押します
@@ -929,8 +1076,8 @@ Amplify CLI を使うプロジェクトに新しい人が参加する:
                 - git clone  "https://github.com/githubtraining/hellogitworld.git"
                 - 成功したら、デスクトップにある hellogitworld フォルダーを削除します ( rm -rf hellogitworld )
                 - Git のユーザー名を設定します:
-                    - git config --global user.email "collaborator@example.com"  #template: "__GitCollaboratorMail__"
-                    - git config --global user.name  "Collaborator Name"        #template: "__GitCollaboratorName__"
+                    - git config --global user.email "you@example.com"  #template: "__GitCollaboratorMail__"
+                    - git config --global user.name  "Your Name"        #template: "__GitCollaboratorName__"
                 - Git bash を閉じます:
             Visual Studio Code をインストールします:
                 - https://code.visualstudio.com/
@@ -944,7 +1091,7 @@ Amplify CLI を使うプロジェクトに新しい人が参加する:
                 （ユーザー）: IAM ユーザー
                 アカウントID: 123456789012  #template: __AWS_AccountID__
                 次へ ボタン:
-                ユーザー名: user2  #template: __AWS_UserName__
+                ユーザー名: user1  #template: __AWS_UserName__
                 パスワード: __AWS_UserPassword__
                 サインイン ボタン:
             リージョン: 東京 （右上） #template: __RegionName__
@@ -967,9 +1114,9 @@ Amplify CLI を使うプロジェクトに新しい人が参加する:
                 ブラウザーが開いたら、すでにサインインできていることを確認し、ブラウザーを閉じます:
                 amplify configure の続きを表示します（Enter キーを押します）:
                 region: ap-northeast-1  #template: __RegionID__
-                user name: amplify-react4  #template: __AmplifyUser__
+                user name: own-amplify  #template: __AmplifyUser__
                 ブラウザーが開いたらアクセスキーを確認します:
-                    - ユーザー >> amplify-react4  #template: __AmplifyUser__
+                    - ユーザー >> own-amplify  #template: __AmplifyUser__
                     - 認証情報 >> アクセスキー ID:
                     - accessKeyId: AKIAZQ0A0A0A0A0A0A0A  #template: __AmplifyUserAccessKeyID__
                     - ブラウザーを閉じます:
@@ -977,23 +1124,23 @@ Amplify CLI を使うプロジェクトに新しい人が参加する:
                 シークレットアクセスキーを教えてもらい、入力します:
                     accessKeyId: AKIAZQ0A0A0A0A0A0A0A  #template: __AmplifyUserAccessKeyID__
                     secretAccessKey: kOn3A8FHo30F8qwofeAAAAJpoWpPwfOkaDSR_QFq  #template: __AmplifySecretAccessKey__
-                Profile Name: amplify-react4  #template: __CLI_Profile__
+                Profile Name: own-amplify  #template: __CLI_Profile__
     プライベート リポジトリに接続してダウンロード（クローン）します:
         #Git bash:
         - cd  "__ParentOfProject__"
-        - git clone "https://github.com/Takakiriy/react4.git"  #template: https://github.com/__GitHubOwnerAccount__/__RepositoryName__.git
+        - git clone "https://github.com/Takakiriy/own.git"  #template: https://github.com/__GitHubOwnerAccount__/__RepositoryName__.git
             #// ここでエラーになるときは Git をアンインストール＆インストールしてください
         - Sign in with your browser ボタン  #// プライベート リポジトリのときだけこのボタンが表示されます
-        - Username: Takakiri1  #template: __GitHubCollaboratorAccount__
+        - Username: Takakiriy  #template: __GitHubCollaboratorAccount__
         - 認証に成功したらブラウザーを閉じます:
     aws のリソースと接続します:
         起動コマンド:
             #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
-            - cd "react4"  #template: "__RepositoryName__"
+            - cd "own"  #template: "__RepositoryName__"
             - amplify pull
         Do you want to use an AWS profile?: y
-        Please choose the profile you want to use: amplify-react4  #template: __CLI_Profile__
-        Which app are you working on?: react4  #template: __RepositoryName__
+        Please choose the profile you want to use: own-amplify  #template: __CLI_Profile__
+        Which app are you working on?: own  #template: __RepositoryName__
         Choose your default editor: Visual Studio Code  #// そのまま Enter
         Choose the type of app that you're building: javascript  #// そのまま Enter
         What javascript framework are you using: react  #// そのまま Enter
@@ -1004,19 +1151,20 @@ Amplify CLI を使うプロジェクトに新しい人が参加する:
         Do you plan on modifying this backend?: y
     aws のリソースと接続しできたことを確認します:
         #Git bash or Git CMD
-        - cd "react4"  #template: "__RepositoryName__"
+        - cd "own"  #template: "__RepositoryName__"
+        - amplify status
         - amplify push
     デプロイできることを確認します（アプリケーションによって詳細は変わります）:
         amplify/backend/function/createExample/src/index.js の exports.handler に追加: |  #template: __FirstFunctionName__
             console.log('amplify push test.');
         デプロイします:
             #Git bash or Git CMD
-            - cd "react4"  #template: "__RepositoryName__"
+            - cd "own"  #template: "__RepositoryName__"
             - amplify push
         ローカルのフロントエンドを実行してクラウドにあるバックエンドを動かします:
             シェルでの操作:
                 #新しい Git bash
-                - cd "react4"  #template: "__RepositoryName__"
+                - cd "own"  #template: "__RepositoryName__"
                 - npm ci  #// node_modules フォルダーが無いとき 
                 - npm start
             (ブラウザーが開きます):
@@ -1042,7 +1190,13 @@ Amplify CLI を使うプロジェクトに新しい人が参加する:
 
 aws 公式：AMPLIFY SNS WORKSHOP（途中まで）:
     #// AWS Amplify、Amazon Cognito、GitHub を使用
-
+    参考:
+        - AMPLIFY SNS WORKSHOP
+            https://amplify-sns.workshop.aws/ja/
+        - 継続的デプロイを使用した静的ウェブホスティング
+            https://aws.amazon.com/jp/getting-started/hands-on/build-serverless-web-app-lambda-apigateway-s3-dynamodb-cognito/module-1/
+        - AWS Amplify と Vue.js を使って、基本的な認証と CRUD 操作ができる Web アプリケーションを作る
+            https://aws.amazon.com/jp/builders-flash/202008/amplify-crud-app/
     設定:
         __AWS_AccountID__: 123456789012  #★秘密:仮
         __AWS_UserName__: user1
@@ -1064,15 +1218,7 @@ aws 公式：AMPLIFY SNS WORKSHOP（途中まで）:
         __AppUserMail__: example@example.com  #★秘密:仮
         __AppUserPassword__: 12345aA_
         __StagingPassword__: 12345aA19FEpQninoAFE83e  #★秘密:仮
-
     準備:
-        参考:
-            - AMPLIFY SNS WORKSHOP
-                https://amplify-sns.workshop.aws/ja/
-            - 継続的デプロイを使用した静的ウェブホスティング
-                https://aws.amazon.com/jp/getting-started/hands-on/build-serverless-web-app-lambda-apigateway-s3-dynamodb-cognito/module-1/
-            - AWS Amplify と Vue.js を使って、基本的な認証と CRUD 操作ができる Web アプリケーションを作る
-                https://aws.amazon.com/jp/builders-flash/202008/amplify-crud-app/
         ローカルPCへ各種ソフトウェアをインストールします:
             Node.js をインストールします:
                 - https://nodejs.org/ja/download/ >> Windows Installer (.msi) >> 64-bit
@@ -1548,6 +1694,7 @@ aws 公式：AMPLIFY SNS WORKSHOP（途中まで）:
             #// プロビジョン >> ビルド >> デプロイ >> 検証 が完了するまで待ちます（約3分）
             #// https://..（左下）をクリックすると実行します
             #// master（右半分の左上）をクリックするとデプロイのログが表示されます
+            #// Amplify Console URL: https://console.aws.amazon.com/amplify/
         Continuous deployment is configured in the Amplify Console...:  #// Enter キーを押します
         (下記のように表示されます。Domaiin 列はバックエンドのURLです): |
             ┌──────────────┬──────────────────────────────────────────────┐
@@ -1560,6 +1707,13 @@ aws 公式：AMPLIFY SNS WORKSHOP（途中まで）:
             - git add "."
             - git commit -a -m "Second commit"
             - git push
+        （メモ）ホスティング機能を削除するには:
+            参考: https://amplify-sns.workshop.aws/ja/70_multi_env/10_amplify_console/create_cicd.html
+            Git CMD: amplify remove hosting
+            Are you sure you want to delete the resource? ... : y
+            Git CMD: amplify push
+            以下を行ってはいけません:
+                ブラウザー: https://console.aws.amazon.com/amplify/ >> （アプリ名） >> アクション >> アプリの削除
     staging 環境（＝develop ブランチ）を構築します:
         参考: AMPLIFY SNS WORKSHOP >> 複雑な開発環境の構築(1)
             https://amplify-sns.workshop.aws/70_multi_env/20_branch_autodetection.html
@@ -1851,8 +2005,6 @@ aws 公式：AMPLIFY SNS WORKSHOP（途中まで）:
                 - ブラウザーを閉じます:
                 - amplify mock api を実行した bash で Ctrl + C を押します:
 
-
-
     トラブルシューティング:
         メモ: |
             https://ap-northeast-1.console.aws.amazon.com/appsync/
@@ -1883,6 +2035,7 @@ aws 公式：AMPLIFY SNS WORKSHOP（途中まで）:
 
 
     リソースのクリーンアップ:
+        #// 以下は amplify delete コマンドを使ってクリーンする場合です
         aws のリージョンを選択します:
             AWS マネジメント コンソールにサインインします:
                 URL: https://console.aws.amazon.com/
@@ -2143,6 +2296,7 @@ aws 公式：サーバーレスのウェブアプリケーションを構築し�
             #// プロビジョン >> ビルド >> デプロイ >> 検証 が完了するまで待ちます（約2分）
             #// https://..（左下）をクリックすると実行します
             #// master（右半分の左上）をクリックするとデプロイのログが表示されます
+            #// Amplify Console URL: https://console.aws.amazon.com/amplify/
             #// ただし、まだフロントエンドしか動いていません
         Git リポジトリをコミットして自動的にデプロイされることを確認します:
             たとえば index.html を編集してタイトルバーに表示される内容を変更します: |
@@ -2590,6 +2744,8 @@ aws 公式：サーバーレスのウェブアプリケーションを構築し�
             DNS 設定の検証 のモーダルを閉じます:
 
     リソースのクリーンアップ:
+        #// 以下は Amplify Console から削除する場合です
+        #// コマンドを使う場合は、上記「amplify delete コマンドを使ってクリーンする場合」を参照
         aws のリージョンを選択します:
             AWS マネジメント コンソールにサインインします:
                 URL: https://console.aws.amazon.com/

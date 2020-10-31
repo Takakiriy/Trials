@@ -1,4 +1,4 @@
-﻿（★書きかけ）Amplify Console ＋ React のウェブアプリケーションを構築します:
+﻿React のウェブアプリケーションの Amplify Console CI/CD 環境を構築します:
     #// AWS Amplify、Amazon Cognito、GitHub を使用
     設定:
         __AWS_AccountID__: 123456789012  #★秘密:仮
@@ -24,6 +24,7 @@
         __FirstFunctionName__: createExample
         __Template__: /c/template/  #★秘密:仮
         __UserProfile__: C:\Users\ts-ne
+        __StagingPassword__: 12345aA19FEpQninoAFE83e  #★秘密:仮
     準備:
         参考:
             - AMPLIFY SNS WORKSHOP
@@ -293,7 +294,7 @@
                 - Customizing the authentication experience of Amplify’s withAuthenticator.
                     https://medium.com/@coryschimmoeller/customizing-the-authentication-experience-of-amplifys-withauthenticator-e6f2089ff469
         動作確認をします:
-            コマンド:
+            起動コマンド:
                 #新しい bash など
                 - cd "__Project__"
                 - npm start
@@ -351,7 +352,7 @@
             メニュー: cypress ウィンドウ >> Settings（上）>> File Opener Preference
             Other: C:\Users\ts-ne\AppData\Local\Programs\Microsoft VS Code\Code.exe
                 #template: __UserProfile__\AppData
-            メニュー: Tests（左上） >> ～.js を右クリック >> Open IDE（右）
+            メニュー(2): Tests（左上） >> ～.js を右クリック >> Open IDE（右）
         テストコードを新規作成します:
             __Project__/cypress/integration/authenticator_spec.js を作成します:
                 bash: |
@@ -478,7 +479,7 @@
                 export  res_="/c/template/"  #template: "__Template__"
                 cp "${res_}GraphQL/schema.graphql" "amplify/backend/api/own/schema.graphql"  #template: __RepositoryName__
                 unset  res_
-            @function の内容を下記に置き換えます: |
+            ＠function の内容を下記に置き換えます: |
                 @function(name: "own-createExample-${env}")  #template: __RepositoryName__-__FirstFunctionName__-
         AppSync (GraphQL) をデプロイします:
             起動コマンド:
@@ -533,8 +534,8 @@
                 - amplify push
             AppSync と Lambda のデプロイ状況を確認します:
                 - https://ap-northeast-1.console.aws.amazon.com/appsync/home >> own-production  #template: __RepositoryName__-
-                    データソース（左）>> createExample （を検索） >> (リソース) >>  #template: __FirstFunctionName__
-                    モニタリング（タブ）>> CloudWatch のログを表示（上）
+                -   データソース（左）>> createExample （を検索） >> (リソース) >>  #template: __FirstFunctionName__
+                -   モニタリング（タブ）>> CloudWatch のログを表示（上）
                 - https://ap-northeast-1.console.aws.amazon.com/lambda/home >>
                     amplify-own- >> モニタリング（タブ）>> CloudWatch のログを表示（上） #template: amplify-__RepositoryName__-
         src/App.js などを置き換えます:
@@ -592,8 +593,11 @@
     Amplify Console に CI/CD環境を構築します（hosting カテゴリーの追加）:
         #// 注意 cypress を使うときは先に cypress をインストールしないと自動検出による自動設定が行われません
         #// hosting を入れなおすことで自動設定が行われるかもしれません（★未確認）
-        #// リポジトリの所有者に hosting カテゴリーの追加だけお願いするときは、
-        #// 下記「Amplify CLI を使うプロジェクトに新しい人が参加するとき」を参照
+        （リポジトリの所有者に hosting カテゴリーの追加だけお願いするとき):
+            - 所有者は、下記「Amplify CLI を使うプロジェクトに新しい人が参加するとき」を参照、
+                「hosting カテゴリーの追加」まで行います
+            - hosting カテゴリーの追加の作業が終わったら、コラボレーターは git pull と amplify pull してください
+        #// 以下はリポジトリの所有者が自分のとき
         参考: AMPLIFY SNS WORKSHOP >> 手動デプロイ
             https://amplify-sns.workshop.aws/ja/40_hosting/00_manual_deployment.html
         Amplify hosting のカテゴリーを追加します:
@@ -653,36 +657,89 @@
                 - git add "."
                 - git commit -a -m "added Amplify hosting"
                 - git push
-
-    （書きかけ）アプリケーションの URL を調べてメモします:
-        設定:
-            __AppURL__: https://master.d32anw0j12k1z4.amplifyapp.com/
-        コマンド:
-            #bash など
-            - amplify status
-            #// Amplify hosting urls: をメモします
-        URL: https://master.d32anw0j12k1z4.amplifyapp.com/  #template: __AppURL__
-        __Project__/cypress.json の baseURL フィールドを設定します: |
-            {
-                "baseUrl": "https://master.d32anw0j12k1z4.amplifyapp.com/",  "comment": "#template: __AppURL__"
-            }
-
-    （書きかけ）CI/CD パイプラインで Jest によるテストが失敗したときに警告されるようにします:
-        amplify.yaml (amplify.yml) を編集します:
-            - https://ap-northeast-1.console.aws.amazon.com/amplify/home >>
-            - own >> ビルドの設定 >> 編集
-
-        たとえば __Project__/src/App.test.tsx を変更します:
-            before:
-                expect(linkElement).toBeInTheDocument();
-            after:
-                expect(linkElement).not.toBeInTheDocument();
-        コミットします:
-            - git add "."
-            - git commit -a -m "Test of CI/CD pipeline"
-            - git push
-            - https://ap-northeast-1.console.aws.amazon.com/amplify/home
-        失敗したことを確認したら、成功するように戻します:
+    staging 環境（＝develop ブランチ）を構築します:
+        参考:
+            - AMPLIFY SNS WORKSHOP >> GITHUBと連携してCI/CD環境を構築する(2)
+                https://amplify-sns.workshop.aws/ja/70_multi_env/10_amplify_console/create_cicd.html
+            - AMPLIFY SNS WORKSHOP >> 複雑な開発環境の構築(1)
+                https://amplify-sns.workshop.aws/70_multi_env/20_branch_autodetection.html
+        リポジトリと同期します:
+            #Git bash
+            - git status  #// clean 状態であること
+            - git branch  #// 分岐元が正しいこと（例：master ブランチ）
+            - git pull    #// リポジトリと同期します
+        クラウドと同期します:
+            #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
+            - cd  "__Project__"
+            - amplify pull
+        Amplify Console に staging 環境を新規作成します:
+            起動コマンド:
+                #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
+                - cd  "__Project__"
+                - amplify env add  #// staging 環境が無いときは作ります
+            Do you want to use an existing environment?: No
+            Enter a name for the environment: staging
+            Do you want to use an AWS profile?: Yes
+            Please choose the profile you want to use: own-amplify  #template: __CLI_Profile__
+        リポジトリに develop ブランチを新規作成します:
+            #Git bash
+            - cd  "__Project__"
+            - git status  #// clean 状態であること
+            - git branch  #// 分岐元が正しいこと（例：master ブランチ）
+            - git pull    #// リポジトリと同期します
+            - git checkout -b "develop"  #// ローカルに develop ブランチを新規作成します
+            - git push --set-upstream origin "develop"  #// リポジトリに develop ブランチを作成します
+        staging 環境のクラウドにプッシュします:
+            #Git bash
+            - cd  "__Project__"
+            - amplify env checkout staging  #// 環境を切り替えます
+            - amplify push
+        テスト用アカウントを staging 環境の Cognito に作成します:
+            #// Cognito リソースは production 環境のリソースとは別に存在します
+            #// この手順においては、CI/CD パイプラインの中のテスト フェーズが通るために必要です
+            起動コマンド:
+                #新しい Git bash
+                - cd "__Project__"
+                - npm start
+            (ブラウザーが開きます):
+                「アカウントを作る」をクリック:
+                サインアップ画面:
+                    ユーザー名: example1  #template: __AppUserName__
+                    パスワード: 12345a_A  #template: __AppUserPassword__
+                    メールアドレス: example@example.com  #template: __AppUserMail__
+                    アカウントを作る ボタン:
+                    確認コード: ____
+                    確定 ボタンをクリック:
+                サインインできたことを確認します:
+                ブラウザーを閉じます:
+        CI/CD 環境で、stating 環境と develop ブランチを紐付けます:
+            メニュー: https://ap-northeast-1.console.aws.amazon.com/amplify/home >>
+                own >> Frontend environments (タブ) >> ブランチの接続（右上）  #template: __RepositoryName__
+            ブランチ: develop
+            Backend environment: staging
+            次へ ボタン:
+            保存してデプロイ ボタン:
+            #// デプロイが完了するまで待ちます
+        （もしテストに失敗したら）:
+            メニュー: https://ap-northeast-1.console.aws.amazon.com/amplify/home >>
+                own >> develop（カードの左上）>> Test（タブ）  #template: __RepositoryName__
+            View log ボタン（右上）:
+            Doanload artifacts ボタン:
+            #// 上記のボタンで表示される内容を確認してデバッグしてください
+            デバッグが完了したらリポジトリにプッシュして CI/CD パイプラインを動かしてください:
+                #Git bash など
+                - git add "."
+                - git commit -a -m "Added Amplify Console staging environment"
+                - git push
+        開発者以外が使えないようにするために、Basic 認証を追加します:
+            メニュー: https://ap-northeast-1.console.aws.amazon.com/amplify/home >>
+                (アプリ名) >> アクセスコントロール (左) >> アクセスの管理（右上）
+            ブランチ名: develop
+            Access setting: 制限-パスワードが必須です
+            username: staging  #// 例
+            password: 12345aA19FEpQninoAFE83e #template: __StagingPassword__
+            Save ボタン:
+            #// Web アプリを起動して、Basic 認証してから表示できることをチェックします
 
 Lambda from GraphQL のログを取れるようにします:
     設定:
@@ -1716,7 +1773,6 @@ aws 公式：AMPLIFY SNS WORKSHOP（途中まで）:
             - git add "."
             - git commit -a -m "First deploy"
             - git push
-
     ステージング環境を追加します:
         参考: AMPLIFY SNS WORKSHOP >> GITHUBと連携してCI/CD環境を構築する(2)
             https://amplify-sns.workshop.aws/ja/70_multi_env/10_amplify_console/create_cicd.html
@@ -1805,7 +1861,7 @@ aws 公式：AMPLIFY SNS WORKSHOP（途中まで）:
             参考: https://amplify-sns.workshop.aws/ja/70_multi_env/10_amplify_console/create_cicd.html
             Git CMD: amplify remove hosting
             Are you sure you want to delete the resource? ... : y
-            Git CMD: amplify push
+            Git CMD(2): amplify push
             以下を行ってはいけません:
                 ブラウザー: https://console.aws.amazon.com/amplify/ >> （アプリ名） >> アクション >> アプリの削除
     staging 環境（＝develop ブランチ）を構築します:
@@ -2398,7 +2454,6 @@ aws 公式：サーバーレスのウェブアプリケーションを構築し�
                 - git push
             自動デプロイされた結果を確認します:
                 メニュー: https://console.aws.amazon.com/amplify/home >> wildrydes-site  #template: __RepositoryName__
-
     ユーザー認証機能を追加します:
         参考: ユーザー管理
             https://aws.amazon.com/jp/getting-started/hands-on/build-serverless-web-app-lambda-apigateway-s3-dynamodb-cognito/module-2/
@@ -2902,3 +2957,34 @@ aws 公式：サーバーレスのウェブアプリケーションを構築し�
             - Settings（タブ。ウィンドウ幅が狭いときは … の中にある） >> （いちばん下へスクロール） >>
                 Delete this repository >> Takakiriy/wildrydes-site
                     #template: __GitHubOwnerAccount__/__RepositoryName__
+
+メモ:
+    （書きかけ）アプリケーションの URL を調べてメモします:
+        設定:
+            __AppURL__: https://master.d32anw0j12k1z4.amplifyapp.com/
+        コマンド:
+            #bash など
+            - amplify status
+            #// Amplify hosting urls: をメモします
+        URL: https://master.d32anw0j12k1z4.amplifyapp.com/  #template: __AppURL__
+        __Project__/cypress.json の baseURL フィールドを設定します: |
+            {
+                "baseUrl": "https://master.d32anw0j12k1z4.amplifyapp.com/",  "comment": "#template: __AppURL__"
+            }
+
+    （書きかけ）CI/CD パイプラインで Jest によるテストが失敗したときに警告されるようにします:
+        amplify.yaml (amplify.yml) を編集します:
+            - https://ap-northeast-1.console.aws.amazon.com/amplify/home >>
+            - own >> ビルドの設定 >> 編集
+
+        たとえば __Project__/src/App.test.tsx を変更します:
+            before:
+                expect(linkElement).toBeInTheDocument();
+            after:
+                expect(linkElement).not.toBeInTheDocument();
+        コミットします:
+            - git add "."
+            - git commit -a -m "Test of CI/CD pipeline"
+            - git push
+            - https://ap-northeast-1.console.aws.amazon.com/amplify/home
+        失敗したことを確認したら、成功するように戻します:

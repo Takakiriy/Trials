@@ -15,29 +15,36 @@
             - インストール オプションはデフォルトを使用
         Git for Windows をインストールします（シェルとして使います）:
             - https://git-scm.com/ >> Downloads >> Windows
-            - ダウンロードしたファイル（例：Git-2.24.1.2-64-bit.exe）を開く
+            - ダウンロードしたファイル（例：Git-2.24.1.2-64-bit.exe）を開きます
             - Next を8回押す
             - Configuring the line ending conversions: Checkout as-is, commit as-is
             - 他のインストール オプションはデフォルトを使用
             - デスクトップを右クリック >> Git Bash Here
             - git clone  "https://github.com/githubtraining/hellogitworld.git"
-            - 成功したら、デスクトップにある hellogitworld フォルダーを削除する ( rm -rf hellogitworld )
+            - 成功したら、デスクトップにある hellogitworld フォルダーを削除します ( rm -rf hellogitworld )
         （ダウンロード（クローン）するリポジトリにコミットする可能性があるとき）Git のユーザー名を設定します:
             - git config --global user.email "you@example.com"  #template: "__GitCollaboratorMail__"
             - git config --global user.name  "Your Name"        #template: "__GitCollaboratorName__"
+            - Git bash を閉じます:
         Visual Studio Code をインストールします:
             - https://code.visualstudio.com/
             - インストール オプションはデフォルトを使用
             - 必要なら、Visual Studio Code をタスクバーにピン止めします
             - 下記の拡張機能をインストールします :
                 - Jest Runner
-    React のプロジェクトを生成します:
+    React のプロジェクトを新規作成します:
         #Git bash
         - cd  "__ParentOfProject__"
         - （TypeScript を使う場合）:
             - npx create-react-app --template typescript  "react1_jest"  #template: "__RepositoryName__"
         - （JavaScript を使う場合）:
             - npx create-react-app  "react1_jest"  #template: "__RepositoryName__"
+        - cd  "react1_jest"  #template: "__RepositoryName__"
+        - npm start  #// 動作確認します
+            #// Windows Defender によって警告されたときは、アクセス許可します
+            #// ブラウザーが開いたら閉じます
+        - (Ctrl + C で Web サーバーを終了します)
+            #// ウィンドウをクローズすると node.exe のプロセスが残ってしまいます
     Visual Studio Code でデバッグできるようにします:
         Visual Studio Code で __Project__ フォルダーを開きます（エディターとして使うため）:
             メニュー: File >> Open Folder >> react1_jest  #template: __RepositoryName__
@@ -90,7 +97,7 @@
         - npm test
     Web アプリケーションのサーバーが動くことを確認します:
         #VSCode Node Debug Console など
-        - cd  "react1_jest"  #template: "__RepositoryName__"
+        - cd  "__Project__"
         - npm start
     トラブルシューティング:
         - ケース:

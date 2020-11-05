@@ -2,6 +2,7 @@ import React from 'react';
 import Amplify from '@aws-amplify/core';
 import awsmobile from './aws-exports';
 import { withAuthenticator } from 'aws-amplify-react';
+import '@aws-amplify/ui/dist/style.css';
 
 Amplify.configure(awsmobile);
 
@@ -14,7 +15,7 @@ function App() {
 }
 
 const myTheme = {
-  button: { backgroundColor: "white", borderColor: "black" },
+  button: { /* backgroundColor: "white", borderColor: "black" */ },
 };
 
 export default withAuthenticator(App, undefined, undefined, null, myTheme, {

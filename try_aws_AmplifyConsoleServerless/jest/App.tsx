@@ -3,6 +3,7 @@ import Amplify from '@aws-amplify/core';
 import awsmobile from './aws-exports';
 import Auth from '@aws-amplify/auth';
 import { withAuthenticator } from 'aws-amplify-react';
+import '@aws-amplify/ui/dist/style.css';
 import App1, {App1Props} from './App1';
 
 Amplify.configure(awsmobile);

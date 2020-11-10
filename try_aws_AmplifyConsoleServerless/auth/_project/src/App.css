@@ -1,0 +1,86 @@
+.App {
+  text-align: center;
+}
+
+html {
+  font-size: 12pt;
+}
+
+body {
+  color: white;
+  background-color: rgba(40,44,52,0.8);
+  background-image: url("./background.jpeg");
+  background-blend-mode: darken;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active  {
+    -webkit-box-shadow: 0 0 0 30px white inset !important;
+    -webkit-text-fill-color: black !important;
+}
+
+nav {  
+  opacity: 0.8;      
+}
+
+.App-logo {
+  height: 8vmin;
+  pointer-events: none;
+}
+
+.promotion {
+  text-align: center;
+  background-color: rgba(0,0,0,0.6);
+  padding: 2rem;
+}
+.promotion-head {
+  color: yellow;
+  font-size: 2rem;
+}
+
+.promotion-title {
+  color: white;
+  font-size: 2.8rem;
+  line-height: 2.8rem;
+}
+
+.start-button {
+  font-size: 1.5rem;
+  background-color: tomato;
+  border-color: tomato;
+  padding: 0.5rem 3rem;
+}
+
+.nav-link:hover {
+  cursor: pointer;
+}
+.manual h2 {
+  margin-top: 3rem;
+  padding-top: 0.5rem;
+  background: #eaf3ff;
+  border-bottom: 2px solid #2f51b4;
+}
+.link-target {
+  padding-top: 3.7rem;
+  margin-top: -3.7rem;
+}
+@media (min-width:768px) {
+  .link-target {
+    padding-top: 0;
+    margin-top:  0;
+  }
+}
+.manual h3 {
+  margin-top: 2rem;
+}
+.manual img {
+  display: block;
+  margin: 0px auto 0px; /* centering */
+}
+.page-footer {
+  color: black;
+  background-color: darkgray;
+  text-align: center;
+}

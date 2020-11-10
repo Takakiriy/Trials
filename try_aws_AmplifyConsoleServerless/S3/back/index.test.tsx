@@ -1,7 +1,4 @@
-process.env.ENV = 'dev';
-process.env.REGION = 'ap-northeast-1';
-process.env.AWS_ACCESS_KEY_ID="AKIAZQ2CH423EDYKKWWG"  // IAM User
-process.env.AWS_SECRET_ACCESS_KEY="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"  // IAM User
+// process.env... = ...;  from env.bat
 
 import {AppSyncResolverEvent} from 'aws-lambda/trigger/appsync-resolver';
 import {CreateExampleMutationVariables} from '../../../../../src/API';

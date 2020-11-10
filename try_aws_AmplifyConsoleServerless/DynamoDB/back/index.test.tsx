@@ -1,7 +1,4 @@
-process.env.ENV = 'staging';
-process.env.TABLE_REGION = 'ap-northeast-1';
-process.env.AWS_ACCESS_KEY_ID="AKIA3V7BCLJRY6MVBMPM"
-process.env.AWS_SECRET_ACCESS_KEY="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"
+// process.env... = ...;  from env.bat
 
 import {AppSyncResolverEvent} from 'aws-lambda/trigger/appsync-resolver';
 import {CreateUserMutationVariables} from '../../../../../src/API';

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Bootstrap TreeView by jonmiles</title>
+    <link rel="stylesheet" id="theme_link" href="css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/bootstrap-treeview.min.css"/>
+    <script src="js/jquery-3.5.1.min.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/bootstrap-treeview.min.js"></script>
+    <style>
+    body {
+      color: white;
+      background-color: rgba(40,44,52,0.8);
+      background-image: url("./background.jpg");
+      background-blend-mode: darken;
+    }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="row">
+        <div class="col-4" id="tree"></div>  <div class="col-8"><img src="./background.jpg"/></div>
+    </div>
+</div>
+
+<script>
+
+var tree = [
+  {
+    text: "Parent 1 <div style='float: right'>▼</div>",
+    state: {
+      selected: true,
+      expanded: true
+    },
+    nodes: [
+      {
+        text: "Child 1 <div style='float: right'>▼</div>",
+        nodes: [
+          {
+            text: "Grandchild 1"
+          },
+          {
+            text: "Grandchild 2",
+            href: "#node-1-1-2"
+          }
+        ]
+      },
+      {
+        text: "Child 2"
+      }
+    ]
+  },
+  {
+    text: "Parent 2",
+    href: "page2.html#node-1"
+  },
+  {
+    text: "Parent 3"
+  },
+  {
+    text: "Parent 4"
+  },
+  {
+    text: "Parent 5"
+  }
+];
+
+var previoudUnselectedNodeID = 0;  // first node
+
+$('#tree').treeview({
+  data: tree,
+  levels: 1,  // Initial display nested level
+  color: 'white',
+  backColor: 'transparent',
+  onhoverColor: 'rgba(32,100,200,0.3)',
+  selectedBackColor: '#428bca',
+  showBorder: false,
+
+  onNodeSelected: function(event, node) {
+    const  tree = $("#tree");
+
+    tree.treeview("toggleNodeExpanded", [node.nodeId]);
+
+    // Disable unselected state part 2
+    // toggleNodeExpand, if same node was clicked part 2
+    if (node.nodeId !== previoudUnselectedNodeID) {
+      tree.treeview("unselectNode", [previoudUnselectedNodeID, { silent: true }]);
+      tree.treeview("toggleNodeExpanded", [previoudUnselectedNodeID]);
+        // 異なるノードをクリックしたときに onNodeUnselected で発行した toggleNodeExpanded のキャンセル
+    }
+    if (node.href) {
+        window.location.href = node.href;
+    }
+  },
+
+  onNodeUnselected: function (event, node) {
+    const  tree = $("#tree");
+
+    // Disable unselected state part 1
+    // toggleNodeExpand, if same node was clicked part 1
+    tree.treeview("selectNode", [node.nodeId, { silent: true }]);
+    tree.treeview("toggleNodeExpanded", [node.nodeId]);
+      // 同じノードをクリックしたときは onNodeSelected が呼ばれず onNodeUnselected だけ呼ばれ
+      // onNodeSelected で toggleNodeExpanded できないためここで行う
+    previoudUnselectedNodeID = node.nodeId;
+  },
+});
+</script>
+</body>
+</html>

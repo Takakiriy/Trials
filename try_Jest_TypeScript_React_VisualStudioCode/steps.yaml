@@ -1,4 +1,4 @@
-﻿（未確認：新しい方法）Jest + TypeScript + React + Visual Studio Code の開発環境を構築します:
+﻿Jest + TypeScript + React + Visual Studio Code の開発環境を構築します:
     参考:
         Jest - TypeScript Deep Dive 日本語版:
             https://typescript-jp.gitbook.io/deep-dive/intro-1/jest
@@ -11,11 +11,11 @@
     準備:
         Node.js をインストールします（React が使います）:
             - https://nodejs.org/ja/download/ >> Windows Installer (.msi) >> 64-bit
-            - node-v12.19.0-x64.exe をダブルクリックします
+            - node-v14.15.0-x64.exe をダブルクリックします
             - インストール オプションはデフォルトを使用
         Git for Windows をインストールします（シェルとして使います）:
             - https://git-scm.com/ >> Downloads >> Windows
-            - ダウンロードしたファイル（例：Git-2.24.1.2-64-bit.exe）を開きます
+            - ダウンロードしたファイル（例：Git-2.29.2.2-64-bit.exe）を開きます
             - Next を8回押す
             - Configuring the line ending conversions: Checkout as-is, commit as-is
             - 他のインストール オプションはデフォルトを使用
@@ -29,7 +29,10 @@
         Visual Studio Code をインストールします:
             - https://code.visualstudio.com/
             - インストール オプションはデフォルトを使用
-            - 必要なら、Visual Studio Code をタスクバーにピン止めします
+            - （推奨）Visual Studio Code をタスクバーにピン止めします:
+            - （推奨）Ctrl + S キーを押したときに全てのファイルを保存するように設定します: |
+                File >> Preferences >> Keyboard Shortcuts >> save all （と入力） >>
+                    File: Save All （をダブルクリック） >> Ctrl + S キー >> Enter キー
             - 下記の拡張機能をインストールします :
                 - Jest Runner
     React のプロジェクトを新規作成します:
@@ -121,308 +124,91 @@
                     roots, preset, testEnvironment, setupFilesAfterEnv
                         #// エラーメッセージに削除すべきキーが一覧されます
 
-Jest + TypeScript + React + Visual Studio Code の開発環境を構築します:
-    参考:
-        Jest - TypeScript Deep Dive 日本語版:
-            https://typescript-jp.gitbook.io/deep-dive/intro-1/jest
-        React × TypeScript環境にJestを導入してみて:
-            https://tech.willgate.co.jp/entry/2019/12/12/130000
+React Router Quick Start:
+    参考: https://reactrouter.com/web/guides/quick-start
     設定:
-        __RepositoryName__: react1_jest
-        __GitCollaboratorName__: Your Name
-        __GitCollaboratorMail__: you@example.com
-    準備:
-        Node.js をインストールします（React が使います）:
-            - https://nodejs.org/ja/download/ >> Windows Installer (.msi) >> 64-bit
-            - node-v12.19.0-x64.exe をダブルクリックします
-            - インストール オプションはデフォルトを使用
-        Git for Windows をインストールします（シェルとして使います）:
-            - https://git-scm.com/ >> Downloads >> Windows
-            - ダウンロードしたファイル（例：Git-2.24.1.2-64-bit.exe）を開く
-            - Next を8回押す
-            - Configuring the line ending conversions: Checkout as-is, commit as-is
-            - 他のインストール オプションはデフォルトを使用
-            - デスクトップを右クリック >> Git Bash Here
-            - git clone  "https://github.com/githubtraining/hellogitworld.git"
-            - 成功したら、デスクトップにある hellogitworld フォルダーを削除する ( rm -rf hellogitworld )
-        （ダウンロード（クローン）するリポジトリにコミットする可能性があるとき）Git のユーザー名を設定します:
-            - git config --global user.email "you@example.com"  #template: "__GitCollaboratorMail__"
-            - git config --global user.name  "Your Name"        #template: "__GitCollaboratorName__"
-        Visual Studio Code をインストールします:
-            - https://code.visualstudio.com/
-            - インストール オプションはデフォルトを使用
-            - 必要なら、Visual Studio Code をタスクバーにピン止めします
-            - 下記の拡張機能をインストールします :
-                - Jest Runner
-        React のプロジェクトを生成するコマンド（create-react-app）をインストールします:
-            #Git bash
-            - npm install --global "create-react-app"
-                #// 後で npx create-react-app を使う場合は不要？（未確認）
-    React + Jest のプロジェクトを生成します:
-        React のプロジェクトを生成します:
-            #Git bash
-            - cd  "__ParentOfProject__"
-            - （TypeScript を使う場合）:
-                - create-react-app --template typescript  "react1_jest"  #template: "__RepositoryName__"
-            - （JavaScript を使う場合）:
-                - create-react-app  "react1_jest"  #template: "__RepositoryName__"
-        Jest をプロジェクトにインストールします:
-            参考:
-                Jest >> Getting Started:
-                    https://jestjs.io/docs/ja/getting-started
-            Visual Studio Code で __Project__ フォルダーを開きます（エディターとして使うため）:
-                メニュー: File >> Open Folder >> react1_jest  #template: __RepositoryName__
-            Jest 本体をインストールします:
-                #Git bash または VSCode Terminal PowerShell など
-                - cd  "react1_jest"  #template: "__RepositoryName__"
-                - npm install --global  "jest"  #// jest コマンドが使えるようになります
-                - npm install  "jest" "@types/jest" "ts-jest" --save-dev  #// jest はプロジェクトにも必要です
-                - npm install  "babel-jest" "@babel/core" "@babel/preset-env" --save-dev
-                - （TypeScript を使う場合）:
-                    - npm install  "@babel/preset-typescript" --save-dev
-            Jest の設定ファイルを作成します:
-                __Project__/package.json に下記の babel キーを追加します: |
-                    "babel": {
-                        "presets": [
-                            ["@babel/preset-env", {"targets": {"node": "current"}}],
-                            ["@babel/preset-react"],
-                            ["@babel/preset-typescript"]
-                        ],
-                        "plugins": [
-                            "@babel/plugin-syntax-jsx"
-                        ]
-                    }
-                （JavaScript を使う場合）(babel):
-                    上記 __Project__/package.json の一部を削除します:
-                        before: |
-                            ["@babel/preset-react"],
-                            ["@babel/preset-typescript"]
-                        after: |
-                            ["@babel/preset-react"]
-                __Project__/package.json に下記の jest キーを追加します: |
-                    "jest": {
-                        "roots": [
-                            "<rootDir>/src"
-                        ],
-                        "testMatch": [
-                            "**/?(*.)+(spec|test).+(ts|tsx|js)"
-                        ],
-                        "preset": "ts-jest",
-                        "testEnvironment": "jsdom",
-                        "transform": {
-                            "^.+\\.tsx?$": "ts-jest",
-                            "^.+\\.jsx?$": "babel-jest"
-                        },
-                        "setupFilesAfterEnv": [
-                            "<rootDir>/src/setupTests.ts"
-                        ],
-                        "moduleNameMapper": {
-                            "\\.(css|jpg|jpeg|png|gif|svg|mp4|mp3)$":
-                                "<rootDir>/src/assetsTransformer.js"
-                        }
-                    }
-                （JavaScript を使う場合）(jest):
-                    上記 __Project__/package.json の一部を変更します:
-                        before:
-                            "<rootDir>/src/setupTests.ts"
-                        after:
-                            "<rootDir>/src/setupTests.js"
-                Jest の設定の参考: https://doc.ebichu.cc/jest/docs/ja/configuration.html
-                __Project__/src/setupTests.ts (または .js) を修正します: |
-                    import '@testing-library/jest-dom';
-                    import '@testing-library/jest-dom/extend-expect';
-                __Project__/src/assetsTransformer.js を新規作成します: |
-                    const path = require('path');
+        __Project__: demo-app
+    React Router のプロジェクトを用意します（既存のものでもよい）:
+        - 上記「Node.js をインストールします」の手順を行います
+        #Bash など
+        - npx create-react-app "demo-app"  #template: "__Project__"
+    プロジェクトに React Router をインストールします:
+        - cd "demo-app"  #template: "__Project__"
+        - npm install react-router-dom
+        - npm install @types/react-router-dom  --save-dev  #// TypeScript の場合
+    React コンポーネントのルートを React Router に置き換えます:
+        #// 既存のルートのコンポーネントは改名してください
+        src/App.js: |
+            import React from "react";
+            import {
+                BrowserRouter as Router,
+                Switch,
+                Route,
+                Link
+            } from "react-router-dom";
 
-                    module.exports = {
-                        process(src, filename, config, options) {
-                            return 'module.exports = ' + JSON.stringify(path.basename(filename)) + ';';
-                        },
-                    };
-            テスト対象のコードを作成します:
-                （TypeScript を使う場合）:
-                    __Project__/src/foo.ts: |
-                        export const sum = (...a: number[]) =>
-                            a.reduce(
-                                (acc, val) => acc + val,
-                                0);
-                （JavaScript を使う場合）:
-                    __Project__/src/foo.js: |
-                        export const sum = (...a) =>
-                            a.reduce(
-                                (acc, val) => acc + val,
-                                0);
-            テスト コードを作成します:
-                __Project__/src/foo.test.ts (または .js) : |
-                    import { sum } from './foo';
+            export default function App() {
+                return (
+                    <Router>
+                        <div>
+                            <nav>
+                                <ul>
+                                    <li>
+                                        <Link to="/">Home</Link>
+                                    </li>
+                                    <li>
+                                        <Link to="/about">About</Link>
+                                    </li>
+                                    <li>
+                                        <Link to="/users">Users</Link>
+                                    </li>
+                                </ul>
+                            </nav>
 
-                    test('basic', () => {
-                        expect(sum()).toBe(0);
-                    });
+                            {/* A <Switch> looks through its children <Route>s and
+                                    renders the first one that matches the current URL. */}
+                            <Switch>
+                                <Route path="/about">
+                                    <About />
+                                </Route>
+                                <Route path="/users">
+                                    <Users />
+                                </Route>
+                                <Route path="/">
+                                    <Home />
+                                </Route>
+                            </Switch>
+                        </div>
+                    </Router>
+                );
+            }
 
-                    test('basic again', () => {
-                        expect(sum(1, 2)).toBe(3);
-                    });
-    デバッグできることを確認します:
-        Visual Studio Code で __Project__ フォルダーを開きます:
-            メニュー: File >> Open Folder >> react1_jest  #template: __RepositoryName__
-        __Project__/src/foo.test.ts (または .js) ファイルを開きます:
-        test 関数の中にブレークポイントを張ります:
-            行番号の左をクリックします:
-        デバッグを開始します:
-            test 関数の上に表示されている Debug をクリックします:
-        ブレークできることを確認します:
-    （JavaScript を使う場合）:
-        - React is not defined エラーが発生するすべてのソースファイルの先頭に下記を追加します:
-            import React from 'react';
-        #// 下記「すべてのテストを実行」をしてからでも構いません
-    すべてのテストを実行できることを確認します:
-        #VSCode Node Debug Console など
-        - cd  "react1_jest"  #template: "__RepositoryName__"
-        - node node_modules/jest/bin/jest
-    Web アプリケーションのサーバーが動くことを確認します:
-        #VSCode Node Debug Console など
-        - cd  "react1_jest"  #template: "__RepositoryName__"
-        - npm uninstall "jest" "@types/jest" "ts-jest"  #// jest を使った後のときのみ。React の仕様
+            function Home() {
+                return <h2>Home</h2>;
+            }
+
+            function About() {
+                return <h2>About</h2>;
+            }
+
+            function Users() {
+                return <h2>Users</h2>;
+            }
+
+Redux Toolkit Basic Tutorial:
+    参考:
+        - https://redux-toolkit.js.org/tutorials/basic-tutorial
+        - https://qiita.com/pokotyan/items/a1d667ee46d0bc19108d
+    設定:
+        __Project__: demo-app
+    React Router のプロジェクトを用意します（既存のものでもよい）:
+        - 上記「Node.js をインストールします」の手順を行います
+        #Bash など
+        - npx create-react-app --template redux-typescript "demo-app"  #template: "__Project__"
+    起動します:
+        - cd "demo-app"  #template: "__Project__"
         - npm start
-    トラブル シューティング:
-        - ケース:
-            エラー: |
-                The react-scripts package provided by Create React App requires a dependency:
-                "jest": "26.6.0"
-                Don't try to install it manually: your package manager does it automatically.
-                However, a different version of jest was detected higher up in the tree:
-                C:\Users\ts-ne\Desktop\own\node_modules\jest (version: 26.6.1)
-            対策:
-                React が要求している Jest のバージョンに合わせます:
-                    npm install --global  "jest@26.6.0"
-                    npm install  "jest@26.6.0" --save-dev
-        - ケース:
-            エラー: |
-                Module <rootDir>/src/setupTests.ts in the setupFilesAfterEnv option was not found.
-            対策:
-                __Project__/package.json:
-                    before:
-                        "<rootDir>/src/setupTests.ts"
-                    after:
-                        "<rootDir>/src/setupTests.js"
-        - ケース:
-            エラー: |
-                Jest encountered an unexpected token
-                import '@testing-library/jest-dom';
-            参考:
-                Unexpected Token Import for ES6 modules:
-                    https://github.com/facebook/jest/issues/2081
-            対策:
-                __Project__/package.json に下記の babel キーを追加します: |
-                    "babel": {
-                        "env": {
-                            "test": {
-                                "presets": [["@babel/preset-env", {"targets": {"node": "current"}}]]
-                            }
-                        }
-                    },
-                    "jest": {
-                        "transform": {
-                            "^.+\\.tsx?$": "ts-jest",
-                            "^.+\\.jsx?$": "babel-jest"
-                        },
-                    }
-                以下のモジュールが必要かもしれません:
-                    npm install "@babel/core" "@babel/preset-env" "babel-jest" --save-dev
-        - ケース:
-            エラー: |
-                SyntaxError: Unexpected token '<'
-                import logo from './logo.svg';
-            参考:
-                Syntax Error Invalid or unexpected token with .png:
-                    https://github.com/facebook/jest/issues/2663
-            対策:
-                __Project__/package.json: |
-                    "jest": {
-                        "moduleNameMapper": {
-                            "\\.(css|jpg|jpeg|png|gif|svg|mp4|mp3)$":
-                                "<rootDir>/src/assetsTransformer.js"
-                        }
-                    }
-                __Project__/src/assetsTransformer.js: |
-                    const path = require('path');
+        #// src/features/counter/Counter.tsx が呼び出し側
+        #// src/features/counter/counterSlice.ts がスライス
+        #// app/store.ts がストア
 
-                    module.exports = {
-                        process(src, filename, config, options) {
-                            return 'module.exports = ' + JSON.stringify(path.basename(filename)) + ';';
-                        },
-                    };
-        - ケース:
-            エラー: |
-                ReferenceError: React is not defined
-            対策:
-                エラーが発生するすべてのソースファイルの先頭に以下を追加します:
-                    import React from 'react';
-            参考:
-                Why do I need import React statement even if I don't use React explicitly?:
-                    https://stackoverflow.com/questions/50548634/why-do-i-need-import-react-statement-even-if-i-dont-use-react-explicitly/50548654
-                Is it possible to import modules from all files in a directory, using a wildcard?:
-                    https://stackoverflow.com/questions/29722270/is-it-possible-to-import-modules-from-all-files-in-a-directory-using-a-wildcard
-        - ケース:
-            エラー: |
-                Consider using the "jsdom" test environment.
-                ReferenceError: document is not defined
-                render(<App />);
-                at Object.<anonymous> (src/App.test.tsx:6:3)
-            対策:
-                before: |
-                    "testEnvironment": "node",
-                after: |
-                    "testEnvironment": "jsdom",
-        - ケース:
-            エラー: |
-                SyntaxError: ...\src\App.test.js: Support for the experimental syntax
-                'jsx' isn't currently enabled (5:10):
-                Add @babel/preset-react (https://git.io/JfeDR) to the 'presets' section
-                of your Babel config to enable transformation.
-                If you want to leave it as-is, add @babel/plugin-syntax-jsx (https://git.io/vb4yA)
-                to the 'plugins' section to enable parsing.
-            対策: |
-                __Project__/package.json に下記の babel キーを追加します: |
-                    "babel": {
-                        "env": {
-                            "test": {
-                                "presets": [["@babel/preset-env", {"targets": {"node": "current"}}]]
-                            }
-                        }
-                    },
-                    "jest": {
-                        "transform": {
-                            "^.+\\.tsx?$": "ts-jest",
-                            "^.+\\.jsx?$": "babel-jest"
-                        },
-                    }
-            参考:
-                Jest >> Getting Started:
-                    https://jestjs.io/docs/ja/getting-started
-        - ケース:
-            エラー: |
-                TypeError: expect(...).toBeInTheDocument is not a function
-                expect(linkElement).toBeInTheDocument();
-            参考:
-                react-testing-library why is toBeInTheDocument() not a function:
-                    https://stackoverflow.com/questions/56547215/react-testing-library-why-is-tobeinthedocument-not-a-function
-            対策:
-                __Project__/setupTests.ts: |
-                    import '@testing-library/jest-dom';
-                    import '@testing-library/jest-dom/extend-expect';
-                __Project__/package.json: |
-                    "setupFilesAfterEnv": [
-                        "<rootDir>/src/setupTests.ts"
-                    ],
-        - ケース:
-            エラー: |
-                npm start
-                Something is already running on port 3000.
-                npm start を Ctrl + C ではなくウィンドウを閉じて終了させると次回の npm start で発生します。
-            対策:
-                npm start を終了させます:
-                    npm start が動いているターミナルで Ctrl + C を押します:
-                それでもまだエラーが発生するときは、node.exe を終了させます:
-                    Windows タスクマネージャー >> 詳細 >> node.exe >> タスクの終了:

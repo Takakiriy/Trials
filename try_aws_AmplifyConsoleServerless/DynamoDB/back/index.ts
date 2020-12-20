@@ -28,4 +28,6 @@ export async function handler(
     .catch( (reason: any) => {
       console.log(reason);
     });
+
+  // _callback(null, {return: 'value'});
 }

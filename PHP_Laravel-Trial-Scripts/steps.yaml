@@ -1,0 +1,31 @@
+﻿Laravel をインストールする:
+    準備:
+        Git for Windows をインストールします:
+            - https://git-scm.com/ >> Downloads >> Windows
+            - ダウンロードしたファイル（例：Git-2.24.1.2-64-bit.exe）を開く
+            - Next を8回押す
+            - Configuring the line ending conversions: Checkout as-is, commit as-is
+            - 他のインストール オプションはデフォルトを使用
+            - 使えるかテストします:
+                - デスクトップを右クリック >> Git Bash Here
+                - git clone  "https://github.com/githubtraining/hellogitworld.git"
+                - 成功したら、デスクトップにある hellogitworld フォルダーを削除する ( rm -rf hellogitworld )
+            - Git の更新ログ(git log)に記録されるユーザー名を設定します:
+                #// ダウンロード（クローン）するリポジトリにコミットする可能性があるとき
+                - git config --global user.email "you@example.com"  #template: "__GitCollaboratorMail__"
+                - git config --global user.name  "Your Name"        #template: "__GitCollaboratorName__"
+            - bash を閉じます:
+        VirtualBox をインストールします:
+            - https://www.virtualbox.org/wiki/Downloads >> Windows hosts
+            - ダウンロードしたファイル（例：VirtualBox-6.1.18-142142-Win.exe）を開く
+            - インストール オプションはデフォルトを使用
+            - デバイス ソフトウェアはすべてインストール
+        Vagrant（ベイグラント）をインストールします:  #// Vagrant は仮想マシンの管理するためツールです
+            - https://www.vagrantup.com/downloads >> Windows 64bit Download
+            - ダウンロードしたファイル（例：.exe）を開く
+
+    独自のインストール スクリプトを実行します:
+        Right click The folder contains "install.sh" and select [ Git Bash Here ].
+
+
+

@@ -16,6 +16,12 @@
       background-image: url("./background.jpg");
       background-blend-mode: darken;
     }
+    .menu-icon:before {
+      content: url(icon.png);
+      width: 32px;
+      display: inline-block;
+      vertical-align: middle;
+    }
     </style>
 </head>
 
@@ -56,10 +62,12 @@ var tree = [
   },
   {
     text: "Parent 2",
-    href: "page2.html#node-1"
+    href: "page2.html#node-1",
+    icon: "menu-icon"
   },
   {
-    text: "Parent 3"
+    text: "Parent 3",
+    icon: "menu-icon"
   },
   {
     text: "Parent 4"
@@ -69,7 +77,8 @@ var tree = [
   }
 ];
 
-var previoudUnselectedNodeID = 0;  // first node
+let previoudUnselectedNodeID = 0;  // first node
+let parentMoveTimeout;
 
 $('#tree').treeview({
   data: tree,
@@ -81,6 +90,9 @@ $('#tree').treeview({
   showBorder: false,
 
   onNodeSelected: function(event, node) {
+    if (parentMoveTimeout) {
+      clearTimeout( parentMoveTimeout );
+    }
     const  tree = $("#tree");
 
     tree.treeview("toggleNodeExpanded", [node.nodeId]);
@@ -106,6 +118,14 @@ $('#tree').treeview({
     tree.treeview("toggleNodeExpanded", [node.nodeId]);
       // 同じノードをクリックしたときは onNodeSelected が呼ばれず onNodeUnselected だけ呼ばれ
       // onNodeSelected で toggleNodeExpanded できないためここで行う
+
+    // 同じノードをクリックしたときは href にジャンプしないためここで行う
+    // setTimeout に指定したコールバックが呼ばれる前に onNodeSelected が呼ばれれば、コールバックされません
+    if (node.href) {
+      parentMoveTimeout = setTimeout( () => {
+          window.location.href=node.href
+      }, 500 );
+    }
     previoudUnselectedNodeID = node.nodeId;
   },
 });

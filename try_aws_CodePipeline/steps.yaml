@@ -34,9 +34,10 @@
             - Next を8回押す
             - Configuring the line ending conversions: Checkout as-is, commit as-is
             - 他のインストール オプションはデフォルトを使用
-            - デスクトップを右クリック >> Git Bash Here
-            - git clone  "https://github.com/githubtraining/hellogitworld.git"
-            - 成功したら、デスクトップにある hellogitworld フォルダーを削除する ( rm -rf hellogitworld )
+            - 使えるかテストします:
+                - デスクトップを右クリック >> Git Bash Here
+                - git clone  "https://github.com/githubtraining/hellogitworld.git"
+                - 成功したら、デスクトップにある hellogitworld フォルダーを削除する ( rm -rf hellogitworld )
             - Git の更新ログ(git log)に記録されるユーザー名を設定します:
                 #// ダウンロード（クローン）するリポジトリにコミットする可能性があるとき
                 - git config --global user.email "you@example.com"  #template: "__GitCollaboratorMail__"

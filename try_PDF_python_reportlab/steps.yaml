@@ -1,0 +1,81 @@
+﻿Visual Studio Code + Windows 10 で Python + pipenv を動かす:
+    設定:
+        __PythonVer2p__: 3.7  #// 下記手順で決定
+        __PythonVer2__: 37  #// 下記手順で決定
+        __VEnv__: C:\\Users\\ts-ne\\.virtualenvs\\try_PDF_python_reportlab-vasBDzlp  #// 下記手順で決定
+
+    Pipfile ファイルを含むプロジェクト フォルダーを任意の場所に配置します(以後、__Project__ で表現します):
+    Visual Studio Code をインストールします:
+        - https://code.visualstudio.com/
+        - ダウンロードしたファイル（例：VSCodeUserSetup-x64-1.54.3.exe）を開きます
+        - インストール オプションはデフォルトを使用
+        - （推奨）VSCode (Visual Studio Code をタスクバーにピン止めします:
+        - （推奨）Ctrl + S キーを押したときに全てのファイルを保存するように設定します: |
+            File >> Preferences >> Keyboard Shortcuts >> save all （と入力） >>
+                File: Save All （をダブルクリック） >> Ctrl + S キー >> Enter キー
+        - 下記の拡張機能(Extensions)をインストールします:
+            - Python
+            - Copy Relative Path Posix  #// Copy Relative Path (POSIX) というメニューが追加されます
+        - VSCode の右下に下記をインストールするよう勧められたらインストールします:
+            - Linter pylint
+        - PowerShell を開き、スクリプトを実行できるようにします:  #// 一度もしたことがないときだけ行います
+            - Visual Studio Code >> Terminal  #// PowerShell が起動すること
+            - Set-ExecutionPolicy  RemoteSigned  -Scope CurrentUser  #// スクリプトを実行できるようになります
+    プロジェクトが使う Python のバージョンをメモします:
+        __Project__/Pipfile の中の python_version をメモします:
+            __PythonVer2p__: 3.7  #template: __PythonVer2p__
+            __PythonVer2__: 37  #// 3.9 なら 37  #template: __PythonVer2__
+    Visual Studio Code を閉じます:
+    pipenv をインストールします:  #// pipenv は「ピップエンブ」と呼びます
+        Python をインストールします:
+            - http://www.python.org/ >> Downloads >> Windows >>
+                （例）3.7.x >> Windows installer (64-bit) または Windows x86-64 executable installer
+            - ダウンロードしたファイル（例：python-3.7.x-amd64.exe）を開きます
+            - インストール オプションはデフォルトを使用
+                #template-at(-3): __PythonVer2p__
+                #template-at(-3): __PythonVer2p__
+        PowerShell を開きます:
+            - 以下のどちらかを行います
+            - Windows キーを押してから、 PowerShell と入力し、PowerShell を起動します
+            - Visual Studio Code >> Terminal >> New Terminal
+        Python に Path を通します:
+            以下は一度に実行できます（Python37）: |
+                ${path} = [System.Environment]::GetEnvironmentVariable("Path", "User");
+                ${path} = "${env:USERPROFILE}\AppData\Local\Programs\Python\Python37\Scripts;${path}";  #template: \Python__PythonVer2__\
+                [System.Environment]::SetEnvironmentVariable("Path", ${path}, "User");
+
+                （以上）
+                #template-at(-6): Python__PythonVer2__
+                #template-at(-5): \Python__PythonVer2__\Scripts
+        pipenv 本体をインストールします: |
+            & "${env:USERPROFILE}\AppData\Local\Programs\Python\Python37\Scripts\pip" install pipenv
+
+                （以上）
+                #template-at(-3): \Python__PythonVer2__\Scripts
+        PowerShell と Visual Studio Code を閉じます:
+    仮想環境を使うように設定します:
+        仮想環境を作り、Pipfile.lock に書かれたパッケージの本体を仮想環境に追加します:
+            - Visual Studio Code >> File >> Open Folder >> __Project__
+            - Visual Studio Code >> Terminal  #// PowerShell が起動すること
+            - pipenv sync --dev  #// 仮想環境がなければ構築します
+        仮想環境のパスをメモします:
+            #// PowerShell の続き
+            - pipenv shell  #// 仮想環境をアクティブにします（同じウィンドウ、新しいプロセスで仮想環境が実行されます）
+            - pipenv --venv  #// 仮想環境のパスが表示されます
+                __VEnv__: C:\\Users\\ts-ne\\.virtualenvs\\try_PDF_python_reportlab-vasBDzlp  #template: __VEnv__
+        __Project__/.vscode/settings.json: |  #// 下記 __VEnv__ の部分は仮想環境のパスです
+            {
+                "python.pythonPath": "C:\\Users\\ts-ne\\.virtualenvs\\try_PDF_python_reportlab-vasBDzlp\\Scripts\\python.exe"
+            }
+            （以上）
+            #template-at(-3): "__VEnv__\\Scripts\\python.exe"
+    デバッグします:
+        デバッグする *.py ファイルを開きます:
+        launch.json ファイルを作ります:
+            - Run アイコン（虫） >> create a launch.json file >> Python file
+            - 必要なら "program" の右をデバッグ開始する Python ファイルのパスに置き換えます。${file} は開いているファイルになります
+        ブレークポイントを張ります: .py ファイルの行番号の左をクリック
+        デバッグ開始:
+            - 下記のどちらかを行います
+            - F5 キー
+            - Run アイコン（虫） >> Start Debugging ボタン（左上の緑色の三角）

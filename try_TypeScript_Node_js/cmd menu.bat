@@ -4,7 +4,7 @@ echo 2. setup
 echo 9. clean
 set key=
 
-set /p key=command or number^>
+set /p key=number^>
 if "%key%" == "1"  goto :open_VisualStudioCode
 if "%key%" == "2"  goto :setup
 if "%key%" == "9"  goto :clean
@@ -13,18 +13,18 @@ goto :finally
 
 :open_VisualStudioCode
 if not exist "node_modules" goto :setup
-PATH=%PATH%;C:\Program Files\Git\usr\bin
-"C:\Program Files\Git\usr\bin\bash.exe"  "cmd.sh" "open"
+code .
 goto :finally
 
 :setup
 PATH=%PATH%;C:\Program Files\Git\usr\bin
-"C:\Program Files\Git\usr\bin\bash.exe"  "cmd.sh" "setup"
+"C:\Program Files\Git\usr\bin\bash.exe" -c "npm run setup"
+code .
 goto :finally
 
 :clean
 PATH=%PATH%;C:\Program Files\Git\usr\bin
-"C:\Program Files\Git\usr\bin\bash.exe"  "cmd.sh" "clean"
+"C:\Program Files\Git\usr\bin\bash.exe" -c "npm run clean"
 goto :finally
 
 :finally

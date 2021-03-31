@@ -3,7 +3,7 @@
 [日本語 README](./README-jp.md)
 
 
-## Install
+## Install to Windows
 
 Install Node.js:
 
@@ -33,6 +33,37 @@ Install Visual Studio Code:
             (double click) File: Save All >> Ctrl + S key >> Enter key
     - Close Visual Studio Code
 
-Double click "cmd menu.bat" and select "1. open_VisualStudioCode".
+Double click "cmd menu.bat" and select "1. open_VisualStudioCode":
 
-Press F5 key, then the test runs.
+Press F5 key, then the test runs:
+
+
+## Install to mac
+
+Install Node.js:
+
+    - https://nodejs.org/en/download/ >> macOS Installer (.pkg)
+    - Open the downloaded file (e.g. node-v14.16.0.pkg)
+    - Installation options are defaults
+
+Install Visual Studio Code:
+
+    - https://code.visualstudio.com/
+    - Open the downloaded file (e.g. Visual Studio Code.app)
+    - (recommend) Pin Visual Studio Code to the taskbar
+    - (recommend) Set to save all files when Ctrl+S is pressed: |
+        File >> Preferences >> Keyboard Shortcuts >> (input) save all >>
+            (double click) File: Save All >> Ctrl + S key >> Enter key
+    - Close Visual Studio Code
+
+Add "cmd menu.command" file executable permission:
+
+    - Double click "bin/chmod+x.command.zip" file
+    - Right click at the expanded "chmod+x.command" file >> Open >> Open
+    - Drag and drop "cmd menu.command" file to the opened window, push Enter key and close the window
+    - Right click at "cmd menu.command" file >> Open >> Open
+    - Close the opened window
+
+Double click "cmd menu.command" file and select "1. open_VisualStudioCode":
+
+To run the test, press fn + F5 key:

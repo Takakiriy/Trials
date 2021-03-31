@@ -42,7 +42,7 @@
                 #// ダウンロード（クローン）するリポジトリにコミットする可能性があるとき
                 - git config --global user.email "you@example.com"  #template: "__GitCollaboratorMail__"
                 - git config --global user.name  "Your Name"        #template: "__GitCollaboratorName__"
-        bash を閉じます:
+            - bash を閉じます:
     GitHub にリポジトリと develop ブランチを新規作成します:
         リポジトリを作成します:
             メニュー: https://github.com/ >> （左上の GitHub アイコン） >> （Repositories）New

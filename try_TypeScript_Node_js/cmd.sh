@@ -4,8 +4,8 @@ set -eE
 #// -eE option breaks execution, when an error was occurred.
 
 #********************************************************************
-#* File: install_VisualStudioCode.sh
-#    Type "./install_VisualStudioCode.sh" in Windows git bash.
+#* File: cmd.sh
+#    Type "./cmd.sh" in Windows git bash.
 #********************************************************************
 export  True=0
 export  False=1
@@ -39,8 +39,12 @@ function  Main_func()
 {
 	if [ "$1" == ""  -o  "$1" == "setup" ]; then
 		SetUp_func
+	elif [ "$1" == "open" ]; then
+		OpenVisualStudioCode_func
 	elif [ "$1" == "clean"  -o  "$1" == "cleanup" ]; then
 		CleanUp_func
+	elif [ "$1" == "uninstall" ]; then
+		CleanUp_func  uninstall
 	elif [ "$1" == "watch" ]; then
 		WatchTypeScript_func
 	elif [ "$1" == "run" ]; then
@@ -49,6 +53,20 @@ function  Main_func()
 		echo  "Unknown command name."
 	fi
 	return  0
+}
+
+
+#********************************************************************
+# Function: OpenVisualStudioCode_func
+#********************************************************************
+function  OpenVisualStudioCode_func()
+{	if [ "${g_UserOrAllUsers}" == "User" ];then
+		local  code_cmd_path="${HOME}/AppData/Local/Programs/Microsoft VS Code/bin/code"
+	else
+		local  code_cmd_path="/c/Program Files/Microsoft VS Code/bin/code"
+	fi
+
+	"${code_cmd_path}" .
 }
 
 
@@ -136,10 +154,11 @@ echo "Skipped"  ;fi
 #********************************************************************
 function  CleanUp_func()
 {
+	local  sub_command="$1"
+
 	#// Clean this project
 	local  paths=(
-		"${g_ParentOfThisScriptPath}/node_modules"
-		"${g_ParentOfThisScriptPath}/obj" )
+		"${g_ParentOfThisScriptPath}/node_modules" )
 	for  path  in  "${paths[@]}" ;do
 		echo  "${path}"
 	done  #// ; done_func $?
@@ -152,23 +171,25 @@ function  CleanUp_func()
 
 
 	#// Uninstall Visual Studio Code
-	if [ "${g_UserOrAllUsers}" == "User" ];then
-		local  uninstaller_file_path="${HOME}/AppData/Local/Programs/Microsoft VS Code/unins000.exe"
-	else
-		local  uninstaller_file_path="/c/Program Files/Microsoft VS Code/unins000.exe"
+	if [ "${sub_command}" == "uninstall" ]; then
+		if [ "${g_UserOrAllUsers}" == "User" ];then
+			local  uninstaller_file_path="${HOME}/AppData/Local/Programs/Microsoft VS Code/unins000.exe"
+		else
+			local  uninstaller_file_path="/c/Program Files/Microsoft VS Code/unins000.exe"
+		fi
+
+		echo  "Uninstall Visual Studio Code ${g_VisualStudioCodeVersion}, OK?"
+		Pause_func
+		EchoNextCommand_func
+
+		"./sub_command_from_bash.bat"  "${uninstaller_file_path}"  slash SILENT
+		EchoNextCommand_func
+
+		rm -rf  "${HOME}/AppData/Roaming/Code"
+		EchoNextCommand_func
+
+		rm -rf  "${HOME}/.vscode"
 	fi
-
-	echo  "Uninstall Visual Studio Code ${g_VisualStudioCodeVersion}, OK?"
-	Pause_func
-	EchoNextCommand_func
-
-	"./sub_command_from_bash.bat"  "${uninstaller_file_path}"  slash SILENT
-	EchoNextCommand_func
-
-	rm -rf  "${HOME}/AppData/Roaming/Code"
-	EchoNextCommand_func
-
-	rm -rf  "${HOME}/.vscode"
 }
 
 

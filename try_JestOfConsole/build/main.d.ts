@@ -1,5 +1,4 @@
 /// <reference types="node" />
-import * as commander from 'commander';
 import * as readline from 'readline';
 export declare function main(): Promise<void>;
 declare class StandardInputBuffer {
@@ -11,9 +10,12 @@ declare class StandardInputBuffer {
     close(): void;
 }
 export declare const InputObject: StandardInputBuffer;
-export declare function callMainFromJest(options?: {
+export declare function callMainFromJest(parameters?: string[], options?: {
     [name: string]: string;
 }): void;
 export declare var stdout: string;
-export declare var programOptions: commander.OptionValues;
+export declare var programArguments: string[];
+export declare var programOptions: {
+    [key: string]: any;
+};
 export {};

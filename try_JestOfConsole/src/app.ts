@@ -11,16 +11,15 @@ async function  callMain() {
 		.option("-c, --command <s>")
 		.option("-i, --input")
 		.parse(process.argv);
-	
-	locale = Intl.NumberFormat().resolvedOptions().locale;
-	if (programOptions.locale) {
-		locale = programOptions.locale;
+
+	for (const arg of commander.program.args) {
+		main.programArguments.push(arg);
 	}
 	Object.assign(main.programOptions, commander.program.opts());
 
 	await  main.main()
 		.catch( (e)=>{
-			if (programOptions.test) {
+			if (main.programOptions.test) {
 				throw e;
 			} else {
 
@@ -36,7 +35,4 @@ async function  callMain() {
 			main.InputObject.close();
 		});
 }
-
-let    locale: string;
-const  programOptions = commander.program.opts();
 callMain();

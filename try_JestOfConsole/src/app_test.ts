@@ -11,8 +11,9 @@ async function  main() {
     if (!debug) {
         await TestOfFirst();
         await TestOfOptions();
+        await TestOfLocale();
     } else {
-        await TestOfOptions();
+        await TestOfLocale();
     }
 	console.log('Pass');
 }
@@ -52,7 +53,7 @@ async function  TestOfOptions() {
 
 		console.log(`TestCase: TestOfOptions >> ${fileNameHead}`);
         if (fileNameHead === '2_options_1_command') {
-            var  options = '--command  stdout';
+            var  options = 'A  B  --command stdout';
         } else {
             var  options = '--input';
         }
@@ -73,6 +74,24 @@ async function  TestOfOptions() {
 			throw new Error();
 		}
 	}
+}
+
+// TestOfLocale
+async function  TestOfLocale() {
+	let  returns: ProcessReturns;
+
+    console.log(`TestCase: TestOfLocale >> default`);
+    returns = await callChildProccess(`node ${scriptPath} --command  show-locale`);
+	const  defaultLocale = Intl.NumberFormat().resolvedOptions().locale;
+    if (returns.stdout !== defaultLocale +'\n') {
+        throw new Error();
+    }
+
+    console.log(`TestCase: TestOfLocale >> fr-FR`);
+    returns = await callChildProccess(`node ${scriptPath} --command  show-locale --locale fr-FR`);
+    if (returns.stdout !== 'fr-FR\n') {
+        throw new Error();
+    }
 }
 
 // deleteFile

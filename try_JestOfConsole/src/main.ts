@@ -1,12 +1,20 @@
 import * as path from "path";  // or path = require("path")
-import * as commander from 'commander';
 import * as readline from 'readline';
 
+// main
 export async function  main() {
-    if ('command' in programOptions) {
+	locale = Intl.NumberFormat().resolvedOptions().locale;
+	if ('locale' in programOptions) {
+		locale = programOptions.locale;
+	}
+
+	if ('command' in programOptions) {
         if (programOptions.command === 'stdout') {
             println('ABC');
             println('DE');
+            println(programArguments);
+        } else if (programOptions.command === 'show-locale') {
+            println(locale);
         }
     } else if ('input' in programOptions) {
         const  key = await input('input>')
@@ -22,6 +30,9 @@ function  add(a: number, b: number): number {
 
 // println
 function  println(message: any) {
+	if (typeof message === 'object') {
+		message = JSON.stringify(message);
+	}
 	if (withJest) {
 		stdout += message.toString() + '\n';
 	} else {
@@ -155,9 +166,14 @@ function  pathResolve(path_: string) {
 }
 
 // callMainFromJest
-export function  callMainFromJest(options?: {[name: string]: string}) {
+export function  callMainFromJest(parameters?: string[], options?: {[name: string]: string}) {
     withJest = true;
     stdout = '';
+	if (parameters) {
+		programArguments = parameters;
+	} else {
+		programArguments = [];
+	}
     if (options) {
         programOptions = options;
     } else {
@@ -167,6 +183,8 @@ export function  callMainFromJest(options?: {[name: string]: string}) {
     main();
 }
 
-var  withJest = false;
+var    locale = '';
+var    withJest = false;
 export var  stdout = '';
-export var  programOptions: commander.OptionValues = {};
+export var  programArguments: string[] = [];
+export var  programOptions: {[key: string]: any} = {};

@@ -2,6 +2,8 @@
 
 [日本語 README](./README-jp.md)
 
+There are codes in the "src" folder.
+
 
 ## Install to Windows
 

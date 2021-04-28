@@ -4,7 +4,7 @@
     "description": "",
     "scripts": {
         "setup": "npm ci",
-        "clean": "rm -rf node_modules",
+        "clean": "powershell rm -r -fo node_modules",
         "test": "jest --watchAll"
     },
     "author": "",

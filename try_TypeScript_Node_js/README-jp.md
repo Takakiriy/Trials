@@ -1,5 +1,8 @@
 # TypeScript Visual Studio Code
 
+コードは、src フォルダーにあります。
+
+
 ## Windows へのインストール
 
 Node.js をインストールします:

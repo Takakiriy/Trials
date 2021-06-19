@@ -1,0 +1,7 @@
+# Apple gitignore configuration.
+
+# mac Finder
+.DS_Store
+
+# Node.js
+node_modules

@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as child_process from 'child_process';
 import * as path from 'path';
+import * as lib from './lib';
 
 const  scriptPath =  `../build/app.js`;
 const  testFolderPath = `test_data` + path.sep;
@@ -27,7 +28,7 @@ async function  TestOfFirst() {
     // Test Main
     returns = await callChildProccess(`node ${scriptPath} --test --locale en-US`,
         {inputLines: [
-            "exit"
+            "exit()"
         ]}
     );
     const  answer = fs.readFileSync(testFolderPath + "1_first_1_ok_1_answer.txt")
@@ -101,17 +102,6 @@ function  deleteFile(path: string) {
     }
 }
 
-// getFullPath
-function  getFullPath(relativePath: string, basePath: string): string {
-	var  fullPath = '';
-	if (relativePath.substr(0,1) === '/') {
-		fullPath = relativePath;
-	} else {
-		fullPath = path.join(basePath, relativePath);
-	}
-	return  fullPath;
-}
-
 // printDifferentPaths
 function  printDifferentPaths(path1: string, path2: string) {
 	console.log(`Error: different between the following files`);
@@ -182,7 +172,7 @@ class ProcessReturns {
 	stderr: string = '';
 }
 
-const  testFolderFullPath = getFullPath( `../src/${testFolderPath}`, process.cwd());
+const  testFolderFullPath = lib.getFullPath( `../src/${testFolderPath}`, process.cwd());
 const  cutBOM = 1;
 const  notFound = -1;
 main();

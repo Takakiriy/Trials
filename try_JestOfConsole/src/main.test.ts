@@ -1,6 +1,14 @@
 import * as main from './main';
+import * as path from "path";
+import * as lib from "./lib";
 const  callMain = main.callMainFromJest;
 
+if (path.basename(process.cwd()) !== 'src') {
+    // Because the second execute of Jest watch mode is inherited the current folder.
+    process.chdir('src');
+}
+
+// test
 test('First', () => {
     callMain();
 });

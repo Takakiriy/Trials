@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`1 >> 1_first_1_ok_1_answer : sourceFileContents 1`] = `
+"This is an example of input data.
+Hello!
+"
+`;
+
+exports[`2 >> 2_options_1_command_1_answer : sourceFileContents 1`] = `
+"ABC
+DE
+[\\"A\\",\\"B\\"]
+"
+`;
+
+exports[`2 >> 2_options_2_input_1_answer : sourceFileContents 1`] = `
+"input>Input
+"
+`;
+
+exports[`snapshot: answer 1`] = `
+"This is an example of output data.
+Hello!
+"
+`;

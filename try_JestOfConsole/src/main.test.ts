@@ -27,3 +27,9 @@ test('locale', () => {
     callMain([], {'command': 'show-locale', 'locale': 'fr-FR'});
     expect(main.stdout).toBe('fr-FR\n');
 });
+
+test('snapshot', () => {
+    const inputData = lib.getSnapshot(`1 >> 1_first_1_ok_1_answer : sourceFileContents 1`);
+    const outputData = inputData.replace('input', 'output');
+    expect(outputData).toMatchSnapshot('answer');
+});

@@ -1,7 +1,6 @@
 # __app__
 
-__app__ creates each folder for each branch and check out in each folder
-based on the `.git` folder.
+`app` command is ____.
 
 [日本語 README](./README-jp.md)
 

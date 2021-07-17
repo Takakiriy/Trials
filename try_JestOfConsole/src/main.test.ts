@@ -1,3 +1,4 @@
+import * as fs from "fs";
 import * as main from './main';
 import * as path from "path";
 import * as lib from "./lib";
@@ -28,8 +29,17 @@ test('locale', () => {
     expect(main.stdout).toBe('fr-FR\n');
 });
 
-test('snapshot', () => {
-    const inputData = lib.getSnapshot(`1 >> 1_first_1_ok_1_answer : sourceFileContents 1`);
-    const outputData = inputData.replace('input', 'output');
-    expect(outputData).toMatchSnapshot('answer');
+test('snapshot 1', () => {
+    const  inputText = lib.getSnapshot(`snapshot 1: 1 sourceFileContents 1`);
+    const  outputText = inputText.replace('input', 'output');
+    expect(outputText).toMatchSnapshot('answer');
+});
+
+test("checks snapshots files are confirmed", () => {
+    const  activeSnapshots = fs.readFileSync('__snapshots__/main.test.ts.snap').toString();
+    const  backUpSnapshots = fs.readFileSync('__snapshots__/main.test.ts.snap.confirmed-ts').toString();
+        // 拡張子の末尾を .snap にしない理由は、Jest が使っていない .snap ファイルを自動的に削除しようとするからです
+        // ____.snap.confirmed-ts ファイルが存在する理由は、Jest の自動編集が予期しないデータを追加することがあるからです
+
+    expect(activeSnapshots).toBe(backUpSnapshots);
 });

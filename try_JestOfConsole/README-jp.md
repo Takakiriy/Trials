@@ -1,7 +1,7 @@
 # __app__
 <!-- Character Encoding: "WHITE SQUARE" U+25A1 is □. -->
 
-`.git` フォルダーを元にブランチごとにフォルダーを作り、それぞれのフォルダーでチェックアウトします。
+`app` コマンドは、____です。
 
 <!-- TOC depthFrom:1 -->
 

@@ -19,4 +19,11 @@ export declare function inputSkip(count: number): void;
 export declare function pathResolve(path_: string): string;
 export declare function checkNotInGitWorking(): void;
 export declare function getTestWorkFolderFullPath(): string;
+export declare function getSnapshot(label: string): any;
+export declare function pp(message: any): string[];
+export declare const debugOut: string[];
+export declare function cc(targetCount?: number, label?: string): {
+    isTarget: boolean;
+    debugOut: string[];
+};
 export {};

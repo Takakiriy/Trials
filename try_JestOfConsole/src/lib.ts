@@ -2,7 +2,10 @@ import * as fs from "fs";
 import * as path from "path";
 import * as globby from 'globby';
 import * as readline from 'readline';
-const snapshots = require("./__snapshots__/main.test.ts.snap");
+try {
+    var snapshots = require("./__snapshots__/main.test.ts.snap");
+} catch (e) {
+}
 
 // copyFolderSync
 // #keyword: copyFolderSync

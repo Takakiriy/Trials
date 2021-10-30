@@ -12,20 +12,24 @@ echo Unknown command error. & set errorlevel=1
 goto :finally
 
 :open_VisualStudioCode
-if not exist "node_modules" goto :setup
-code .
-goto :finally
+    if not exist "node_modules" goto :setup
+
+    code .
+    goto :finally
 
 :setup
-PATH=%PATH%;C:\Program Files\Git\usr\bin
-"C:\Program Files\Git\usr\bin\bash.exe" -c "npm run setup"
-code .
-goto :finally
+    PATH=%PATH%;C:\Program Files\Git\usr\bin
+
+    "C:\Program Files\Git\usr\bin\bash.exe" -c "npm run setup"
+
+    code .
+    goto :finally
 
 :clean
-PATH=%PATH%;C:\Program Files\Git\usr\bin
-"C:\Program Files\Git\usr\bin\bash.exe" -c "npm run clean"
-goto :finally
+    PATH=%PATH%;C:\Program Files\Git\usr\bin
+
+    "C:\Program Files\Git\usr\bin\bash.exe" -c "npm run clean"
+    goto :finally
 
 :finally
 if "%errorlevel%" == "0" echo Done.

@@ -1,11 +1,127 @@
-# TypeScript Visual Studio Code
+# __app__
+
+`app` command is ____.
 
 [日本語 README](./README-jp.md)
 
-There are codes in the "src" folder.
+<!-- TOC depthFrom:1 -->
+
+- [__app__](#app)
+  - [How to use](#how-to-use)
+  - [Install](#install)
+    - [For Windows](#for-windows)
+    - [For mac](#for-mac)
+  - [(for developers) How to build the development environment](#for-developers-how-to-build-the-development-environment)
+    - [For Windows](#for-windows-1)
+    - [For mac](#for-mac-1)
+
+<!-- /TOC -->
 
 
-## Install to Windows
+## How to use
+
+Install __app__ and then run it in your shell.
+
+    __app__  __Path__
+
+
+## Install
+
+To use __app__, you must install Node.js.
+
+### For Windows
+
+    Install Node.js:
+        - https://nodejs.org/ja/download/ >> Windows Installer (.msi) >> 64-bit
+        - Open the downloaded file (e.g. node-v14.16.0-x64.exe)
+        - Installation options are defaults
+
+    If there is your Windows in the LAN with the proxy in the company and so on:
+        Windows Start >> (Input) PowerShell :
+            - npm config -g set proxy "http://___.___.___.___:____"
+            - npm config -g set https-proxy "http://___.___.___.___:____"
+
+    Download and expand __app__ and install Node.js packages used by __app__:
+        Windows Start >> (Input) PowerShell :
+            cd  ${env:USERPROFILE}\Downloads
+            Invoke-WebRequest  https://github.com/Takakiriy/__app__/archive/refs/heads/master.zip -OutFile __app__.zip
+            rm -r -fo  "__app__-master"  #// When you are updating
+            Expand-Archive -Path __app__.zip -DestinationPath "."
+            cd  "__app__-master"
+
+            npm install --only=production
+
+    If you use PowerShell:
+        Create a PS1 script file that launches __app__ into the folder where PATH of PowerShell:
+            Windows Start >> (Input) PowerShell :
+                cd  ${env:USERPROFILE}\Downloads\__app__-master
+                ${current_folder} = Convert-Path "."
+                ${__app___folder} = "${env:USERPROFILE}\Documents\__app__"
+                ${script} = "${env:USERPROFILE}\AppData\Local\Microsoft\WindowsApps\__app__.ps1"
+
+                echo  "`${env:NODE_PATH} = `"${current_folder}\node_modules`"" > ${script}
+                echo  "node  ${current_folder}\build\__app__.js `$PsBoundParameters.Values `$args" >> ${script}
+
+                Set-ExecutionPolicy  RemoteSigned  -Scope CurrentUser  #// Make the script run
+
+    If you use Git bash:
+        Install Git for Windows:
+            - https://git-scm.com/ >> Downloads >> Windows
+            - Open the downloaded file (e.g. Git-2.31.1-64-bit.exe)
+            - Press Next button 8 times
+            - Configuring the line ending conversions: Checkout as-is, commit as-is
+            - Other installation options are defaults
+        Create a bash script file that launches __app__ into the folder where PATH passed:
+            Right click at any folder >> Git bash :
+                cd  ${HOME}/Downloads/__app__-master
+                current_folder="$(pwd)"
+                __app___folder="${HOME}/Documents/__app__"
+                script="${HOME}/bin/__app__"
+                mkdir -p "${HOME}/bin"
+
+                echo  "export NODE_PATH=\"${HOME}/AppData/Roaming/npm/node_modules\"" > ${script}
+                echo  "node  ${current_folder}/build/__app__.js \"\$@\"" >> ${script}
+
+    Check to use __app__ command:
+        Open new PowerShell or new Git bash:
+            __app__ --version
+
+### For mac
+
+    Install Node.js:
+        - https://nodejs.org/ja/download/ >> macOS Installer (.pkg) >> 64-bit
+        - Open the downloaded file (e.g. node-v14.16.0.pkg)
+        - Installation options are defaults
+
+    Download and expand __app__ and install Node.js packages used by __app__:
+        #// Launchpad >> Terminal
+        cd  ~/Downloads
+        setopt interactivecomments
+            #// enables comment symbol (#)
+        curl -o __app__.zip -kL https://github.com/Takakiriy/__app__/archive/refs/heads/master.zip 
+        rm -rf  __app__-old  &&  mv  __app__  __app__-old  #// When you are updating
+        unzip -o __app__.zip
+        mv  __app__-master  __app__  #// The folder extracted from the Zip file
+        cd  __app__
+
+        npm install --only=production
+
+    Make the script file in the PATH folder to start __app__:
+        cd __app__  #// The folder extracted from the Zip file
+        script="$HOME/bin/__app__"
+        rm -f "${script}"  #// When you are updating
+        echo "export  NODE_PATH=$(pwd)/node_modules" >> "${script}"
+        echo "node  $(pwd)/build/__app__.js \"\$@\"" >> "${script}"
+        chmod +x "${script}"
+        unset script
+
+    Check to use __app__ command:
+        __app__ --version
+
+
+## (for developers) How to build the development environment
+
+### For Windows
 
 Install Node.js:
 
@@ -35,12 +151,12 @@ Install Visual Studio Code:
             (double click) File: Save All >> Ctrl + S key >> Enter key
     - Close Visual Studio Code
 
-Double click "cmd menu.bat" and select "1. open_VisualStudioCode":
+Double click `cmd menu.bat` and select `1. open_VisualStudioCode`:
 
-Press F5 key, then the test runs:
+To run the first test, press F5 key:
 
 
-## Install to mac
+### For mac
 
 Install Node.js:
 
@@ -58,14 +174,16 @@ Install Visual Studio Code:
             (double click) File: Save All >> Ctrl + S key >> Enter key
     - Close Visual Studio Code
 
-Add "cmd menu.command" file executable permission:
+Add `cmd menu.command` file executable permission:
 
-    - Double click "bin/chmod+x.command.zip" file
-    - Right click at the expanded "chmod+x.command" file >> Open >> Open
-    - Drag and drop "cmd menu.command" file to the opened window, push Enter key and close the window
-    - Right click at "cmd menu.command" file >> Open >> Open
+    - Double click `bin/chmod+x.command.zip` file
+    - Right click at the expanded `chmod+x.command` file >> Open >> Open
+    - Drag and drop `cmd menu.command` file to the opened window, push Enter key and close the window
+    - Right click at `cmd menu.command` file >> Open >> Open
     - Close the opened window
 
-Double click "cmd menu.command" file and select "1. open_VisualStudioCode":
+Double click `cmd menu.command` file and select `1. open_VisualStudioCode`:
 
-To run the test, press fn + F5 key:
+To run the first test, press fn + F5 key:
+
+

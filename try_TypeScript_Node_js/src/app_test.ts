@@ -1,6 +1,6 @@
 ﻿import * as child_process from 'child_process';
 
-const  scriptPath = '../build/main.js';
+const  scriptPath = '../build/app.js';
 
 async function  main() {
 	await callChildProccess(`node ${scriptPath}`);

@@ -35,7 +35,23 @@ Install Visual Studio Code:
             (double click) File: Save All >> Ctrl + S key >> Enter key
     - Close Visual Studio Code
 
-Double click "cmd menu.bat" and select "1. open_VisualStudioCode":
+Open try_TypeScript_Node_js folder in Visual Studio Code:
+
+    - If you drag and drop the try_TypeScript_Node_js folder into Visual Studio Code:
+        - Open Visual Studio Code (New Window)
+        - Drag and drop the folder into Visual Studio Code
+    - If you open by Visual Studio Code menu:
+        - Open Visual Studio Code (New Window)
+        - File (menu) >> Open Folder...
+        - ___\try_TypeScript_Node_js
+    - If you open from PowerShell
+        - Windows start >> (type) PowerShell
+        - code "___\try_TypeScript_Node_js"
+
+Restore node_modules folder:
+
+    - Visual Studio Code (menu) >> Terminal >> New Terminal
+    - npm ci
 
 Press F5 key, then the test runs:
 

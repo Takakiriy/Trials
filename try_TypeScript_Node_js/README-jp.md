@@ -32,7 +32,23 @@ Visual Studio Code をインストールします:
             File: Save All （をダブルクリック） >> Ctrl + S キー >> Enter キー
     - Visual Studio Code を閉じます
 
-"cmd menu.bat" をダブルクリックして、1. open_VisualStudioCode を選びます:
+Visual Studio Code で try_TypeScript_Node_js フォルダーを開きます:
+
+    - Visual Studio Code に try_TypeScript_Node_js フォルダーをドラッグ＆ドロップする場合:
+        - Visual Studio Code を開きます（New Window）
+        - フォルダーを Visual Studio Code にドラッグ＆ドロップします
+    - Visual Studio Code のメニューから開く場合:
+        - Visual Studio Code を開きます（New Window）
+        - File メニュー >> Open Folder...
+        - ___\try_TypeScript_Node_js
+    - PowerShell から開く場合:
+        - Windows スタート >> PowerShell（とキーボードから入力）
+        - code "___\try_TypeScript_Node_js"
+
+node_modules フォルダーを復帰します:
+
+    - Visual Studio Code メニュー >> Terminal >> New Terminal
+    - npm ci
 
 F5 キーを押すと、テストが動きます:
 

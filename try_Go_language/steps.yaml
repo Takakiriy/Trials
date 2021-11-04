@@ -1,97 +1,61 @@
-﻿Go言語と Visual Studio Code を Windows 10 にインストールしてデバッグ実行します:
-    設定:
-        __UserProfile__: C:\Users\ts-ne  #// Windows の %USERPROFILE% 環境変数の値
-    ローカルPCへ各種ソフトウェアをインストールします:
-        Go言語をインストールします:
-            - https://golang.org/dl/ >> Microsoft Windows >> ...msi をダウンロードして実行
-            - インストール オプションはデフォルトで構いません
-        Visual Studio Code をインストールします:
-            - https://code.visualstudio.com/
-            - オプションはすべてデフォルト
-            - 必要なら、Visual Studio Code をタスクバーにピン止めします
-            - 以下の拡張機能（Extensions）をインストールします:
-                - Go
-        Go言語の各種ツールをインストールします:
-            F1 キー: |
-                Go: Install/Update Tools
-            全てのツールを選択します:
-                最も上のボックスをクリックすると全部選択します
-        （この手順では不要、参考）Go言語のインストール状況を表示します:
-            F1 キー: |
-                Go: Locate Configured Go Tools
-        （この手順では不要、参考）fmt.Println の出力が表示されないときの対処法:
-            メニュー: File >> Preferences >> Settings >> Open Settings (JSON)（右上のアイコン）
-            JSON: |
+﻿インストール:
+    Go言語と Visual Studio Code を Windows 10 にインストールしてデバッグ実行します:  #keyword: install Go VSCode
+        設定:
+            __ProjectName__: try
+        ローカルPCへ各種ソフトウェアをインストールします:
+            Go言語をインストールします:
+                - https://golang.org/dl/ >> Microsoft Windows >> ...msi をダウンロードして実行
+                - インストール オプションはデフォルトで構いません
+            Visual Studio Code をインストールします:
+                - https://code.visualstudio.com/
+                - オプションはすべてデフォルト
+                - 必要なら、Visual Studio Code をタスクバーにピン止めします
+                - 以下の拡張機能（Extensions）をインストールします:
+                    - Go
+            Go言語の各種ツールをインストールします:
+                F1 キー: |
+                    Go: Install/Update Tools
+                全てのツールを選択します:
+                    最も上のボックスをクリックすると全部選択します
+            （この手順では不要、参考）Go言語のインストール状況を表示します:
+                F1 キー: |
+                    Go: Locate Configured Go Tools
+        ${env:USERPROFILE}\go\src フォルダーを作ります:
+            #// PowerShell
+            mkdir ${env:USERPROFILE}\go\src
+        Visual Studio Code で ${env:USERPROFILE}\go\src を開きます:
+            #// PowerShell
+            code ${env:USERPROFILE}\go\src  #// 以後 __go_src__ とします
+        go.mod ファイルを初期化します:
+            シェル:
+                 go mod init try  #template: init __ProjectName__
+        Go言語のソース ファイルを作成します:
+            __go_src__\example_test.go : |
+                package main // このソースが所属するパッケージの名前
+
+                import (
+                    "fmt" // format  // インポートするパッケージ
+                    "testing"
+                )
+
+                func main() { // function  // 関数定義
+                    fmt.Println("Hello, playground") // print line  // 実行内容
+                }
+
+                func add(x int, y int) int {
+                    return x + y
+                }
+
+                func TestExample(t *testing.T) {
+                    main()
+                }
+        fmt.Println で出力されるように設定します:
+            __go_src__/.vscode/settings.json : |
                 {
                     "go.testFlags": ["-v"]
                 }
-    ${env:USERPROFILE}\go\src フォルダーを作ります:
-        #// PowerShell
-        mkdir ${env:USERPROFILE}\go\src
-    Visual Studio Code で ${env:USERPROFILE}\go\src を開きます:
-        File >> Open Folder >> C:\Users\ts-ne\go\src   #template: __UserProfile__
-    Go言語のソース ファイルを作成します:
-        '${env:USERPROFILE}\go\src\example_test.go' : |
-            package main // このソースが所属するパッケージの名前
-
-            import (
-                "fmt" // format  // インポートするパッケージ
-                "testing"
-            )
-
-            func main() { // function  // 関数定義
-                fmt.Println("Hello, playground") // print line  // 実行内容
-            }
-
-            func add(x int, y int) int {
-                return x + y
-            }
-
-            func TestExample(t *testing.T) {
-                main()
-            }
-    推奨されるインストールを実行します:
-        上記ソース ファイルを保存すると、Install All ボタンが右下に表示されるので押します
-    実行します:
-        TestExample 関数の定義の上にある run test をクリックします
-    デバッグ実行します:
-        ブレーク ポイントを張ります:
-            fmt.Println を呼び出す行の行番号の左をクリック
-        デバッグ実行を開始します:
-            TestExample 関数の定義の上にある debug test をクリックします
-        ブレークしたとき:
-            ステップ実行する: F10 キー
-            ステップインする: F11 キー
-            実行を再開する: F5 キー
-CentOS7 に Go言語をインストールする:
-    Go 言語の最新版を使う場合:
-        - sudo yum install -y epel-release
-        - sudo yum install -y golang
-        - go version
-    新しくプロジェクトを作る場合:
-        設定:
-            __ProjectName__: try_go
-        bash:
-            - mkdir ~/try_go                   #template: __ProjectName__
-            - go mod init example.com/try_go   #template: __ProjectName__
-        ~/try_go/main/example_test.go : |
-            package main
-
-            import (
-                "testing"
-            )
-
-            func TestExample(t *testing.T) {
-                main()
-            }
-        ~/try_go/main/example.go : |
-            package main
-
-            import "fmt"
-
-            func main() {
-                fmt.Println("Hello, playground")
-            }
+        （もし、Install All ボタンが表示されたら）推奨されるインストールを実行します:
+            上記ソース ファイルを保存すると、Install All ボタンが右下に表示されるので押します
         実行します:
             TestExample 関数の定義の上にある run test をクリックします
         デバッグ実行します:
@@ -103,45 +67,88 @@ CentOS7 に Go言語をインストールする:
                 ステップ実行する: F10 キー
                 ステップインする: F11 キー
                 実行を再開する: F5 キー
-        CLI から実行します:
-            #bash
-            cd ~/try_go
-            go run main/example.go
-    既存のプロジェクトを使う場合:
-        #// ★未確認
-        参考: Install Go 1.14 on CentOS 8 | CentOS 7  https://computingforgeeks.com/how-to-install-go-on-centos-centos-linux/
-        設定:
-            __GoVersion__: 1.13
-        go.mod ファイルがある場合:
-            go.mod ファイルに書かれた go のバージョンをメモします:
-                __GoVersion__: 1.13  #template: __GoVersion__
-            #// 古いバージョンをインストールできない
-go get でプロジェクトをインストールして実行します:
-    準備:
-        Git for Windows をインストールします:
-            - https://git-scm.com/ >> Downloads >> Windows
-            - インストール オプションはデフォルトで構いません
-        Visual Studio Code を開いていたら閉じます:
-    Visual Studio Code で C:\Users\ts-ne\go\src を開きます:  #template: __UserProfile__
-        File >> Open Folder >> C:\Users\ts-ne\go\src         #template: __UserProfile__
-    Visual Studio Code のターミナルを開きます:
-        Terminal >> New Terminal (PowerShell)
-    hello をインストールします:
-        参考: https://github.com/golang/example
-        PowerShell:
-            go get github.com/golang/example/hello
-    デバッグ実行します:
-        - C:\Users\ts-ne\go\src\strings\example_test.go を開きます  #template: __UserProfile__
-        - F5 キーを押し、Go を選びます
-    実行します:
-        - C:\Users\ts-ne\go\src\strings\example_test.go を開きます  #template: __UserProfile__
-        - Ctrl + F5 キーを押し、Go を選びます
-Google/wire をインストールします:
-    - go get github.com/google/wire/cmd/wire
-    - cat ~/.bashrc | grep wire
-    - 上記コマンドを実行して何も表示されなかったら:
-        - echo 'export PATH="$HOME/go/bin:$PATH"' >> ~/.bashrc
-        - source ~/.bashrc
+            fmt.Println の出力を表示します:
+                Terminal（右下のビュー）>> DEBUG CONSOLE（Terminalの上）
+    CentOS7 に Go言語をインストールします:
+        Go 言語の最新版を使う場合:
+            - sudo yum install -y epel-release
+            - sudo yum install -y golang
+            - go version
+        新しくプロジェクトを作る場合:
+            設定:
+                __ProjectName__: try_go
+            bash:
+                - mkdir ~/try_go                   #template: __ProjectName__
+                - go mod init example.com/try_go   #template: __ProjectName__
+            ~/try_go/main/example_test.go : |
+                package main
+
+                import (
+                    "testing"
+                )
+
+                func TestExample(t *testing.T) {
+                    main()
+                }
+            ~/try_go/main/example.go : |
+                package main
+
+                import "fmt"
+
+                func main() {
+                    fmt.Println("Hello, playground")
+                }
+            実行します:
+                TestExample 関数の定義の上にある run test をクリックします
+            デバッグ実行します:
+                ブレーク ポイントを張ります:
+                    fmt.Println を呼び出す行の行番号の左をクリック
+                デバッグ実行を開始します:
+                    TestExample 関数の定義の上にある debug test をクリックします
+                ブレークしたとき:
+                    ステップ実行する: F10 キー
+                    ステップインする: F11 キー
+                    実行を再開する: F5 キー
+            CLI から実行します:
+                #bash
+                cd ~/try_go
+                go run main/example.go
+        既存のプロジェクトを使う場合:
+            #// ★未確認
+            参考: Install Go 1.14 on CentOS 8 | CentOS 7  https://computingforgeeks.com/how-to-install-go-on-centos-centos-linux/
+            設定:
+                __GoVersion__: 1.13
+            go.mod ファイルがある場合:
+                go.mod ファイルに書かれた go のバージョンをメモします:
+                    __GoVersion__: 1.13  #template: __GoVersion__
+                #// 古いバージョンをインストールできない
+    go get でプロジェクトをインストールして実行します:
+        準備:
+            Git for Windows をインストールします:
+                - https://git-scm.com/ >> Downloads >> Windows
+                - インストール オプションはデフォルトで構いません
+            Visual Studio Code を開いていたら閉じます:
+        Visual Studio Code で ${env:USERPROFILE}\go\src を開きます:
+            #// PowerShell
+            code ${env:USERPROFILE}\go\src  #// 以後 __go_src__ とします
+        Visual Studio Code のターミナルを開きます:
+            Terminal >> New Terminal (PowerShell)
+        hello をインストールします:
+            参考: https://github.com/golang/example
+            PowerShell:
+                go get github.com/golang/example/hello
+        デバッグ実行します:
+            - __go_src__\strings\example_test.go を開きます
+            - F5 キーを押し、Go を選びます
+        実行します:
+            - __go_src__\strings\example_test.go を開きます
+            - Ctrl + F5 キーを押し、Go を選びます
+    Google/wire をインストールします:
+        - go get github.com/google/wire/cmd/wire
+        - cat ~/.bashrc | grep wire
+        - 上記コマンドを実行して何も表示されなかったら:
+            - echo 'export PATH="$HOME/go/bin:$PATH"' >> ~/.bashrc
+            - source ~/.bashrc
 CLI パラメーター:
     viper:
         viper を使って CLI パラメーターや設定ファイルを解析するサンプル Go コード: |
@@ -170,12 +177,12 @@ CLI パラメーター:
                 log.Print(viper.GetString("name")) // YAML なら name, 環境変数なら APP_NAME
             }
 トラブルシューティング(Go言語):
-    - ケース:
+    - #// could not import
         コマンド: Visual Studio Code でコードを開いているとき
         エラー: could not import ____
         原因: import 文の基準フォルダーが正しくないか、import 文に指定したパスが正しくないです
         対処法: Visual Studio Code で開くフォルダーを go.mod ファイルがあるフォルダーにします
-    - ケース:
+    - #// could not build arguments for function
         エラー: |
             could not build arguments for function __InvokedName__ (__Path__): failed to build __Type__:
             received non-nil error from function __ProvidedName__ (__Path__): __ErrorMessage__

@@ -205,14 +205,22 @@ Visual Studio Code をインストールします:
             File: Save All （をダブルクリック） >> Command + S キー >> Enter キー
     - Visual Studio Code を閉じます
 
-`cmd menu.command` ファイルに実行権限を追加します:
+Visual Studio Code で try_TypeScript_Node_js フォルダーを開きます:
 
-    - `bin/chmod+x.command.zip` ファイルをダブルクリックします
-    - 解凍してできた `chmod+x.command` ファイルを右クリック >> 開く >> 開く
-    - `cmd menu.command` ファイルを開いたウィンドウにドラッグ＆ドロップして、Enter キーを押し、ウィンドウを閉じます
-    - `cmd menu.command` ファイルを右クリック >> 開く >> 開く
-    - 開いたウィンドウを閉じます
+    - Visual Studio Code に try_TypeScript_Node_js フォルダーをドラッグ＆ドロップする場合:
+        - Visual Studio Code を開きます（New Window）
+        - フォルダーを Visual Studio Code にドラッグ＆ドロップします
+    - Visual Studio Code のメニューから開く場合:
+        - Visual Studio Code を開きます（New Window）
+        - File メニュー >> Open Folder...
+        - ___\try_TypeScript_Node_js
+    - ターミナルから開く場合:
+        - Launcher >> ターミナル（とキーボードから入力して選択）
+        - code "___\try_TypeScript_Node_js"
 
-`cmd menu.command` ファイルをダブルクリックして、`1. open_VisualStudioCode` を選びます:
+node_modules フォルダーを復帰します:
+
+    - Visual Studio Code メニュー >> Terminal >> New Terminal
+    - npm ci
 
 fn + F5 キーを押すと、テストが動きます:

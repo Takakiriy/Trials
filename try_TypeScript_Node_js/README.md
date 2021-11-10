@@ -180,7 +180,7 @@ Restore node_modules folder:
     - Visual Studio Code (menu) >> Terminal >> New Terminal
     - npm ci
 
-To run the first test, press F5 key:
+To run the test, press F5 key:
 
 
 ### For mac
@@ -201,16 +201,17 @@ Install Visual Studio Code:
             (double click) File: Save All >> Ctrl + S key >> Enter key
     - Close Visual Studio Code
 
-Add `cmd menu.command` file executable permission:
+Open try_TypeScript_Node_js folder in Visual Studio Code:
 
-    - Double click `bin/chmod+x.command.zip` file
-    - Right click at the expanded `chmod+x.command` file >> Open >> Open
-    - Drag and drop `cmd menu.command` file to the opened window, push Enter key and close the window
-    - Right click at `cmd menu.command` file >> Open >> Open
-    - Close the opened window
+    - If you drag and drop the try_TypeScript_Node_js folder into Visual Studio Code:
+        - Open Visual Studio Code (New Window)
+        - Drag and drop the folder into Visual Studio Code
+    - If you open by Visual Studio Code menu:
+        - Open Visual Studio Code (New Window)
+        - File (menu) >> Open Folder...
+        - ___\try_TypeScript_Node_js
+    - If you open from Terminal
+        - Launcher >> (type) terminal
+        - code "___\try_TypeScript_Node_js"
 
-Double click `cmd menu.command` file and select `1. open_VisualStudioCode`:
-
-To run the first test, press fn + F5 key:
-
-
+To run the test, press fn + F5 key:

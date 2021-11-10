@@ -152,7 +152,10 @@ Visual Studio Code をインストールします:
             File: Save All （をダブルクリック） >> Ctrl + S キー >> Enter キー
     - Visual Studio Code を閉じます
 
-`cmd menu.bat` をダブルクリックして、`1. open_VisualStudioCode` を選びます:
+Node.js パッケージをインストールします:
+    - シェル >> code __ThisFolder__
+    - VSCode >> Terminal >> New Terminal
+    - npm ci
 
 F5 キーを押すと、最初のテストが動きます:
 
@@ -183,7 +186,10 @@ Visual Studio Code をインストールします:
     - `cmd menu.command` ファイルを右クリック >> 開く >> 開く
     - 開いたウィンドウを閉じます
 
-`cmd menu.command` ファイルをダブルクリックして、`1. open_VisualStudioCode` を選びます:
+Node.js パッケージをインストールします:
+    - シェル >> code __ThisFolder__
+    - VSCode >> Terminal >> New Terminal
+    - npm ci
 
 fn + F5 キーを押すと、最初のテストが動きます:
 

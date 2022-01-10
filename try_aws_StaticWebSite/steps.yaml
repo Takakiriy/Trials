@@ -3,7 +3,7 @@
 HTTP（HTTPSではない）で静的 Web サイトを構築します:
     参考: https://docs.aws.amazon.com/ja_jp/AmazonS3/latest/dev/HostingWebsiteOnS3Setup.html
     #// HTTPS アクセスはできません（上記サイトに書いてあります）
-    設定:
+    設定: #settings:
         __Bucket__: sageps3web1  #// HTML ファイルを入れる S3 のバケット名
         __Region__: northeast-1
     バケットを作成します:
@@ -74,11 +74,6 @@ HTTP（HTTPSではない）で静的 Web サイトを構築します:
 
 Route 53 に登録されたカスタムドメインを使用した静的ウェブサイト(S3)の設定:
     参考: https://docs.aws.amazon.com/ja_jp/AmazonS3/latest/dev/website-hosting-custom-domain-walkthrough.html
-    設定:
-        __Domain__: sage-p.tk
-        __SubDomain__: www.sage-p.tk
-        __Region__: northeast-1
-        __CloudFrontOAI__: E1JDA62UGBURMM
     #// また、www.sage-p.tk から sage-p.tk にリダイレクトします  #template: __SubDomain__ から __Domain__
     #// また、アクセスのログも記録します
     自分が使えるドメイン(URL)を用意します（カスタムドメインを Route 53 に登録する）:
@@ -434,7 +429,8 @@ Amazon CloudFront によるウェブサイトの高速化(HTTPS対応、CloudFor
 
 （確認中）CloudFormation テンプレートを使用して:
     参考: https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/getting-started-secure-static-website-cloudformation-template.html
-
-
-
-
+設定: #settings:
+    __Domain__: sage-p.tk
+    __SubDomain__: www.sage-p.tk
+    __Region__: northeast-1
+    __CloudFrontOAI__: E1JDA62UGBURMM

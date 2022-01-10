@@ -1,6 +1,6 @@
 ﻿インストール:
     Go言語と Visual Studio Code を Windows 10 にインストールしてデバッグ実行します:  #keyword: install Go VSCode
-        設定:
+        設定: #settings:
             __ProjectName__: try
         ローカルPCへ各種ソフトウェアをインストールします:
             Go言語をインストールします:
@@ -75,7 +75,7 @@
             - sudo yum install -y golang
             - go version
         新しくプロジェクトを作る場合:
-            設定:
+            設定: #settings:
                 __ProjectName__: try_go
             bash:
                 - mkdir ~/try_go                   #template: __ProjectName__
@@ -116,7 +116,7 @@
         既存のプロジェクトを使う場合:
             #// ★未確認
             参考: Install Go 1.14 on CentOS 8 | CentOS 7  https://computingforgeeks.com/how-to-install-go-on-centos-centos-linux/
-            設定:
+            設定: #settings:
                 __GoVersion__: 1.13
             go.mod ファイルがある場合:
                 go.mod ファイルに書かれた go のバージョンをメモします:

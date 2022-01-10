@@ -4,9 +4,9 @@ Azure App Service でユーザーをエンド ツー エンドで認証および
     参考: https://docs.microsoft.com/ja-jp/azure/app-service/tutorial-auth-aad?pivots=platform-linux
     ホスティング プラットフォームを選択する: Linux
 
-    設定:
+    設定: #settings:
         __DeployUserName__: sagex-deploy  #// Azure 内で一意。文字@は使えない
-        __DeployUserPassword__: password83  #★秘密:仮  #// 手順内でメモする値
+        __DeployUserPassword__: password83  #// 手順内でメモする値
             #// デプロイ ユーザーとは、Azure App Service の Git リポジトリにプッシュ（デプロイ）する Git のユーザーです
         __GitUserName__: test_user
         __GitUserMail__: test@example.com
@@ -17,7 +17,7 @@ Azure App Service でユーザーをエンド ツー エンドで認証および
         __BackEndAppName__: sagex-back1
         __FrontEndGitURL__: https://sagex-deploy@sagex-front1.scm.azurewebsites.net/sagex-front1.git
         __BackEndGitURL__: https://sagex-deploy@sagex-back1.scm.azurewebsites.net/sagex-back1.git
-        __BackEndClientID__: 00000000-0000-0000-0000-000000000000  #★秘密:仮  #// 手順内でメモする値
+        #// __BackEndClientID__: 00000000-0000-0000-0000-000000000000  #★秘密:仮  #// 手順内でメモする値
     ローカルPCへ各種ソフトウェアをインストールします:
         Git for Windows をインストールします:
             - https://git-scm.com/ >> Downloads >> Windows
@@ -170,7 +170,7 @@ Azure App Service でユーザーをエンド ツー エンドで認証および
     参考: https://docs.microsoft.com/ja-jp/azure/app-service/tutorial-auth-aad?pivots=platform-linux
     ホスティング プラットフォームを選択する: Linux
 
-    設定:
+    設定: #settings:
         __DeployUserName__: sagex-deploy  #// Azure 内で一意。Azure アカウント内で１つ(?)。文字@は使えない
         __DeployUserPassword__: password83  #★秘密:仮  #// 手順内でメモする値
         __GitUserName__: test_user
@@ -432,7 +432,7 @@ Azure App Service でユーザーをエンド ツー エンドで認証および
             JSON が表示されます。 例：{"name":"Example2"}
 
 （確認中）チュートリアル:Azure Active Directory B2C (Azure AD B2C):
-    設定:
+    設定: #settings:
         __ResourceGroup__: b2c
         __TenantName__: b2c_tenant1  #// Azure AD B2C リソースの名前
         __B2C_DomainName__: sagepb2ctenant1  #// __B2C_DomainName__.onmicrosoft.com
@@ -442,7 +442,7 @@ Azure App Service でユーザーをエンド ツー エンドで認証および
         __AppName__: webapp1
         __AppForIDP__: Azure AD B2C App
         __ClientID__: ceb494b5-2202-4660-9b74-6ee03cde377c
-        __ClientSecret__: zbigK4jAZ-M6_cY..Vj2Pa9gM.22n_mPCB  #★秘密:仮  #// 手順内でメモする値
+        #// __ClientSecret__: zbigK4jAZ-M6_cY..Vj2Pa9gM.22n_mPCB  #★秘密:仮  #// 手順内でメモする値
         __RedirectURI__: https://jwt.ms
         __SignUpSignInUserFlow__: signupsignin1
         __ProfileEditingUserFlow__: profileediting1
@@ -826,7 +826,7 @@ Azure App Service でユーザーをエンド ツー エンドで認証および
 
 （エラー）Microsoft アカウントを持っているユーザーを Azure AD の管理者の許可なくゲストユーザーとしてサインアップできるようにする:
     参考: https://docs.microsoft.com/ja-jp/azure/active-directory/external-identities/self-service-sign-up-user-flow
-    設定:
+    設定: #settings:
         __UserFlowName__: UserFlow1
         __FrontEndAppName__: sagex-front1
     手順:

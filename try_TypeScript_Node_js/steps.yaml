@@ -1,6 +1,6 @@
 ﻿Windows に Node.js と Jest と Visual Studio Code をインストールします:
     #// Jest の watch を使って VSCode のデバッガーを爆速で起動する
-    設定:
+    設定: #settings:
         __Project__: try_jest
     Node.js をインストールします:
         - https://nodejs.org/ja/download/ >> Windows Installer (.msi) >> 64-bit

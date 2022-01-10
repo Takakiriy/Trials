@@ -1,5 +1,5 @@
 ﻿Visual Studio Code + Windows 10 で Python + pipenv を動かす:
-    設定:
+    設定: #settings:
         __PythonVer2p__: 3.7  #// 下記手順で決定
         __PythonVer2__: 37  #// 下記手順で決定
         __VEnv__: C:\\Users\\ts-ne\\.virtualenvs\\try_PDF_python_reportlab-vasBDzlp  #// 下記手順で決定
@@ -62,7 +62,7 @@
             #// PowerShell の続き
             - pipenv shell  #// 仮想環境をアクティブにします（同じウィンドウ、新しいプロセスで仮想環境が実行されます）
             - pipenv --venv  #// 仮想環境のパスが表示されます
-                __VEnv__: C:\\Users\\ts-ne\\.virtualenvs\\try_PDF_python_reportlab-vasBDzlp  #template: __VEnv__
+            #// __VEnv__: C:\\Users\\ts-ne\\.virtualenvs\\try_PDF_python_reportlab-vasBDzlp  #template: __VEnv__
         __Project__/.vscode/settings.json: |  #// 下記 __VEnv__ の部分は仮想環境のパスです
             {
                 "python.pythonPath": "C:\\Users\\ts-ne\\.virtualenvs\\try_PDF_python_reportlab-vasBDzlp\\Scripts\\python.exe"

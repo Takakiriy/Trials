@@ -11,7 +11,7 @@
 
 Docker イメージを ACR 経由で Azure App Service にデプロイする:
     #// ACR = Azure Container Registory
-    設定:
+    設定: #settings:
         __ResourceGroup__: web1res
         __AppName__: sagep-web1  #// Azure 全体で唯一
         __RegistryName__: web1reg

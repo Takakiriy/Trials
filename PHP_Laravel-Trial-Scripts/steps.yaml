@@ -12,8 +12,8 @@
                 - 成功したら、デスクトップにある hellogitworld フォルダーを削除する ( rm -rf hellogitworld )
             - Git の更新ログ(git log)に記録されるユーザー名を設定します:
                 #// ダウンロード（クローン）するリポジトリにコミットする可能性があるとき
-                - git config --global user.email "you@example.com"  #template: "__GitCollaboratorMail__"
-                - git config --global user.name  "Your Name"        #template: "__GitCollaboratorName__"
+                - git config --global user.email "you@example.com"  #template_: "__GitCollaboratorMail__"
+                - git config --global user.name  "Your Name"        #template_: "__GitCollaboratorName__"
             - bash を閉じます:
         VirtualBox をインストールします:
             - https://www.virtualbox.org/wiki/Downloads >> Windows hosts

@@ -1,5 +1,5 @@
 ﻿GitHub + CodePipeline で任意の bash コマンドを実行する CI/CD 環境を構築する:
-    設定:
+    設定: #settings:
         __RegionName__: 東京  #// CodePipeline のパイプラインを作成するリージョンの名前
         __RegionID__: ap-northeast-1  #// __RegionName__ の ID
         __GitHubOwnerAccount__: Takakiriy  #// リポジトリのオーナーのアカウント名

@@ -3,11 +3,11 @@
     https://docs.microsoft.com/ja-jp/azure/azure-functions/functions-create-first-function-vs-code
     https://docs.microsoft.com/ja-jp/azure/azure-functions/functions-add-output-binding-storage-queue-vs-code
 
-設定:
+設定: #settings:
     __ProjectFolder__: try_Azure_functions_cs
     __FunctionAppName__: sagep-function-cs
     __FunctionName__: HttpTriggerCSharp1
-    __AzureWebJobsStorage__: local.settings.json にダウンロードされます
+    #// __AzureWebJobsStorage__: local.settings.json にダウンロードされます
 
 準備:
     Visual Studio Code をインストールします:

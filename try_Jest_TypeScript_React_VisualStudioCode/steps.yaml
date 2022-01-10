@@ -4,7 +4,7 @@
             https://typescript-jp.gitbook.io/deep-dive/intro-1/jest
         React × TypeScript環境にJestを導入してみて:
             https://tech.willgate.co.jp/entry/2019/12/12/130000
-    設定:
+    設定: #settings:
         __RepositoryName__: react1_jest
         __GitCollaboratorName__: Your Name
         __GitCollaboratorMail__: you@example.com
@@ -126,7 +126,7 @@
 
 React Router Quick Start:
     参考: https://reactrouter.com/web/guides/quick-start
-    設定:
+    設定: #settings:
         __Project__: demo-app
     React Router のプロジェクトを用意します（既存のものでもよい）:
         - 上記「Node.js をインストールします」の手順を行います
@@ -199,7 +199,7 @@ Redux Toolkit Basic Tutorial:
     参考:
         - https://redux-toolkit.js.org/tutorials/basic-tutorial
         - https://qiita.com/pokotyan/items/a1d667ee46d0bc19108d
-    設定:
+    設定: #settings:
         __Project__: demo-app
     React Router のプロジェクトを用意します（既存のものでもよい）:
         - 上記「Node.js をインストールします」の手順を行います

@@ -71,7 +71,7 @@ Visual Studio Code の場合:
         （2回目以降なら）アプリケーション設定を local.settings.json にダウンロードします:
             - F1 キー: |
                 Azure Functions: Download Remote Settings
-            - sagep-function-cs  #template: __FunctionAppName__
+            - sagep-function-cs-v3  #template: __FunctionAppName__
             - local.settings.json に Overwrite >> Yes
                 #// local.settings.json には API キーが含まれているので、.gitignore に local.settings.json を追加しています
         関数をローカルで実行します:
@@ -84,10 +84,10 @@ Visual Studio Code の場合:
             参考: https://docs.microsoft.com/ja-jp/azure/azure-functions/functions-create-first-function-vs-code?pivots=programming-language-csharp#publish-the-project-to-azure
             Azure アイコン ⇒ Functions ⇒ Deploy to Function App（↑ アイコン）:
                 Select Function App in Azure: (+ Create new Function App in Azure) sagep-function-cs-v3
-                    #template: Select Function App in Azure: __FunctionAppName__
+                    #template: __FunctionAppName__
                 Location: Japan East
             デプロイが完了するまで待ちます:
-        アプリケーション設定 SendGrid_API_Key, SendGrid_SendTo をクラウドに設定します:
+        アプリケーション設定 SendGrid_API_Key, SendGrid_SendTo をクラウドに設定します: |
             https://portal.azure.com/ >> 関数アプリ >> （関数アプリ名） >> （設定） >> 構成 >> アプリケーション設定
             新しいアプリケーション設定 >> （名前と値を入力してOK） >> 保存 >> 続行
             "local.settings.json をバックアップしてから、アプリケーション設定を
@@ -103,4 +103,8 @@ Visual Studio Code の場合:
                         #tepmlate: ⇒ __FunctionName__（を右クリック） ⇒ Execute Function Now
             ブラウザーでコピーした URL を開きます:
                 例：https://sagep-function-cs-v3.azurewebsites.net/api/MailSender1
-        メールが届いていることを確認します:
+        メールが届いていることを確認します(2):
+設定: #settings:
+    __ProjectFolder__: try_AzureFunctions_SendGrid
+    __FunctionAppName__: sagep-function-cs-v3
+    __FunctionName__: MailSender1

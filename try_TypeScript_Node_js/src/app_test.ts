@@ -2,6 +2,48 @@
 
 const  scriptPath = '../build/app.js';
 
+
+type Whitespace = " " | "\n" | "\r" | "\t";
+type TrimStart<T extends string> = T extends `${Whitespace}${infer R}` ? TrimStart<R> : T;
+type TrimEnd<T extends string> = T extends `${infer R}${Whitespace}` ? TrimEnd<R> : T;
+type Trim<T extends string> = TrimStart<TrimEnd<T>>;
+
+type BoolLiteral = "true" | "false";
+type Digit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
+
+type InferJsonScalarType<T extends string> = Trim<T> extends `"${infer _}"` ? string
+  : Trim<T> extends `${BoolLiteral}` ? boolean
+  : Trim<T> extends `${Digit}${infer _}` ? number
+  : Trim<T> extends `null` ? null
+  : never;
+
+type HeadingJsonScalar<T extends string> = Trim<T> extends `"${infer Str}",${infer _}` ? `"${Str}"`
+  : Trim<T> extends `${infer Token},${infer _}` ? Token
+  : T;
+type TrailingJsonEntries<T extends string> = Trim<T> extends `"${infer _}",${infer Tail}` ? Tail
+  : Trim<T> extends `${infer _},${infer Tail}` ? Tail
+  : T;
+
+  type DecodeJsonStr<T extends string> = T extends `"${infer R}"` ? R : never;
+
+type InfoerJsonObjectEntries<T extends string> = Trim<T> extends `${infer K}:${infer Tail}`
+  ? { [key in DecodeJsonStr<Trim<K>>]: InferJsonScalarType<HeadingJsonScalar<Tail>> } & InfoerJsonObjectEntries<TrailingJsonEntries<Tail>>
+  : {};
+
+type TypeFromJson<T extends string> = Trim<T> extends `{${infer InnerJsonObject}}`
+  ? InfoerJsonObjectEntries<InnerJsonObject>
+  : never;
+
+const json = `
+{
+  "name": "foo",
+  "answer": 42,
+  "ok": true
+}
+`;
+
+type ResultType =  TypeFromJson<typeof json>;
+
 async function  main() {
 	await callChildProccess(`node ${scriptPath}`);
 }

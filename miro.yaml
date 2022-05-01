@@ -1,0 +1,54 @@
+miro:  #keyword:  #// オンラインホワイトボード
+    プラン:
+        一覧: [Free, Team, Business, Company]
+        閲覧者: 人数無制限でチームに追加できます
+    使い始める:
+        サインアップ:
+            https://miro.com/signup/ >> 名前 >> メアド >> パスワード
+        何がしたいですか:
+            アイデア出しと ブレイン ストーミング
+            閉じる
+        紹介ビデオを見ます:
+            再生ボタン（右下）
+    日本語のホームページ:
+        #ref: https://miro.com/ja/index/
+    ダッシュボード:
+        #ref: https://miro.com/app/dashboard/
+    ホワイトボードを開きます:
+        新規の場合: https://miro.com/app/dashboard/ >> New board（中央）
+        既存の場合: https://miro.com/app/dashboard/ >> Boards in this item（の下）
+    ホワイトボードを閉じてダッシュボードを開きます:
+        miro（左上）
+    閲覧します:
+        スクロール, 拡大縮小:
+            トラックパッド: 2本指で移動、2本指で開くか閉じる
+        検索します:
+            虫眼鏡 ボタン（上）
+        全体を表示します:
+            ズーム（にカーソルを合わせます。表示させるには拡大縮小の操作をします）>>
+            Fit to Screen |←→|
+        ツール バー を隠します:
+            プレゼンテーション モード（再生ボタン：上の右）>>
+        ツール バー を表示します:
+            キャンバスをタップ >> ×（下）
+    編集します:
+        コピペ:
+            図形や付箋などをクリック >> Ctrl + C >> Ctrl + V
+        付箋を追加します:
+            sticky note（左：上から4つ目）>>（色）>>（貼り付ける場所）>>（テキスト入力）
+        つなぐ線を追加します:
+            図形や付箋などをクリック >> 上下左右に表示された点をドラッグ >> 接続先へドロップ
+        フレームを追加します:
+            Open side bar（左下）>> Create frame ボタン >> ＋（左下）
+        フレームを移動します:
+            フレーム名をドラッグ＆ドロップします
+    共同作業:
+        リアクションします:
+            メガホン ボタン（右上）>>（絵文字）
+    素材:
+        UXToolkit: #ref: https://uxtoolkit.merck.design
+    参考:
+        ビデオ（英語）:
+            https://academy.miro.com/learn/course/getting-started-with-miro/all-about-boards/first-lesson
+        miro のメリットや使い方を解説:
+            #ref: https://data.wingarc.com/miro-29261

@@ -12,7 +12,7 @@ Notion: #keyword:  #ref: https://www.notion.so/ja-jp  #// ノーション
         削除:
             （ワークスペース名をクリック：左上）>>（削除するワークスペース）>> 設定（左上）>>（ワークスペースの）設定（左）>>
             ワークスペース全体を削除する（最も下）
-            #rer: https://www.notion.so/ja-jp/help/create-delete-and-switch-workspaces
+            #ref: https://www.notion.so/ja-jp/help/create-delete-and-switch-workspaces
     最近の編集内容:
         更新一覧（左上）>> すべて
     ページ:
@@ -27,7 +27,10 @@ Notion: #keyword:  #ref: https://www.notion.so/ja-jp  #// ノーション
             移動:
                 操作: 左ペインでドラッグ＆ドロップ
                 注意: 親または子のページに移動すると、リンク（リンク元のブロック）も移動先の親ページに移動します
-        データベース内ページ: #keyword: Notion database page  #// 表の1つのセルにページを埋め込みます
+        データベース内ページ: #keyword: Notion database page
+            - 表の中の1つの行に対応するページ
+            - 表の1列目はページのタイトルになります
+            #search: Notion table view
     ブロック: #// 文章（段落）、見出し、図、表、動画
         新規作成: #keyword: Notion create block
             PC:
@@ -85,7 +88,7 @@ Notion: #keyword:  #ref: https://www.notion.so/ja-jp  #// ノーション
                         #ref: https://www.youtube.com/watch?v=Tx9-99ruedo&t=555s
                 ページリンク:
                     注意:
-                        - メンションを推奨します #search: Notion mention
+                        - 代わりにメンションを使うことを推奨します #search: Notion mention
                         - サブ ページ へリンクすることはできません #search: Notion sub page
                         - ページリンクでデータベースへのリンクを作るのは禁止（コピーすると複雑になるため）
                             #ref: https://www.youtube.com/watch?v=Tx9-99ruedo&t=220s
@@ -107,7 +110,7 @@ Notion: #keyword:  #ref: https://www.notion.so/ja-jp  #// ノーション
         ビュー:
             ビューの種類を切り替えます:
                 （現在のビュー名）（ビューの左上）>> ビューを編集 >> レイアウト >>（ビューの種類）
-            テーブル ビュー:
+            テーブル ビュー: #keyword: Notion table view
                 （PC）:
                     値を編集します:  #// 値はデータベース内ページのタイトルになります
                         1つのセルをタップ

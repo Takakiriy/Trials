@@ -17,8 +17,16 @@ func main() {
 		ExtensionMain()
 	}
 	if f {
+		fmt.Println("\nExtensionPointerMain:")
+		ExtensionPointerMain()
+	}
+	if f {
 		fmt.Println("\nExtensionInterfaceMain:")
 		ExtensionInterfaceMain()
+	}
+	if f {
+		fmt.Println("\nExtensionMemoMain:")
+		ExtensionMemoMain()
 	}
 	if f {
 		fmt.Println("\nDataFacadeMain:")

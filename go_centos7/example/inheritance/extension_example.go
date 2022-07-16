@@ -32,3 +32,6 @@ func (s ScheduleEx) ExtraMethod() { // interface receiver should not be pointer 
 
 	fmt.Printf("(ScheduleEx) ExtraMethod %v\n", s.Next(time.Now()).In(timeZone))
 }
+
+// func (s cron.Schedule) ExtraMethod() { // error
+// }

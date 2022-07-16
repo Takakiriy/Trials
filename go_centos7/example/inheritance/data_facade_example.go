@@ -8,7 +8,7 @@ import (
 )
 
 // Go language is not supported extension
-// #focus: NextTime_, ScheduleFacade, NextTime, ExtraMethod
+// #focus: NextTime, ExtraMethod, ScheduleFacade, CronScheduleEx
 
 func DataFacadeMain() {
 	schedule, _ := cron.Parse("*/5 * * * * *")
@@ -17,35 +17,41 @@ func DataFacadeMain() {
 
 	callWithFacade(CastToScheduleFacade(schedule))
 
-	mySchedule := &ScheduleFacade{NextTime_: time.Now()}
+	mySchedule := &ScheduleFacade{NextTime: time.Now()}
 	callWithFacade(mySchedule)
 }
 
 func callWithFacade(schedule *ScheduleFacade) {
-	fmt.Println(schedule.NextTime_)
+	fmt.Println(schedule.NextTime)
 	schedule.ExtraMethod()
 }
 
 // ScheduleFacade has usable variables for the application
 type ScheduleFacade struct {
-	NextTime_ time.Time
-	cron.Schedule
+	NextTime time.Time
+	cron     cron.Schedule // object or nils
 }
 
 func CastToScheduleFacade(cron cron.Schedule) *ScheduleFacade {
-	s := &ScheduleFacade{
-		Schedule: cron,
-	}
-	s.NextTime_ = s.NextTime()
-	return s
-}
+	schedule := CronScheduleEx{cron}
 
-func (s ScheduleFacade) NextTime() time.Time { // interface receiver should not be pointer receiver
-	return s.Next(time.Now())
+	return &ScheduleFacade{
+		NextTime: schedule.NextTime(),
+		cron:     cron,
+	}
 }
 
 func (s *ScheduleFacade) ExtraMethod() {
 	timeZone, _ := time.LoadLocation("Asia/Tokyo")
 
-	fmt.Printf("(ScheduleFacade) ExtraMethod %v\n", s.NextTime_.In(timeZone))
+	fmt.Printf("(ScheduleFacade) ExtraMethod %v\n", s.NextTime.In(timeZone))
+}
+
+// CronScheduleEx is embedded an interface
+type CronScheduleEx struct {
+	cron.Schedule
+}
+
+func (s CronScheduleEx) NextTime() time.Time { // interface receiver should not be pointer receiver
+	return s.Next(time.Now())
 }

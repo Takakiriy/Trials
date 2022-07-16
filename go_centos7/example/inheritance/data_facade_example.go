@@ -29,7 +29,7 @@ func callWithFacade(schedule *ScheduleFacade) {
 // ScheduleFacade has usable variables for the application
 type ScheduleFacade struct {
 	NextTime time.Time
-	cron     cron.Schedule // object or nils
+	cron     cron.Schedule // object or nil
 }
 
 func CastToScheduleFacade(cron cron.Schedule) *ScheduleFacade {

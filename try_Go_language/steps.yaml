@@ -69,18 +69,27 @@
                 実行を再開する: F5 キー
             fmt.Println の出力を表示します:
                 Terminal（右下のビュー）>> DEBUG CONSOLE（Terminalの上）
-    CentOS7 に Go言語をインストールします:
-        Go 言語の最新版を使う場合:
-            - sudo yum install -y epel-release
-            - sudo yum install -y golang
-            - go version
+    CentOS7 に Go言語をインストールします:  #keyword: install Go CentOS7
         新しくプロジェクトを作る場合:
             設定: #settings:
                 __ProjectName__: try_go
-            bash:
-                - mkdir ~/try_go                   #template: __ProjectName__
+                __Parent__: /vagrant
+            CentOS7 をインストールします:
+                #search: CentOS7 Vagrant
+                ただし、メモリーを増やすこと:
+                    vb.memory = 512  #// MB
+            VSCode で CentOS7 に SSH 接続します:
+                #search: VSCode SSH Remote Explorer
+            Go 言語をインストールします:  #// Go 言語の最新版を使う場合
+                (@CentOS7):
+                    - sudo yum install -y epel-release
+                    - sudo yum install -y golang
+                    - go version
+            Go 言語プロジェクトを新規作成します:
+                - mkdir /vagrant/try_go            #template: __Parent__/__ProjectName__
+                - cd    /vagrant/try_go            #template: __Parent__/__ProjectName__
                 - go mod init example.com/try_go   #template: __ProjectName__
-            ~/try_go/main/example_test.go : |
+            /vagrant/try_go/main/example_test.go : |  #template: __Parent__/__ProjectName__
                 package main
 
                 import (
@@ -90,7 +99,7 @@
                 func TestExample(t *testing.T) {
                     main()
                 }
-            ~/try_go/main/example.go : |
+            /vagrant/try_go/main/example.go : |  #template: __Parent__/__ProjectName__
                 package main
 
                 import "fmt"
@@ -98,9 +107,41 @@
                 func main() {
                     fmt.Println("Hello, playground")
                 }
+            VSCode の各種拡張機能をインストールします:
+                VSCode の Go 拡張機能をインストールします:
+                    VSCode (@CentOS7) >> Extensions >> go（と入力）>> install
+                The "gopls" command is not available:
+                    が表示されたら: Install All ボタン
+                    以下が表示されるまで待ちます:  #// 約3分
+                        OUTPUT タブ（右下）: |
+                            Installing golang.org/x/tools/gopls@latest (/home/vagrant/go/bin/gopls) SUCCEEDED
+                            または
+                            fatal: git fetch-pack: expected shallow list
+                    dlv のインストールが失敗したら:
+                        VSCode >> TERMINAL タブ（右下）:
+                            /usr/bin/go install -v github.com/go-delve/delve/cmd/dlv@latest
             実行します:
-                TestExample 関数の定義の上にある run test をクリックします
-            デバッグ実行します:
+                TestExample 関数(in example_test.go)の定義の上にある run test をクリックします
+                ok  	example.com/try_go/main	0.002s
+                が表示されます。
+            main 関数をデバッグ実行します:
+                __Project__/.vscode/launch.json: |  #search: Go launch.json
+                    {
+                        "version": "0.2.0",
+                        "configurations": [
+                            {
+                                "name": "Go: Debug",
+                                "type": "go",
+                                "request": "launch",
+                                "mode": "auto",
+                                "cwd": "${workspaceFolder}",
+                                "program": "${workspaceFolder}/try_go/main/example.go",
+                                "showLog": false
+                            }
+                        ]
+                    }
+                F5 キーを押します:
+            テストをデバッグ実行します:
                 ブレーク ポイントを張ります:
                     fmt.Println を呼び出す行の行番号の左をクリック
                 デバッグ実行を開始します:
@@ -111,9 +152,23 @@
                     実行を再開する: F5 キー
             CLI から実行します:
                 #bash
-                cd ~/try_go
+                - cd /vagrant/try_go      #template: __Parent__/__ProjectName__
+                - go run main/example.go
+        上記のプロジェクトを動かした VM がある場合:
+            VM の電源を入れます:
+                #search: VirtualBox VM start
+            VSCode を開きます:
+                PowerShell:
+                    code --remote ssh-remote+go_centos7 vagrant
+                #// go_centos7 は必要に応じて編集します  #search: VSCode open folder
+            Go 言語の ソース ファイル を開きます:
+                cd /vagrant/try_go 
+                code main/example.go
+            デバッガーなしで起動します:
                 go run main/example.go
-        既存のプロジェクトを使う場合:
+            デバッガーありで起動します:
+                F5 キーを押します
+        その他の既存のプロジェクトを使う場合:
             #// ★未確認
             参考: Install Go 1.14 on CentOS 8 | CentOS 7  https://computingforgeeks.com/how-to-install-go-on-centos-centos-linux/
             設定: #settings:

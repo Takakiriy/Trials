@@ -1,0 +1,56 @@
+$ node --experimental-specifier-resolution=node  build/example/globby/globby.js
+
+[ '**/*' ]
+[
+  'bar.yaml',
+  'baz.yaml',
+  'foo.yaml',
+  'sub/bar.yaml',
+  'sub/baz.yaml',
+  'sub/foo.yaml',
+  'a/sub/bar.yaml',
+  'a/sub/baz.yaml',
+  'a/sub/foo.yaml'
+]
+
+[ '**/foo*' ]
+[ 'foo.yaml', 'sub/foo.yaml', 'a/sub/foo.yaml' ]
+
+[ '**/{foo*,bar*}' ]
+[
+  'bar.yaml',
+  'foo.yaml',
+  'sub/bar.yaml',
+  'sub/foo.yaml',
+  'a/sub/bar.yaml',
+  'a/sub/foo.yaml'
+]
+
+[ '**/{foo*, bar*}' ]
+[ 'foo.yaml', 'sub/foo.yaml', 'a/sub/foo.yaml' ]
+
+[ '**/*', '!**/sub' ]
+[ 'bar.yaml', 'baz.yaml', 'foo.yaml' ]
+
+[ '**/{*,!sub}' ]
+[
+  'bar.yaml',
+  'baz.yaml',
+  'foo.yaml',
+  'sub/bar.yaml',
+  'sub/baz.yaml',
+  'sub/foo.yaml',
+  'a/sub/bar.yaml',
+  'a/sub/baz.yaml',
+  'a/sub/foo.yaml'
+]
+
+[ '**/*', '!sub' ]
+[
+  'bar.yaml',
+  'baz.yaml',
+  'foo.yaml',
+  'a/sub/bar.yaml',
+  'a/sub/baz.yaml',
+  'a/sub/foo.yaml'
+]

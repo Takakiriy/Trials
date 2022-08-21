@@ -1,0 +1,5 @@
+New terminal - background tasks:
+    npm ci
+    node_modules/typescript/bin/tsc --watch
+New terminal - run:
+    node --experimental-specifier-resolution=node  build/example/1_hello_world/hello.js

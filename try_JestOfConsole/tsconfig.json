@@ -5,6 +5,7 @@
         "lib": [ "es2015", "dom" ],
         "inlineSourceMap": true,
         "inlineSources": true,
-        "outDir": "build"
+        "outDir": "build",
+        "esModuleInterop": true,
     }
 }

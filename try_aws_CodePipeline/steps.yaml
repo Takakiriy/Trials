@@ -129,7 +129,7 @@
             ログの最後のほうを見て、echo  "build command" が実行されていることを確認します
     GitHub にコミットしてパイプラインが動作することを確認します:
         - （README.md ファイルを編集します）
-        #Git bach
+        #Git bash
         - git add .
         - git commit -a -m "CI test"
         - git push

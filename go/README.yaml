@@ -85,15 +85,23 @@
                     (@host) Git bash:
                         vagrant up
         ログインします:
-            メニュー: タスクバーの VSCode を右クリック >> vagrant [SSH:go_centos7]
+            メニュー: タスクバーの VSCode を右クリック >> vagrant [SSH:go]
             centos7 ノードが開けないとき: 上記 vagrant ssh-config を再実行してください
         Go 言語をインストールします:
             (@CentOS7):
                 sudo yum install -y epel-release
                 sudo yum install -y golang
                 go version
+    Windows の場合:
+        インストールします:
+            https://golang.org/dl/ >> Microsoft Windows .msi >> .msi をダブルクリック
+        動作確認します:
+            ターミナル:
+                go version
+            出力例:
+                go version go1.16.6 windows/amd64
     mac の場合:
-        インストールします: |  #keyword:
+        インストールします:
             https://golang.org/dl/ >>
             Apple macOS (ARM64) または Apple macOS (x86-64) の .pkg >>
             .pkg をクリック >>（オプションはありません）
@@ -102,14 +110,12 @@
                 go version
             出力例:
                 go version go1.19 darwin/arm64
-        プロジェクトを開きます:
-            サンプル:
 Go 言語のプログラムを実行します:
     プロジェクトを開きます:  #ref: ${GitHub}/Trials/go
         Vagrant on Windows の場合:
-            タスクバーの VSCode を右クリック >> vagrant [SSH:go_centos7]
-        ターミナルの場合:
-            code ____/go_centos7
+            タスクバーの VSCode を右クリック >> vagrant [SSH:go]
+        それ以外のターミナルの場合:
+            code ____/go
     （初回のみ）Go 言語に関する拡張機能をインストールします（と表示されたとき）:
         VSCod>> Install All
     シェルから実行する場合:
@@ -125,3 +131,8 @@ Go 言語のプログラムを実行します:
             （macの場合）F5 キー >> mac のパスワードを入力
         デバッグを開始します:
             F5 キー
+    ビルドする場合:
+        現在の OS 用をビルドする場合:
+            go build example/1_hello/hello.go
+        Linux で Windows の実行ファイルを作る場合:
+            GOOS=windows GOARCH=amd64  go build  example/1_hello/hello.go

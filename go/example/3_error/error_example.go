@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"flag"
 	"fmt"
 	"log"
 	"path/filepath"
@@ -62,7 +63,14 @@ func errorUserDefined() error {
 	return err
 }
 
+var (
+	stackTraceArg = flag.Bool("stack-trace", false, "-stack-trace")
+)
+
 func WithStack(err error) error {
+	if !*stackTraceArg {
+		return err
+	}
 	if err != nil {
 		_, filePath, line, _ := runtime.Caller(1)
 		fileName := filepath.Base(filePath)

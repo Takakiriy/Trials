@@ -122,13 +122,24 @@ Go 言語のプログラムを実行します:
         ターミナル:
             go run example/1_hello/*.go
     VSCode のデバッガーで実行する場合:
-        VSCode で package main が書かれたフォルダーを開きます:
+        VSCode で package main が書かれたファイルがあるフォルダーを開きます:
             code example/1_hello
-        ソース ファイル を開きます:
-            hello.go
+        （無ければ）ソース ファイル を作ります:
+            example/1_hello/hello.go : |
+                package main
+
+                import "fmt"
+
+                func main() {
+                    fmt.Println("Hello, world!")
+                }
         （初回のみ）dlv をインストールします:  #// dlv は Go 言語のデバッグ用モジュールです
             F5 キー >> Install >>
             （macの場合）F5 キー >> mac のパスワードを入力
+        （初回のみ）青い Run and Debug ボタンが表示された場合: |  #// __Project__/.vscode/launch.json ファイルを削除（移動）しても表示されます
+            create a launch.json file >> Go: Launch Package
+        デバッグする ソース ファイル を開きます:  #// launch.json の "program" が "${fileDirname}" の場合のみ必要
+            example/1_hello/hello.go
         デバッグを開始します:
             F5 キー
     ビルドする場合:

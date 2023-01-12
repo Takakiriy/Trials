@@ -1,7 +1,40 @@
 ﻿インストール:
-    Go言語と Visual Studio Code を Windows 10 にインストールしてデバッグ実行します:  #keyword: install Go VSCode
+    Ubuntu on WSL2 の場合:  #keyword: install Go WSL2 VSCode
+        （初回のみ）:
+            WSL2 と Visual Studio Code をインストールします:
+                #search: install WSL2 Ubuntu VSCode
+            Go言語 をインストールします:
+                ダウンロードして展開します:
+                    cd $HOME
+                    curl -OL https://go.dev/dl/go1.19.5.linux-amd64.tar.gz
+                    sudo tar -C /usr/local -xvf go1.19.5.linux-amd64.tar.gz
+                PATH を通します:
+                    sudo nano ~/.profile :  #// 最後に追加
+                        export PATH=$PATH:/usr/local/go/bin
+                    設定を有効にします:
+                        source ~/.profile
+                    確認します:
+                        go version
+            Visual Studio Code で Go言語 を使えるようにします:
+                プロジェクトをホームにコピーします:
+                    copy a go project to ~/try_go   #ref: ${GitHub}/Trials/go/try_go
+                Visual Studio Code で開きます:
+                    code ~/try_go
+                gopls をインストールします:
+                    .go ファイルを開きます
+                    Run and Debug ボタン（左）>> create a laungh.json file >> Install an extension for Go... >> Install
+                    （gopls の）Install ボタン（右下）
+                    .go ファイルを開きます
+                    F5 キー >> （gopls の）Install ボタン（右下）
+                    F5 キー
+        （2回目以降）:
+            Visual Studio Code で Go言語プロジェクト を開いて、デバッグ実行します:
+                code ~/try_go
+                .go ファイルを開きます
+                F5 キー
+    Go言語と Visual Studio Code を Windows 10 にインストールしてデバッグ実行します:  #keyword: install Go Windows VSCode
         設定: #settings:
-            __ProjectName__: try
+            __ProjectName__: try  #ref: ${GitHub}/Trials/go/Windows
         ローカルPCへ各種ソフトウェアをインストールします:
             Go言語をインストールします:
                 - https://golang.org/dl/ >> Microsoft Windows >> ...msi をダウンロードして実行
@@ -72,7 +105,7 @@
     CentOS7 に Go言語をインストールします:  #keyword: install Go CentOS7
         新しくプロジェクトを作る場合:
             設定: #settings:
-                __ProjectName__: try_go
+                __ProjectName__: try_go  #ref: ${GitHub}/Trials/go/try_go
                 __Parent__: /vagrant
             CentOS7 をインストールします:
                 #search: CentOS7 Vagrant

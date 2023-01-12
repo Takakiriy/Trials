@@ -1,4 +1,37 @@
 インストールします:
+    Ubuntu on WSL2 の場合:  #keyword: install Go WSL2 VSCode
+        （初回のみ）:
+            WSL2 と Visual Studio Code をインストールします:
+                #search: install WSL2 Ubuntu VSCode
+            Go言語 をインストールします:
+                ダウンロードして展開します:
+                    cd $HOME
+                    curl -OL https://go.dev/dl/go1.19.5.linux-amd64.tar.gz
+                    sudo tar -C /usr/local -xvf go1.19.5.linux-amd64.tar.gz
+                PATH を通します:
+                    sudo nano ~/.profile :  #// 最後に追加
+                        export PATH=$PATH:/usr/local/go/bin
+                    設定を有効にします:
+                        source ~/.profile
+                    確認します:
+                        go version
+            Visual Studio Code で Go言語 を使えるようにします:
+                プロジェクトをホームにコピーします:
+                    copy a go project to ~/try_go   #ref: ${GitHub}/Trials/go/try_go
+                Visual Studio Code で開きます:
+                    code ~/try_go
+                gopls をインストールします:
+                    .go ファイルを開きます
+                    Run and Debug ボタン（左）>> create a laungh.json file >> Install an extension for Go... >> Install
+                    （gopls の）Install ボタン（右下）
+                    .go ファイルを開きます
+                    F5 キー >> （gopls の）Install ボタン（右下）
+                    F5 キー
+        （2回目以降）:
+            Visual Studio Code で Go言語プロジェクト を開いて、デバッグ実行します:
+                code ~/try_go
+                .go ファイルを開きます
+                F5 キー
     Linux on Vagrant の場合:
         VirtualBox をインストールします:
             - https://www.virtualbox.org/ >> Download VirtualBox X.X >> Windows hosts
@@ -92,6 +125,43 @@
                 sudo yum install -y epel-release
                 sudo yum install -y golang
                 go version
+        Go 言語のプログラムを実行します:
+            プロジェクトを開きます:  #ref: ${GitHub}/Trials/go
+                Vagrant on Windows の場合:
+                    タスクバーの VSCode を右クリック >> vagrant [SSH:go]
+                それ以外のターミナルの場合:
+                    code ____/go
+            （初回のみ）Go 言語に関する拡張機能をインストールします（と表示されたとき）:
+                VSCod>> Install All
+            シェルから実行する場合:
+                ターミナル:
+                    go run example/1_hello/*.go
+            VSCode のデバッガーで実行する場合:
+                VSCode で package main が書かれたファイルがあるフォルダーを開きます:
+                    code example/1_hello
+                （無ければ）ソース ファイル を作ります:
+                    example/1_hello/hello.go : |
+                        package main
+
+                        import "fmt"
+
+                        func main() {
+                            fmt.Println("Hello, world!")
+                        }
+                （初回のみ）dlv をインストールします:  #// dlv は Go 言語のデバッグ用モジュールです
+                    F5 キー >> Install >>
+                    （macの場合）F5 キー >> mac のパスワードを入力
+                （初回のみ）青い Run and Debug ボタンが表示された場合: |  #// __Project__/.vscode/launch.json ファイルを削除（移動）しても表示されます
+                    create a launch.json file >> Go: Launch Package
+                デバッグする ソース ファイル を開きます:  #// launch.json の "program" が "${fileDirname}" の場合のみ必要
+                    example/1_hello/hello.go
+                デバッグを開始します:
+                    F5 キー
+            ビルドする場合:
+                現在の OS 用をビルドする場合:
+                    go build example/1_hello/hello.go
+                Linux で Windows の実行ファイルを作る場合:
+                    GOOS=windows GOARCH=amd64  go build  example/1_hello/hello.go
     Windows の場合:
         インストールします:
             https://golang.org/dl/ >> Microsoft Windows .msi >> .msi をダブルクリック
@@ -110,40 +180,3 @@
                 go version
             出力例:
                 go version go1.19 darwin/arm64
-Go 言語のプログラムを実行します:
-    プロジェクトを開きます:  #ref: ${GitHub}/Trials/go
-        Vagrant on Windows の場合:
-            タスクバーの VSCode を右クリック >> vagrant [SSH:go]
-        それ以外のターミナルの場合:
-            code ____/go
-    （初回のみ）Go 言語に関する拡張機能をインストールします（と表示されたとき）:
-        VSCod>> Install All
-    シェルから実行する場合:
-        ターミナル:
-            go run example/1_hello/*.go
-    VSCode のデバッガーで実行する場合:
-        VSCode で package main が書かれたファイルがあるフォルダーを開きます:
-            code example/1_hello
-        （無ければ）ソース ファイル を作ります:
-            example/1_hello/hello.go : |
-                package main
-
-                import "fmt"
-
-                func main() {
-                    fmt.Println("Hello, world!")
-                }
-        （初回のみ）dlv をインストールします:  #// dlv は Go 言語のデバッグ用モジュールです
-            F5 キー >> Install >>
-            （macの場合）F5 キー >> mac のパスワードを入力
-        （初回のみ）青い Run and Debug ボタンが表示された場合: |  #// __Project__/.vscode/launch.json ファイルを削除（移動）しても表示されます
-            create a launch.json file >> Go: Launch Package
-        デバッグする ソース ファイル を開きます:  #// launch.json の "program" が "${fileDirname}" の場合のみ必要
-            example/1_hello/hello.go
-        デバッグを開始します:
-            F5 キー
-    ビルドする場合:
-        現在の OS 用をビルドする場合:
-            go build example/1_hello/hello.go
-        Linux で Windows の実行ファイルを作る場合:
-            GOOS=windows GOARCH=amd64  go build  example/1_hello/hello.go

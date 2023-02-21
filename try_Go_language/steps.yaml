@@ -32,6 +32,7 @@
                 code ~/try_go
                 .go ファイルを開きます
                 F5 キー
+        try_go プロジェクト:  #search: try_go
     Go言語と Visual Studio Code を Windows 10 にインストールしてデバッグ実行します:  #keyword: install Go Windows VSCode
         設定: #settings:
             __ProjectName__: try  #ref: ${GitHub}/Trials/go/Windows

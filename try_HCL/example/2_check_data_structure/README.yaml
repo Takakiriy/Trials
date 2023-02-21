@@ -1,0 +1,7 @@
+Install Visual Studio Code and Go (language):
+    #search: install Go WSL2 VSCode
+in VSSCode:
+    - open try_HCL folder
+    - open parser.go in VSCode
+    - press F5 key
+    - Output: ... The argument "log_level" is required, ...

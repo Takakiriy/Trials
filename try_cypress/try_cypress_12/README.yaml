@@ -1,0 +1,18 @@
+Open cypress WebUI:
+    - npm ci
+    - npx cypress open
+This folder was created by:
+    bash:
+        - mkdir "__Project__"
+        - cd __Project__
+        - npm init -y
+        - npm install cypress typescript
+        - npx tsc --init --types cypress --lib dom,es6
+        - npx cypress open
+    cypress WebUI:
+        - E2E Testing
+        - Continue
+        - Start E2E Testing in Edge
+        - Create new spec
+        - Create spec
+        - Okay, run the spec

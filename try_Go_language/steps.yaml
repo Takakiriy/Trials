@@ -268,9 +268,18 @@ CLI パラメーター:
 トラブルシューティング(Go言語):
     - #// could not import
         コマンド: Visual Studio Code でコードを開いているとき
-        エラー: could not import ____
+        エラー: |
+            could not import __ImportParameter__ (missing metadata for import of "__ImportParameter__")
+            compiler(BrokenImport)
         原因: import 文の基準フォルダーが正しくないか、import 文に指定したパスが正しくないです
-        対処法: Visual Studio Code で開くフォルダーを go.mod ファイルがあるフォルダーにします
+        対策A: Visual Studio Code で開くフォルダーを go.mod ファイルがあるフォルダーにします
+        対策B: __ImportParameter__ が指すパッケージに含まれるコードの先頭にある package にエラーが発生していたらそちらを解決させます
+    - #// import cycle not allowed
+        コマンド: Visual Studio Code でコードを開いているとき
+        エラー: |
+            import cycle not allowed: import stack: [command-line-arguments __ImportParameterA__ __ImportParameterB__ __ImportParameterA__] go list
+        原因: import 文によるパッケージ参照が循環参照しています
+        対策: エラーメッセージにヒントがあります。 所有親などに新しく書いたコードを移動するなど  #search: import 循環参照
     - #// could not build arguments for function
         エラー: |
             could not build arguments for function __InvokedName__ (__Path__): failed to build __Type__:

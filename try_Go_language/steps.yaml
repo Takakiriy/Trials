@@ -239,8 +239,8 @@
             - echo 'export PATH="$HOME/go/bin:$PATH"' >> ~/.bashrc
             - source ~/.bashrc
 CLI パラメーター:
-    viper:
-        viper を使って CLI パラメーターや設定ファイルを解析するサンプル Go コード: |
+    viper:  #// 設定ファイルと CLI パラメーター を組み合わせます
+        サンプル: |  #// Go 言語  #focus: viper.GetString,  viper.BindPFlag
             package main
 
             import (
@@ -257,6 +257,10 @@ CLI パラメーター:
 
                 viper.AutomaticEnv()      // 環境変数にも対応
                 viper.SetEnvPrefix("app") // 環境変数の接頭辞。例 APP_NAME
+
+                rootCmd := cobra.Command{}
+                rootCmd.PersistentFlags().StringSlice(flagKafkaHosts, []string{"localhost:9092"}, "kafka topic")  // CLI オプション
+                viper.BindPFlag("kafka.hosts", c.PersistentFlags().Lookup(flagKafkaHosts))  // 設定ファイルを CLI オプション でも指定できるようにします
 
                 err := viper.ReadInConfig()
                 if err != nil {

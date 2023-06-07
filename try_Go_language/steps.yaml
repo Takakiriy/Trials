@@ -202,15 +202,31 @@
                 go run main/example.go
             デバッガーありで起動します:
                 F5 キーを押します
-        その他の既存のプロジェクトを使う場合:
-            #// ★未確認
-            参考: Install Go 1.14 on CentOS 8 | CentOS 7  https://computingforgeeks.com/how-to-install-go-on-centos-centos-linux/
+        .tar.gz をダウンロードする場合:
             設定: #settings:
-                __GoVersion__: 1.13
+                __GoVersion__: 1.13.15
             go.mod ファイルがある場合:
                 go.mod ファイルに書かれた go のバージョンをメモします:
-                    __GoVersion__: 1.13  #template: __GoVersion__
-                #// 古いバージョンをインストールできない
+                    __GoVersion__: 1.18.10  #template: __GoVersion__
+                コマンド:
+                    - cd $HOME
+                    - curl -OL https://go.dev/dl/go1.18.10.linux-amd64.tar.gz    #template: __GoVersion__
+                    - sudo rm -rf /usr/lib/golang  #// 旧バージョンの削除。無いときは不要
+                    - sudo tar -C /usr/lib -xzf go1.18.10.linux-amd64.tar.gz    #template: __GoVersion__
+                    - sudo mv /usr/lib/go /usr/lib/golang
+                    #// 旧バージョンが無かったときは、新規にリンクを作成
+                    -   /usr/bin/go -> /usr/lib/golang/bin/go
+                    -   /usr/bin/gofmt -> /usr/lib/golang/bin/gofmt
+                    - rm  go1.18.10.linux-amd64.tar.gz   #template: __GoVersion__
+                    - go version
+                    - cd  __GoModFolder__
+                    - export GO111MODULE=on
+                    - make
+            参考:
+                公式:
+                    #ref: https://go.dev/doc/install
+                    #ref: https://go.dev/dl/
+                Install Go 1.14 on CentOS 8 | CentOS 7:  #ref: https://computingforgeeks.com/how-to-install-go-on-centos-centos-linux/
     go get でプロジェクトをインストールして実行します:
         準備:
             Git for Windows をインストールします:

@@ -1,5 +1,6 @@
 インストールします:
     Ubuntu on WSL2 の場合:  #keyword: install Go WSL2 VSCode
+        #// VirtualBox の VM は電源オフにしてください
         （初回のみ）:
             WSL2 と Visual Studio Code をインストールします:
                 #search: install WSL2 Ubuntu VSCode

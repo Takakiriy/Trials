@@ -1,0 +1,18 @@
+<!DOCTYPE HTML><html><head>
+<meta charset="UTF-8">
+<title>Playwright のサンプル 1</title>
+</head>
+<body>
+
+    <input type="text" id="input-text"/>
+    <input type="button" id="input-button" value="入力" onclick="onButton()"/>
+    <div id="result">未入力</div>
+
+    <script>
+    function onButton() {
+        document.getElementById('result').textContent =
+            document.getElementById('input-text').value.toLowerCase();
+    }
+    </script>
+</body>
+</html>

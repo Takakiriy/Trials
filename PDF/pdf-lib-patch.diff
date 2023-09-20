@@ -1,0 +1,27 @@
+--- node_modules/pdf-lib/cjs/core/embedders/CustomFontSubsetEmbedder.js	2023-09-21 00:39:16
++++ node_modules/pdf-lib/cjs/core/embedders/CustomFontSubsetEmbedder.js	2023-09-21 00:39:16
+@@ -54,13 +54,18 @@ var CustomFontSubsetEmbedder = /** @class */ (function
+     CustomFontSubsetEmbedder.prototype.serializeFont = function () {
+         var _this = this;
+         return new Promise(function (resolve, reject) {
+             var parts = [];
+-            _this.subset
+-                .encodeStream()
+-                .on('data', function (bytes) { return parts.push(bytes); })
+-                .on('end', function () { return resolve(utils_1.mergeUint8Arrays(parts)); })
+-                .on('error', function (err) { return reject(err); });
++            if (_this.subset.encodeStream) {
++                _this.subset
++                    .encodeStream()
++                    .on('data', function (bytes) { return parts.push(bytes); })
++                    .on('end', function () { return resolve(utils_1.mergeUint8Arrays(parts)); })
++                    .on('error', function (err) { return reject(err); });
++            } else {
++                parts.push(_this.subset.encode())
++                return resolve(utils_1.mergeUint8Arrays(parts));
++            }
+         });
+     };
+     return CustomFontSubsetEmbedder;
+ }(CustomFontEmbedder_1.default));
+\ No newline at end of file

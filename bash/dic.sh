@@ -14,6 +14,9 @@ function  ExampleOfTabDic() {
     employee="$( SetToTabDic  "${employee}"  "firstName"  "John" )"
     echo  "$(  GetFromTabDic  "${employee}"  "firstName" )"  #// John
     echo  "$(  GetFromTabDic  "${employee}"  "middleName"  "default" )"  #// default
+    # eval  "$(_set2  employee  "firstName"  "John" )"
+    # echo  "$(_get2  employee  "firstName" )"  #// John
+    # echo  "$(_get2  employee  "middleName"  "default" )"  #// default
 }
 
 function  ExampleOfArrayDic() {
@@ -118,7 +121,7 @@ function  _get() {
 }
 
 function  _getSub() {
-    local  objectEntries=("${@}")
+    local  objectEntries=("$@")
     local  count=${#objectEntries[@]}
     local  keyIndex=$(( ${count} - 2 ))
     local  defaultValueIndex=$(( ${count} - 1 ))
@@ -149,7 +152,7 @@ function  _set() {
 }
 
 function  _setSub() {
-    local  objectEntries=("${@}")
+    local  objectEntries=("$@")
     local  count=${#objectEntries[@]}
     local  objectNameIndex=$(( ${count} - 3 ))
     local  keyIndex=$(( ${count} - 2 ))
@@ -194,6 +197,31 @@ function  TestOfTabDic2() {
     dic="$( SetToTabDic  "${dic}"  "keyB"  "off" )"
     test  "${dic}" == "${tab}keyA=off${tab}keyB=off"  ||  TestError
 }
+
+# #// _set2
+# #// Example:
+# #//    object=(keyA "1"  keyB "x")
+# #//    eval "$(_set2  object  "keyB"  "y" )"
+# function  _set2() {
+#     local  objectName="$1"
+#     local  key_="$2"
+#     local  value="$3"
+#     local  operation=""
+# 
+#     operation="_set2Sub \"\${${objectName}[@]}\" \"${objectName}\" \"${key_}\" \"${value}\""
+#     eval "${operation}"
+# }
+# 
+# function  _set2Sub() {
+#     local  objectEntries=("$@")
+#     local  count=${#objectEntries[@]}
+#     local  keyIndex=$(( ${count} - 2 ))
+#     local  defaultValueIndex=$(( ${count} - 1 ))
+#     local  key_="${objectEntries[${keyIndex}]}"
+#     local  value="${objectEntries[${defaultValueIndex}]}"
+# 
+# 
+# }
 
 function  SetToTabDic() {
     local  tabDic="$1"

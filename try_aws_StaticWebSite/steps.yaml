@@ -310,7 +310,7 @@ Amazon CloudFront によるウェブサイトの高速化(HTTPS対応、CloudFor
                 to use the domain name. For more details,
                 see: https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/CNAMEs.html#alternate-domain-names-requirements
                 (Service: AmazonCloudFront; Status Code: 400; Error Code: InvalidViewerCertificate; Request ID: ...; Proxy: null)
-            対策:
+            対処:
                 上記「Custom SSL Certificate」の設定を行ってください
     CloudFront の Origin Access Identity（ __CloudFrontOAI__ ）をメモします:
         メニュー: https://console.aws.amazon.com/cloudfront/ >> (Security) >> Origin accesss identity

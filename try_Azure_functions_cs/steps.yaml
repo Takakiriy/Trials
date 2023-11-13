@@ -60,10 +60,10 @@
         - トラブル シューティング:
             -
                 現象: Confitured debug type 'coreclr' is not supported
-                対策: VSCode の C# エクステンションをインストールしてください。
+                対処: VSCode の C# エクステンションをインストールしてください。
             -
                 現象: 'The terminal process failed to launch: Path to shell executable "C:\Users\ts-ne\Desktop\FileStamp\back-azure\dotnet" does not exist.'
-                対策: VSCode のデフォルト シェルを PowerShell に設定し、CSCode を再起動します
+                対処: VSCode のデフォルト シェルを PowerShell に設定し、CSCode を再起動します
 
     デプロイします:
         参考: https://docs.microsoft.com/ja-jp/azure/azure-functions/functions-create-first-function-vs-code?pivots=programming-language-csharp#publish-the-project-to-azure

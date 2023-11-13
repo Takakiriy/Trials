@@ -176,7 +176,7 @@
                     Don't try to install it manually: your package manager does it automatically.
                     However, a different version of jest was detected higher up in the tree:
                     C:\Users\ts-ne\Desktop\own\node_modules\jest (version: 26.6.1)
-                対策:
+                対処:
                     React が要求している Jest のバージョンに合わせます:
                         npm install --global  "jest@26.6.0"
                         npm install  "jest@26.6.0" --save-dev
@@ -185,7 +185,7 @@
                     We detected setupFilesAfterEnv in your package.json.
                     Remove it from Jest configuration, and put the initialization code in src/setupTests.js.
                     This file will be loaded automatically.
-                対策:
+                対処:
                     __Project__/package.json の json キーの中から下記のキーを削除します:
                         roots, preset, testEnvironment, setupFilesAfterEnv
                             #// エラーメッセージに削除すべきキーが一覧されます
@@ -453,7 +453,7 @@
                     Amazon S3 storage was already added to your project.
                     undefined is present in amplify-meta.json
                     An error occurred when adding the storage resource
-                対策:
+                対処:
                     #bash
                     - amplify remove storage
     バックエンドの計算機能 (GraphQL, Lambda) の各種カテゴリーを追加します:
@@ -2163,12 +2163,12 @@ aws 公式：AMPLIFY SNS WORKSHOP（途中まで）:
             AppSync の ログ を有効化した
             https://docs.aws.amazon.com/ja_jp/appsync/latest/devguide/monitoring.html
         プロジェクトを git clone したあと、npm コマンドが使えなくなる:
-            対策:
+            対処:
                 #Git bash  (Git CMD では git clone ができません)
                 - git clone ....
                 - npm ci
         プロジェクトを git clone したあと、Amplify CLI が使えなくなる:
-            対策:
+            対処:
                 #Git bash  (Git CMD では git clone ができません)
                 - git clone ....
                 #Git CMD  (Git bash では設定ができません。Windows キー + Git CMD + クリック)
@@ -2179,7 +2179,7 @@ aws 公式：AMPLIFY SNS WORKSHOP（途中まで）:
             解説:
                 バックエンドとの通信をクラウドからローカルに変更した設定において（amplify mock ... を呼び出した後で）、
                 ローカルのバックエンドが動作していないときに発生します
-            対策:
+            対処:
                 - amplify push または amplify publish
     リソースのクリーンアップ:
         #// 以下は amplify delete コマンドを使ってクリーンする場合です

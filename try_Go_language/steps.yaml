@@ -54,12 +54,12 @@
             （この手順では不要、参考）Go言語のインストール状況を表示します:
                 F1 キー: |
                     Go: Locate Configured Go Tools
-        ${env:USERPROFILE}\go\src フォルダーを作ります:
+        ${HOME}\go\src フォルダーを作ります:
             #// PowerShell
-            mkdir ${env:USERPROFILE}\go\src
-        Visual Studio Code で ${env:USERPROFILE}\go\src を開きます:
+            mkdir ${HOME}\go\src
+        Visual Studio Code で ${HOME}\go\src を開きます:
             #// PowerShell
-            code ${env:USERPROFILE}\go\src  #// 以後 __go_src__ とします
+            code ${HOME}\go\src  #// 以後 __go_src__ とします
         go.mod ファイルを初期化します:
             シェル:
                  go mod init try  #template: init __ProjectName__
@@ -233,9 +233,9 @@
                 - https://git-scm.com/ >> Downloads >> Windows
                 - インストール オプションはデフォルトで構いません
             Visual Studio Code を開いていたら閉じます:
-        Visual Studio Code で ${env:USERPROFILE}\go\src を開きます:
+        Visual Studio Code で ${HOME}\go\src を開きます:
             #// PowerShell
-            code ${env:USERPROFILE}\go\src  #// 以後 __go_src__ とします
+            code ${HOME}\go\src  #// 以後 __go_src__ とします
         Visual Studio Code のターミナルを開きます:
             Terminal >> New Terminal (PowerShell)
         hello をインストールします:

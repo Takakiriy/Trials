@@ -41,14 +41,14 @@
         Python に Path を通します:
             以下は一度に実行できます（Python37）: |
                 ${path} = [System.Environment]::GetEnvironmentVariable("Path", "User");
-                ${path} = "${env:USERPROFILE}\AppData\Local\Programs\Python\Python37\Scripts;${path}";  #template: \Python__PythonVer2__\
+                ${path} = "${HOME}\AppData\Local\Programs\Python\Python37\Scripts;${path}";  #template: \Python__PythonVer2__\
                 [System.Environment]::SetEnvironmentVariable("Path", ${path}, "User");
 
                 （以上）
                 #template-at(-6): Python__PythonVer2__
                 #template-at(-5): \Python__PythonVer2__\Scripts
         pipenv 本体をインストールします: |
-            & "${env:USERPROFILE}\AppData\Local\Programs\Python\Python37\Scripts\pip" install pipenv
+            & "${HOME}\AppData\Local\Programs\Python\Python37\Scripts\pip" install pipenv
 
                 （以上）
                 #template-at(-3): \Python__PythonVer2__\Scripts

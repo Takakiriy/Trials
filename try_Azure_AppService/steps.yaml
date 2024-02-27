@@ -10,7 +10,7 @@
             azure-cli-2.12.1.msi
 
 Docker イメージを ACR 経由で Azure App Service にデプロイする:
-    #// ACR = Azure Container Registory
+    #// ACR = Azure Container Registry
     設定: #settings:
         __ResourceGroup__: web1res
         __AppName__: sagep-web1  #// Azure 全体で唯一

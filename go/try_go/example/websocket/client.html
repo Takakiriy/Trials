@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>WebSocket クライアント</title>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var ws = new WebSocket("ws://localhost:8080/echo");
+
+            ws.onopen = function() {
+                console.log("接続が開かれました。");
+                ws.send("こんにちは、WebSocket!");
+            };
+
+            ws.onmessage = function(event) {
+                var log = document.getElementById("log");
+                log.innerHTML += "<p>サーバーからのメッセージ: " + event.data + "</p>";
+            };
+
+            ws.onerror = function(error) {
+                console.log("WebSocket エラー: " + error);
+            };
+
+            ws.onclose = function() {
+                console.log("接続が閉じられました。");
+            };
+
+            document.getElementById("sendButton").onclick = function() {
+                var message = document.getElementById("messageInput").value;
+                ws.send(message);
+                console.log("送信されたメッセージ: " + message);
+            };
+        });
+    </script>
+</head>
+<body>
+    <h2>WebSocket テストクライアント</h2>
+    <input type="text" id="messageInput" placeholder="メッセージを入力">
+    <button id="sendButton">メッセージを送信</button>
+    <div id="log"></div>
+</body>
+</html>

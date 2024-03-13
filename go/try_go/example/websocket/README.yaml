@@ -1,0 +1,25 @@
+Test:
+    Start webSocket server:
+        -   go run websocket_server.go  #// Same as specified with  --port 8080  --end-point /echo
+        #// or
+        -   go run websocket_server.go  --port 8088  --end-point /print
+    Run webSocket client from CLI:
+        -   go run a/client_of_websocket.go  #// Same as specified with  --server ws://localhost:8080/echo
+        #// or
+        -   go run a/client_of_websocket.go  --server ws://localhost:8088/print
+    Open webSocket client from browser:
+        http://____/client.html  #// Drag and drop the HTML file to your browser.
+    Output example:
+        client side: |
+            $ go run a/client_of_websocket.go
+            Request to ws://localhost:8080/echo
+            receive: Helo! WebSocket
+            read: websocket: close sent
+        server side: |
+            $ go run websocket_server.go
+            2024/01/01 00:00:00 Listen at ws://localhost:8080/echo
+            2024/01/01 00:00:00 Received message: Helo! WebSocket
+            2024/01/01 00:00:00 websocket: close 1000 (normal)
+Build:
+    go build websocket_server.go
+    go build a/client_of_websocket.go

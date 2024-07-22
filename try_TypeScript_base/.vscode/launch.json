@@ -1,0 +1,18 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run TypeScript",
+            "type": "node",
+            "request": "launch",
+            "preLaunchTask": "Run support_node.cjs",
+            "program": "${workspaceFolder}/src/example/1_hello_world/hello.ts",
+            "args": [],
+            "cwd": "${workspaceFolder}/src",
+            "smartStep": true,
+            "outFiles": [
+                "${workspaceFolder}/build/**/*.js"
+            ]
+        }
+    ]
+}

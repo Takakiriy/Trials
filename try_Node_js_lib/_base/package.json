@@ -9,9 +9,6 @@
     "author": "",
     "license": "ISC",
     "private": false,
-    "dependencies": {
-        "globby": "^11.0.4"
-    },
     "type": "module",
     "devDependencies": {
         "@types/jest": "^27.5.2",

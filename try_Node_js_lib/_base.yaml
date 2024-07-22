@@ -1,0 +1,5 @@
+Test pass:  #// __Project__ のテストが Pass した日。_base のテストではない
+    2024-07-22
+_base:
+    #ref: ${GitHub}/Trials/try_TypeScript_base
+    CommitID: f5236d4  #// 2024-07-22

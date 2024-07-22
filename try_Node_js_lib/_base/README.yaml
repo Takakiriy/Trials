@@ -4,8 +4,12 @@ Test:
             npm ci
             node_modules/typescript/bin/tsc --watch
         New terminal - run hello:
-            node build/1_hello_world/hello.js
-            node build/globby/globby.js
+            node build/example/1_hello_world/hello.js
+    Test of import:
+        New terminal - support_node.cjs:
+            node src/support_node.cjs
+        New terminal - run lib_main:
+            node build/lib_main.js
     (If necessary) Set up for 2nd try:
         rm -rf build
         rm -rf node_modules

@@ -8,7 +8,7 @@ Test:
         node build/app.js
     Run test:
         cd  src
-        node ../build/test.js
+        node ../build/app_test.js
         cd  ..
     (If necessary) Set up for 2nd try:
         rm -rf build

@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import * as path from "path";
-import * as globby from 'globby';
+import globby from 'globby';
 import * as readline from 'readline';
 try {
     var snapshots = require("./__snapshots__/main.test.ts.snap");

@@ -4,8 +4,8 @@ const  scriptPath = '../build/app.js';
 
 // main
 async function  main() {
-	const  output = await callChildProccess(`node ${scriptPath}`);
-	console.log(`output = (${output.stdout})`);
+	const  process = await callChildProccess(`node ${scriptPath}`);
+	console.log(`stdout = (${process.stdout})`);
 }
 
 // callChildProccess

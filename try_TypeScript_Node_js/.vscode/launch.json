@@ -2,11 +2,11 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Run TypeScript",
             "type": "node",
             "request": "launch",
-            "name": "Run TypeScript",
-            "preLaunchTask": "TypeScript Compile Task",
-            "program": "${workspaceFolder}/src/app_test.ts",
+            "preLaunchTask": "Run support_node.cjs",
+            "program": "${workspaceFolder}/src/test.ts",
             "args": [],
             "cwd": "${workspaceFolder}/src",
             "smartStep": true,

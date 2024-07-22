@@ -1,0 +1,15 @@
+Test:
+    New terminal - set up and start background tasks:
+        npm ci
+        node_modules/typescript/bin/tsc --watch
+    New terminal - support_node.cjs:
+        node src/support_node.cjs
+    Run app:
+        node build/app.js
+    Run test:
+        cd  src
+        node ../build/test.js
+        cd  ..
+    (If necessary) Set up for 2nd try:
+        rm -rf build
+        rm -rf node_modules

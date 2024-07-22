@@ -1,0 +1,107 @@
+﻿Windows に Node.js と Jest と Visual Studio Code をインストールします:
+    #// Jest の watch を使って VSCode のデバッガーを爆速で起動する
+    設定: #settings:
+        __Project__: try_jest
+    Node.js をインストールします:
+        - https://nodejs.org/ja/download/ >> Windows Installer (.msi) >> 64-bit
+        - ダウンロードしたファイル（例：node-v14.16.1-x64.msi）を開きます
+        - インストール オプションはデフォルトを使用
+        - プロキシがある LAN に Windows がある場合:
+            - Windows スタート >> PowerShell
+            - npm config -g set proxy "http://___.___.___.___:____"
+            - npm config -g set https-proxy "http://___.___.___.___:____"
+    Visual Studio Code をインストールします:
+        - https://code.visualstudio.com/
+        - ダウンロードしたファイル（例：VSCodeUserSetup-x64-1.55.2.exe）を開きます
+        - インストール オプションはデフォルトを使用
+        - （推奨）VSCode (Visual Studio Code をタスクバーにピン止めします:
+        - （推奨）Ctrl + S キーを押したときに全てのファイルを保存するように設定します: |
+            File >> Preferences >> Keyboard Shortcuts >> save all （と入力） >>
+                File: Save All （をダブルクリック） >> Ctrl + S キー >> Enter キー
+    プロジェクトを新規作成します:
+        Visual Studio Code で新しいフォルダー try_jest を開きます:  #template: __Project__
+            VSCode >> File >> Open Folder >> デスクトップ >> 新しいフォルダー >> try_jest >> フォルダーの選択  #template: __Project__
+        __Project__/package.json : |  #// VSCode の EXPLORER（の中を右クリック）>> New File >> package.json
+            {
+                "name": "type-script",
+                "version": "0.0.1",
+                "description": "",
+                "scripts": {
+                    "setup": "npm ci",
+                    "test":  "npm test --watch",
+                    "clean": "powershell rm -r -fo node_modules"
+                },
+                "author": "",
+                "license": "ISC",
+                "private": false,
+                "devDependencies": {},
+                "dependencies": {},
+                "jest": {
+                    "roots": [
+                        "<rootDir>/src"
+                    ],
+                    "testMatch": [
+                        "**/__tests__/**/*.+(ts|tsx|js)",
+                        "**/?(*.)+(spec|test).+(ts|tsx|js)"
+                    ],
+                    "transform": {
+                        "^.+\\.(ts|tsx)$": "ts-jest"
+                    }
+                }
+            }
+        必要な Node モジュールをインストールします:
+            Terminal:  #// VSCode >> Terminal >> New Terminal
+                npm install  typescript  ts-node  @types/node  jest  ts-jest  @types/jest  -save-dev
+        __Project__/tsconfig.json : |
+            {
+                "compilerOptions": {
+                    "declaration": true,
+                    "strict": true,
+                    "lib": [ "es2015", "dom" ],
+                    "inlineSourceMap": true,
+                    "inlineSources": true,
+                    "outDir": "build"
+                }
+            }
+        __Project__/src/lib.ts : |
+            export function  add(a: number, b: number): number {
+                return  a + b;
+            }
+        __Project__/src/lib.test.ts : |
+            import { add } from './lib';
+
+            test('add', () => {
+                const  a = 2;
+                const  b = 3;
+                const  answer = 5;
+
+                const  result = add( a, b );
+                expect(result).toBe(answer);
+            });
+        Jest のウォッチモードを起動して Visual Studio Code と接続します:
+            メニュー: |
+                VSCode >> Terminal >> New Terminal >> 1: (shell) >> Create JavaScript Debug Terminal
+            Terminal:
+                npm test  #// package.json#scripts/test
+            #// テストが実行され、テストがパスし、Jest の watch のメニューが表示されます
+        失敗したテストをデバッガーに接続してデバッグします:
+            試しにテストを失敗させます:
+                __Project__/src/lib.ts :
+                    変更前: a + b
+                    変更後: a + a
+                #// 保存するとテストが自動的に開始され、テストに失敗します
+            ブレークポイントを張ります:
+                たとえば __Project__/src/lib.test.ts の add 関数を呼び出すコードに張ります:
+            Terminal:
+                （f キーを押します）
+                #// ブレークポイントでブレークします
+        テストを再起動します:
+            プログラムがブレーク中のとき:
+                Continue ボタン:
+                #// Jest の watch のメニューが Terminal に表示されます
+                Terminal: （f キーを押します）
+            プログラムが実行中で終わらないとき:
+                Terminal:
+                    - （Ctrl + C キーを押します） #// npm test を強制終了させます
+                    - npm test  #// Jest の watch を再起動します
+        （Jest の watch を終了するときは）Terminal タブ（下）>> ゴミ箱アイコン（右）:

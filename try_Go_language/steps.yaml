@@ -255,7 +255,7 @@
             - echo 'export PATH="$HOME/go/bin:$PATH"' >> ~/.bashrc
             - source ~/.bashrc
 CLI パラメーター:
-    viper:  #// 設定ファイルと CLI パラメーター を組み合わせます
+    viper: #keyword:  #// 設定ファイルと CLI パラメーター を組み合わせます  #ref: https://pkg.go.dev/github.com/spf13/viper
         サンプル: |  #// Go 言語  #focus: viper.GetString,  viper.BindPFlag
             package main
 

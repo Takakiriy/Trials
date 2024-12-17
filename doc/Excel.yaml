@@ -316,7 +316,7 @@
         CSV 形式で保存します:
             Excel 2016 >> ファイル >> エクスポート >> ファイルの種類の変更 >> CSV（をダブルクリック）
         比較対象のシートも CSV 形式で保存します:
-    CSV をダウンロードする Web サイトの開発:
+    CSV をダウンロードする Web サイトの開発: #keyword: Excel CSV download
         BOM が無くなる問題: #keyword: text/csv
             症状:
                 Chrome 系ブラウザーでは HTTP ヘッダー の Content-Type が text/csv のレスポンスを受信した場合、

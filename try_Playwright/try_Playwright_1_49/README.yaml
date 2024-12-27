@@ -1,0 +1,22 @@
+This folder was created by:
+    Git bash for Windows: |
+        mkdir  "__Project__"
+        cd  "__Project__"
+        nvm use 16.20.1
+        npm init -y playwright  #// オプションはすべてデフォルト。Enter を何度も押します。
+        #// 不要なら playwright.config.ts の firefox, webkit の部分を コメント アウト
+Visual Studio Code for Windows を使ってデバッグする場合: |
+    code  "."  #// Visual Studio Code の起動
+    Playwright Test for VSCode 拡張機能をインストール
+    _v=$( cat .nvmrc )
+    nvm use $_v
+    node --version
+    npm ci
+    VSCode >> Testing（フラスコ ボタン：左）>> Run Test（テスト項目にマウスを合わせて△ボタン）
+    Windows 版では ブレークポイントを張ってデバッグ実行すると Chromium が開いてステップ実行できます。
+Linux でテストを実行する場合: |
+    cd  "__Project__"
+    nvm use
+    npm ci
+    npx playwright install
+    npx playwright test

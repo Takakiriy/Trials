@@ -1,0 +1,20 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "TypeScript Compile Task",
+            "type": "shell",
+            "command": "node_modules/.bin/tsc  -p tsconfig.json --watch",
+            "isBackground": true,
+            "problemMatcher": [
+                "$tsc-watch"
+            ]
+        },
+        {
+            "label": "Run support_node.cjs",
+            "type": "shell",
+            "command": "node src/support_node.cjs",
+            "dependsOn": ["TypeScript Compile Task"]
+        }
+    ]
+}

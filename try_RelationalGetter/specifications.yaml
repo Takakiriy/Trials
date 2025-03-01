@@ -1,0 +1,43 @@
+Test:
+    New bash terminal - set up and start background tasks:
+        npm ci
+        node  node_modules/typescript/bin/tsc --watch
+    New terminal - support_node.cjs:
+        node  src/support_node.cjs
+    Run app:
+        node  build/app.js
+    (If necessary) Set up for 2nd try:
+        rm -rf build
+        rm -rf node_modules
+Call tree:
+    runAttributesDemo:  #ref: ~/unnavigatable/src/app.ts
+        # export function  runAttributesDemo() {
+        #     console.log(`    John: ${getUser("John").point}`);  // John: 110
+        getUser:
+            # function  getUser(name: string): User {
+            #     const  input = getInputParameters(name);
+            getInputParameters:
+                # function  getInputParameters(name: string): InputRecords {
+                #     const  userRecord = getUserRecord(name)
+                getUserRecord:
+                #         userPointRecord: getPointRecord(userRecord.id),
+                getPointRecord:
+    runGettersDemo:
+        # export function  runGettersDemo() {
+        #     console.log(`    John: ${getUser("John").point}`);  // John: 110
+        getUser:
+            # function  getUser(name: string): User {
+            #     return  new User({name: name});
+        point (getter):
+            # class  User implements UserData {
+            #     get  point(): number {
+            #         return  this.userPointRecord.point;
+            userPointRecord (getter):
+                # get  userPointRecord(): PointRecord {
+                #     return  getPointRecord(this.userRecord.id);
+                userRecord (getter):
+                    # get  userRecord(): UserRecord {
+                    #     return  getUserRecord(this.name);
+                    getUserRecord:
+                getPointRecord:
+            point:

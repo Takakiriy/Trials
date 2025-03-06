@@ -1,5 +1,7 @@
-import { runAttributesDemo } from "./appAttributes";
-import { runGettersDemo } from "./appGetters";
+import { runAttributesSample } from "./appAttributes";
+import { runGettersSample } from "./appGetters";
+import { runLogicsSample } from "./appLogicDomain";
 
-runAttributesDemo();
-runGettersDemo();
+runAttributesSample();
+runGettersSample();
+runLogicsSample();

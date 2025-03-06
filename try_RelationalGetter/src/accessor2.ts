@@ -1,10 +1,11 @@
-// メモ化した getter - accessTime
-// 定義
+// メモ化した getter - accessTime getter
+// 定義例
 interface  UserData {
     firstName: string;
     lastName: string;
 }
 class  User implements UserData {
+    // プロパティ一覧：firstName, lastName, fullName, accessTime
     firstName: string = "";
     lastName: string = "";
     get  fullName(): string {

@@ -1,8 +1,18 @@
 // This sample using attributes will allow non-navigable data to be expressed in code.
-export function  runAttributesDemo() {
+export function  runAttributesSample() {
     console.log("Attributes:");
-    console.log(`    ${JSON.stringify({name: "John", point: getUser("John").point})}`);  // {"name":"John","point":110}
-    console.log(`    ${JSON.stringify({name: "Mark", point: getUser("Mark").point})}`);  // {"name":"Mark","point":120}
+
+    // {"name":"John","point":110}
+    console.log(`    ${JSON.stringify({
+        name: "John",
+        point: getUser("John").point,
+    })}`);
+
+    // {"name":"Mark","point":120}
+    console.log(`    ${JSON.stringify({
+        name: "Mark",
+        point: getUser("Mark").point,
+    })}`);
 }
 
 function  getUser(name: string): User {

@@ -1,8 +1,18 @@
 // This sample using getters will allow navigable data to be expressed in code.
-export function  runGettersDemo() {
+export function  runGettersSample() {
     console.log("Getters:");
-    console.log(`    ${JSON.stringify({name: "John", point: getUser("John").point})}`);  // {"name":"John","point":210}
-    console.log(`    ${JSON.stringify({name: "Mark", point: getUser("Mark").point})}`);  // {"name":"Mark","point":220}
+
+    // {"name":"John","point":210}
+    console.log(`    ${JSON.stringify({
+        name: "John",
+        point: getUser("John").point,
+    })}`);
+
+    // {"name":"Mark","point":220}
+    console.log(`    ${JSON.stringify({
+        name: "Mark",
+        point: getUser("Mark").point,
+    })}`);
 }
 
 function  getUser(name: string): User {

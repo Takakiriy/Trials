@@ -1,0 +1,13 @@
+First step:
+    Set up:
+        #// New terminal - set up and start background tasks:
+        #(bash)
+        - npm ci
+        - node_modules/.bin/tsc-watch  -p tsconfig.json --onSuccess "node src/support_node.cjs"
+            #// VSCode >> Terminal >> Run Task >>  TypeScript Compile Task
+    Run:
+        #// After set up
+        - node build/app.js
+    (If necessary) Set up for 2nd try:
+        rm -rf build
+        rm -rf node_modules

@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "declaration": true,
+        "strict": true,
+        "target": "es2020",
+        "module": "es2020",
+        "lib": [ "es2020", "DOM" ],
+        "esModuleInterop": true,
+        "moduleResolution": "node",
+        "sourceMap": true,
+        "outDir": "build",
+        "baseUrl": ".",
+        "paths": {
+            "@src/*": ["src/*"]
+        }
+    },
+    "exclude": ["node_modules", "build"]
+}

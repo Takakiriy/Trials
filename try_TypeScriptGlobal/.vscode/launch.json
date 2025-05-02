@@ -1,0 +1,18 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run",
+            "type": "node",
+            "request": "launch",
+            "preLaunchTask": "TypeScript Compile Task",
+            "program": "${workspaceFolder}/src/app.ts",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "smartStep": true,
+            "outFiles": [
+                "${workspaceFolder}/build/**/*.js"
+            ]
+        }
+    ]
+}

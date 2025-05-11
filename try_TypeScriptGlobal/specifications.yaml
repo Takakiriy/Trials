@@ -9,9 +9,14 @@ First step:
         #// After set up
         - node build/test1.js
         - node build/1a.main.js
-        - node build/2.context.js
-        - node build/3a.programOptions.js  --size 150
-        - node build/3a.programOptions.js  --client system
+        - node build/2-NG.return.js
+        - node build/3.context.js
+        - node build/4.objectWithContext.js
+        - node build/5-NG.current.js
+        - node build/6.allInstances.js
+        - node build/7a.importGlobal.js
+        - node build/9a.programOptions.js  --size 150
+        - node build/9a.programOptions.js  --client system
     (If necessary) Set up for 2nd try:
         rm -rf build
         rm -rf node_modules

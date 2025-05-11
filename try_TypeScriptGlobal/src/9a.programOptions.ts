@@ -1,4 +1,4 @@
-import { parseProgramOptions } from "@src/programOptions";
+import { parseProgramOptions } from "@src/9b.programOptions";
 
 function  main() {
     parseProgramOptions();

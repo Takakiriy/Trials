@@ -41,10 +41,12 @@ const  user2: User = {
     name: 'user2',
 };
 
-const  user0: User = {
+declare global {export const  gDefaultUser: User} (globalThis as any).
+gDefaultUser = {
     name: 'user0',
 };
 
-const  gContextDefault: Context = {power: 100, time: 30, activeUser: user0};
+declare global {export const  gContextDefault: Context} (globalThis as any).
+gContextDefault = {power: 100, time: 30, activeUser: gDefaultUser};
 
 main();

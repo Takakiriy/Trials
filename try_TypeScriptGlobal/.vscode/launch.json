@@ -2,24 +2,11 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Run context",
+            "name": "Run",
             "type": "node",
             "request": "launch",
             "preLaunchTask": "TypeScript Compile Task",
-            "program": "${workspaceFolder}/src/context.ts",
-            "args": [],
-            "cwd": "${workspaceFolder}",
-            "smartStep": true,
-            "outFiles": [
-                "${workspaceFolder}/build/**/*.js"
-            ]
-        },
-        {
-            "name": "Run indent main",
-            "type": "node",
-            "request": "launch",
-            "preLaunchTask": "TypeScript Compile Task",
-            "program": "${workspaceFolder}/src/indentMain.ts",
+            "program": "${workspaceFolder}/src/1a.main.ts",
             "args": [],
             "cwd": "${workspaceFolder}",
             "smartStep": true,

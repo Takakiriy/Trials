@@ -1,7 +1,9 @@
-First step:
+Steps:
     Set up:
         #// New terminal - set up and start background tasks:
         #(bash)
+        - node --version
+            v20.19.0
         - npm ci
         - node_modules/.bin/tsc-watch  -p tsconfig.json --onSuccess "node src/support_node.cjs"
             #// VSCode >> Terminal >> Run Task >>  TypeScript Compile Task
@@ -15,6 +17,8 @@ First step:
         - node build/5-NG.current.js
         - node build/6.allInstances.js
         - node build/7a.importGlobal.js
+        - node build/8a.circularDependency.js a
+        - node build/8b.circularDependency.js b
         - node build/9a.programOptions.js  --size 150
         - node build/9a.programOptions.js  --client system
     (If necessary) Set up for 2nd try:

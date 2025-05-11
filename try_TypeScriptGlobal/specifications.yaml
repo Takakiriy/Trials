@@ -7,7 +7,11 @@ First step:
             #// VSCode >> Terminal >> Run Task >>  TypeScript Compile Task
     Run:
         #// After set up
-        - node build/app.js
+        - node build/test1.js
+        - node build/1a.main.js
+        - node build/2.context.js
+        - node build/3a.programOptions.js  --size 150
+        - node build/3a.programOptions.js  --client system
     (If necessary) Set up for 2nd try:
         rm -rf build
         rm -rf node_modules

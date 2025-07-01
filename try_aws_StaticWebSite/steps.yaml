@@ -424,9 +424,6 @@ Amazon CloudFront によるウェブサイトの高速化(HTTPS対応、CloudFor
                     #template: - __Domain__ （の左のチェックボックス） >> 削除
                 - www.sage-p.tk （の左のチェックボックス） >> 削除
                     #template: - __SubDomain__ （の左のチェックボックス） >> 削除
-
-
-
 （確認中）CloudFormation テンプレートを使用して:
     参考: https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/getting-started-secure-static-website-cloudformation-template.html
 設定: #settings:

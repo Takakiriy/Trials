@@ -24,27 +24,14 @@ FortuneElementId="today-fortune"
 #// CLIオプション解析
 PositionalArgs=()
 while [[ $# -gt 0 ]]; do
-    if [[ "$1" == "-h" || "$1" == "--help" ]]; then
-        ShowHelp
-        exit 0
-    elif [[ "$1" == "-r" || "$1" == "--repo-path" ]]; then
-        Options_RepoPath="$2"
-        shift
-        shift
-    elif [[ "$1" == "-c" || "$1" == "--commit-msg" ]]; then
-        Options_CommitMessage="$2"
-        shift
-        shift
-    elif [[ "$1" == "-f" || "$1" == "--fortune-id" ]]; then
-        Options_FortuneElementId="$2"
-        shift
-        shift
-    elif [[ "$1" == -* ]]; then
-        Error  "Unknown option $1"
-    else
-        PositionalArgs+=("$1")
-        shift
-    fi
+    case $1 in
+        -h|--help) ShowHelp; exit 0;;
+        -r|--repo-path) Options_RepoPath="$2"; shift; shift;;
+        -c|--commit-msg) Options_CommitMessage="$2"; shift; shift;;
+        -f|--fortune-id) Options_FortuneElementId="$2"; shift; shift;;
+        -*) Error  "Unknown option $1";;
+        *) PositionalArgs+=("$1"); shift;;
+    esac
 done
 set -- "${PositionalArgs[@]}"  #// set $1, $2, ...
 unset PositionalArgs

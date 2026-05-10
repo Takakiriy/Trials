@@ -1,0 +1,36 @@
+{
+  "name": "todo-monorepo",
+  "private": true,
+  "workspaces": [
+    "shared",
+    "ddd-backend-lightweight",
+    "ca-backend-lightweight",
+    "ddd-backend-normal",
+    "ca-backend-normal",
+    "frontend"
+  ],
+  "scripts": {
+    "dev:ddd:lightweight": "cd ddd-backend-lightweight && npm run dev",
+    "dev:ca:lightweight": "cd ca-backend-lightweight && npm run dev",
+    "dev:ddd:lightweight-full": "cd ddd-backend-lightweight-full && npm run dev",
+    "dev:ca:lightweight-full": "cd ca-backend-lightweight-full && npm run dev",
+    "dev:ddd:normal": "cd ddd-backend-normal && npm run dev",
+    "dev:ca:normal": "cd ca-backend-normal && npm run dev",
+    "dev:frontend:ddd": "cd frontend && VITE_BACKEND_URL=http://localhost:3001 npm run dev",
+    "dev:frontend:ca": "cd frontend && VITE_BACKEND_URL=http://localhost:3002 npm run dev",
+    "typecheck:ddd:lightweight": "cd ddd-backend-lightweight && npx tsc --noEmit",
+    "typecheck:ca:lightweight": "cd ca-backend-lightweight && npx tsc --noEmit",
+    "typecheck:ddd:lightweight-full": "cd ddd-backend-lightweight-full && npx tsc --noEmit",
+    "typecheck:ca:lightweight-full": "cd ca-backend-lightweight-full && npx tsc --noEmit",
+    "typecheck:ddd:normal": "cd ddd-backend-normal && npx tsc --noEmit",
+    "typecheck:ca:normal": "cd ca-backend-normal && npx tsc --noEmit",
+    "typecheck:frontend": "cd frontend && npx tsc --noEmit",
+    "test:ddd:lightweight-full": "cd ddd-backend-lightweight-full && npm run test:run",
+    "test:ca:lightweight-full": "cd ca-backend-lightweight-full && npm run test:run",
+    "test:e2e": "cd frontend && npm run test:e2e"
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "prettier": "^3.8.3"
+  }
+}
